@@ -5,7 +5,7 @@ export const baseApi = createApi({
   reducerPath: "api",
 
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:5000/api/v1/",
+    baseUrl: "https://nikhil-backend-job-portal.vercel.app/api/v1/",
 
     prepareHeaders: (headers, { getState }) => {
       const token = (getState() as RootState).auth.accessToken;
