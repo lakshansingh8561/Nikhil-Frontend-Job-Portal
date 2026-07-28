@@ -1,5 +1,5 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-
+import { createSlice } from "@reduxjs/toolkit";
+import type { PayloadAction } from "@reduxjs/toolkit";
 type Role =
   | "JOB_SEEKER"
   | "RECRUITER"
@@ -39,6 +39,7 @@ const authSlice = createSlice({
   reducers: {
     setCredentials: (
       state,
+
       action: PayloadAction<{
         user: User;
 
