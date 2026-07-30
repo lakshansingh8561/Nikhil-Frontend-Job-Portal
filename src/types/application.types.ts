@@ -1,5 +1,5 @@
-import { Job } from "./job.types";
-import { JobSeekerProfile } from "../features/jobSeeker/types/jobSeeker.types";
+import type { Job } from "./job.types";
+import type { JobSeekerProfile } from "../features/jobSeeker/types/jobSeeker.types";
 
 export interface Application {
   _id: string;

@@ -6,7 +6,7 @@ import { useGetAllJobSeekersQuery } from "../../features/jobSeeker/api/jobSeeker
 
 const CandidatesPage = () => {
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(9);
+  const [limit] = useState(9);
   const [search, setSearch] = useState("");
   const [location, setLocation] = useState("");
 
