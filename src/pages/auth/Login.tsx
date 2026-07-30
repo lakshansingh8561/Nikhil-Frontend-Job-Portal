@@ -15,7 +15,7 @@ import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { setCredentials } from "../../features/auth/authSlice";
 
 const schema = z.object({
-  email: z.string().email("Enter a valid email"),
+  email: z.string().email("Enter a valid email address"),
   password: z.string().min(1, "Password is required"),
 });
 
@@ -23,11 +23,8 @@ type LoginForm = z.infer<typeof schema>;
 
 const Login = () => {
   const navigate = useNavigate();
-
   const dispatch = useAppDispatch();
-
-  const [loginUser, { isLoading }] =
-    useLoginMutation();
+  const [loginUser, { isLoading }] = useLoginMutation();
 
   const {
     register,
@@ -37,77 +34,78 @@ const Login = () => {
     resolver: zodResolver(schema),
   });
 
-  const onSubmit = async (
-    values: LoginForm
-  ) => {
+  const onSubmit = async (values: LoginForm) => {
     try {
-      const data =
-        await loginUser(values).unwrap();
+      const response: any = await loginUser(values).unwrap();
+      const authData = response.data || response;
+      const user = authData.user;
 
-      dispatch(setCredentials(data));
+      if (!user) {
+        throw new Error("User data missing from response");
+      }
 
-      toast.success("Login Successful");
+      dispatch(
+        setCredentials({
+          user: user,
+          accessToken: authData.accessToken,
+          refreshToken: authData.refreshToken,
+        })
+      );
 
-      switch (data.user.role) {
-        case "ADMIN":
-          navigate("/admin");
-          break;
+      toast.success("Login Successful!");
 
-        case "RECRUITER":
-          navigate("/recruiter");
-          break;
-
-        default:
-          navigate("/");
+      if (user.role === "RECRUITER") {
+        navigate("/recruiter/dashboard", { replace: true });
+      } else if (user.role === "JOB_SEEKER") {
+        navigate("/job-seeker/profile", { replace: true });
+      } else {
+        navigate("/", { replace: true });
       }
     } catch (error: any) {
       toast.error(
-        error?.data?.message ??
-          "Invalid email or password"
+        error?.data?.message ?? error?.message ?? "Invalid email or password"
       );
     }
   };
 
   return (
     <AuthLayout
+      category="Sign In"
       title="Welcome Back"
-      subtitle="Sign in to continue your job search journey."
+      subtitle="Access to all features. Sign in to your account."
     >
-      <SocialLogin />
+      <SocialLogin label="Sign in with Google" />
 
       <Divider />
 
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="space-y-6"
-      >
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
         <AuthInput
-          label="Email Address"
-          placeholder="Enter your email"
+          label="Email *"
+          placeholder="e.g. stevenjob@gmail.com"
           {...register("email")}
           error={errors.email?.message}
         />
 
         <AuthInput
           type="password"
-          label="Password"
-          placeholder="Enter your password"
+          label="Password *"
+          placeholder="••••••••••••"
           {...register("password")}
           error={errors.password?.message}
         />
 
-        <div className="flex items-center justify-between">
-          <label className="flex items-center gap-2 text-sm text-[#66789C]">
+        <div className="flex items-center justify-between text-xs text-[#66789C]">
+          <label className="flex items-center gap-2 cursor-pointer">
             <input
               type="checkbox"
-              className="accent-[#3C65F5]"
+              className="h-4 w-4 rounded accent-[#3C65F5]"
             />
-            Remember me
+            <span>Remember me</span>
           </label>
 
           <Link
             to="/forgot-password"
-            className="text-sm font-semibold text-[#3C65F5] hover:underline"
+            className="font-bold text-[#3C65F5] hover:underline"
           >
             Forgot Password?
           </Link>
@@ -118,13 +116,13 @@ const Login = () => {
         </AuthButton>
       </form>
 
-      <p className="mt-8 text-center text-[#66789C]">
+      <p className="mt-6 text-center text-xs font-medium text-[#66789C]">
         Don't have an account?{" "}
         <Link
           to="/register"
-          className="font-semibold text-[#3C65F5]"
+          className="font-bold text-[#3C65F5] hover:underline"
         >
-          Create Account
+          Register
         </Link>
       </p>
     </AuthLayout>

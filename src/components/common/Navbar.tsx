@@ -15,26 +15,18 @@ const links = [
   {
     name: "Find a Job",
     path: "/jobs",
-    dropdownItems: ["Jobs Grid", "Jobs List", "Job Details"],
+    dropdownItems: ["Jobs Grid", "Jobs List"],
   },
   {
     name: "Recruiters",
     path: "/recruiters",
+    dropdownItems: ["Recruiter Directory"],
   },
   {
     name: "Candidates",
     path: "/candidates",
-    dropdownItems: ["Candidate Directory", "My Profile", "My Applications"],
+    dropdownItems: ["Candidate Directory"],
   },
-  {
-    name: "Pages",
-    path: "/pages",
-  },
-  {
-    name: "Blog",
-    path: "/blog",
-  },
-  { name: "Contact", path: "/contact" },
 ];
 
 const Navbar = () => {
@@ -50,6 +42,9 @@ const Navbar = () => {
     setProfileDropdownOpen(false);
     navigate("/login");
   };
+
+  const isRecruiter = user?.role === "RECRUITER";
+  const profilePath = isRecruiter ? "/recruiter/dashboard" : "/job-seeker/profile";
 
   return (
     <header
@@ -115,10 +110,8 @@ const Navbar = () => {
                             to={
                               subItem === "Candidate Directory"
                                 ? "/candidates"
-                                : subItem === "My Profile"
-                                ? "/job-seeker/profile"
-                                : subItem === "My Applications"
-                                ? "/job-seeker/applications"
+                                : subItem === "Recruiter Directory"
+                                ? "/recruiters"
                                 : "/jobs"
                             }
                             className="block px-5 py-2 text-[14px] font-medium text-gray-600 hover:text-[#3C65F5] hover:bg-blue-50/70 transition-colors"
@@ -140,7 +133,7 @@ const Navbar = () => {
               <div className="relative">
                 <button
                   onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
-                  className="flex items-center gap-2.5 rounded-full bg-[#EBF2FF] p-1.5 pr-3 text-sm font-semibold text-[#05264E] hover:bg-blue-100 transition"
+                  className="flex items-center gap-2.5 rounded-full bg-[#EBF2FF] p-1.5 pr-3 text-sm font-semibold text-[#05264E] hover:bg-blue-100 transition cursor-pointer"
                 >
                   <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#3C65F5] text-white font-bold text-xs">
                     {user.email ? user.email.charAt(0).toUpperCase() : "U"}
@@ -154,23 +147,25 @@ const Navbar = () => {
                 {profileDropdownOpen && (
                   <div className="absolute right-0 mt-2 w-52 rounded-2xl border border-[#EAEFF7] bg-white py-2 shadow-xl z-50">
                     <Link
-                      to="/job-seeker/profile"
+                      to={profilePath}
                       onClick={() => setProfileDropdownOpen(false)}
                       className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-[#3C65F5]"
                     >
-                      <FiUser /> My Profile
+                      <FiUser /> {isRecruiter ? "Dashboard" : "My Profile"}
                     </Link>
-                    <Link
-                      to="/job-seeker/applications"
-                      onClick={() => setProfileDropdownOpen(false)}
-                      className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-[#3C65F5]"
-                    >
-                      <FiFileText /> My Applications
-                    </Link>
+                    {!isRecruiter && (
+                      <Link
+                        to="/job-seeker/applications"
+                        onClick={() => setProfileDropdownOpen(false)}
+                        className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-[#3C65F5]"
+                      >
+                        <FiFileText /> My Applications
+                      </Link>
+                    )}
                     <div className="my-1 border-t border-gray-100" />
                     <button
                       onClick={handleLogout}
-                      className="flex w-full items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50"
+                      className="flex w-full items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 cursor-pointer"
                     >
                       <FiLogOut /> Sign Out
                     </button>

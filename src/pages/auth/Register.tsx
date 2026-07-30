@@ -11,11 +11,9 @@ import Divider from "../../components/auth/Divider";
 import SocialLogin from "../../components/auth/SocialLogin";
 
 import { useRegisterMutation } from "../../features/auth/authApi";
-import { useAppDispatch } from "../../hooks/useAppDispatch";
-import { setCredentials } from "../../features/auth/authSlice";
 
 const schema = z.object({
-  email: z.string().email("Enter a valid email"),
+  email: z.string().email("Enter a valid email address"),
   password: z
     .string()
     .min(8, "Password must be at least 8 characters"),
@@ -26,11 +24,7 @@ type RegisterForm = z.infer<typeof schema>;
 
 const Register = () => {
   const navigate = useNavigate();
-
-  const dispatch = useAppDispatch();
-
-  const [registerUser, { isLoading }] =
-    useRegisterMutation();
+  const [registerUser, { isLoading }] = useRegisterMutation();
 
   const {
     register,
@@ -43,110 +37,85 @@ const Register = () => {
     },
   });
 
-  const onSubmit = async (
-    values: RegisterForm
-  ) => {
+  const onSubmit = async (values: RegisterForm) => {
     try {
-      const data =
-        await registerUser(values).unwrap();
-
-      dispatch(setCredentials(data));
-
-      toast.success("Registration Successful");
-
-      if (
-        data.user.role === "RECRUITER"
-      ) {
-        navigate("/recruiter");
-      } else {
-        navigate("/");
-      }
+      await registerUser(values).unwrap();
+      toast.success("Registration successful! Please sign in to continue.");
+      navigate("/login");
     } catch (error: any) {
       toast.error(
-        error?.data?.message ??
-          "Registration failed"
+        error?.data?.message ?? "Registration failed"
       );
     }
   };
 
   return (
     <AuthLayout
-      title="Create Account"
-      subtitle="Join thousands of professionals finding their dream jobs."
+      category="Register"
+      title="Start for free Today"
+      subtitle="Access to all features. No credit card required."
     >
-      <SocialLogin />
+      <SocialLogin label="Sign up with Google" />
 
       <Divider />
 
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="space-y-6"
-      >
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
         <AuthInput
-          label="Email Address"
-          placeholder="Enter your email"
+          label="Email *"
+          placeholder="e.g. stevenjob@gmail.com"
           {...register("email")}
           error={errors.email?.message}
         />
 
         <AuthInput
           type="password"
-          label="Password"
-          placeholder="Enter your password"
+          label="Password *"
+          placeholder="••••••••••••"
           {...register("password")}
           error={errors.password?.message}
         />
 
-        <div className="space-y-2">
-          <label className="block text-[15px] font-semibold text-[#05264E]">
-            Register As
+        <div className="space-y-1.5">
+          <label className="block text-xs font-bold text-[#05264E]">
+            Register As *
           </label>
 
           <select
             {...register("role")}
-            className="h-14 w-full rounded-xl border border-[#D5DEEF] px-5 outline-none transition focus:border-[#3C65F5] focus:ring-4 focus:ring-blue-100"
+            className="h-12 w-full rounded-xl border border-[#EAEFF7] bg-white px-4 text-xs font-medium text-[#05264E] outline-none transition focus:border-[#3C65F5]"
           >
-            <option value="JOB_SEEKER">
-              Job Seeker
-            </option>
-
-            <option value="RECRUITER">
-              Recruiter
-            </option>
+            <option value="JOB_SEEKER">Job Seeker</option>
+            <option value="RECRUITER">Recruiter</option>
           </select>
         </div>
 
-        <div className="flex items-start gap-3">
-          <input
-            type="checkbox"
-            required
-            className="mt-1 h-4 w-4 accent-[#3C65F5]"
-          />
+        <div className="flex items-center justify-between text-xs text-[#66789C]">
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              required
+              className="h-4 w-4 rounded accent-[#3C65F5]"
+            />
+            <span>Agree our terms and policy</span>
+          </label>
 
-          <p className="text-sm text-[#66789C]">
-            I agree to the{" "}
-            <span className="font-semibold text-[#3C65F5]">
-              Terms
-            </span>{" "}
-            &{" "}
-            <span className="font-semibold text-[#3C65F5]">
-              Privacy Policy
-            </span>
-          </p>
+          <a href="#" className="text-gray-400 hover:underline">
+            Learn more
+          </a>
         </div>
 
         <AuthButton loading={isLoading}>
-          Create Account
+          Submit & Register
         </AuthButton>
       </form>
 
-      <p className="mt-8 text-center text-[#66789C]">
+      <p className="mt-6 text-center text-xs font-medium text-[#66789C]">
         Already have an account?{" "}
         <Link
           to="/login"
-          className="font-semibold text-[#3C65F5]"
+          className="font-bold text-[#3C65F5] hover:underline"
         >
-          Sign In
+          Sign in
         </Link>
       </p>
     </AuthLayout>

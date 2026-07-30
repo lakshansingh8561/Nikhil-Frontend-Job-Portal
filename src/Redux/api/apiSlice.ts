@@ -1,8 +1,4 @@
-import {
-  createApi,
-  fetchBaseQuery,
-} from "@reduxjs/toolkit/query/react";
-
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import type { RootState } from "../../app/store";
 
 export const apiSlice = createApi({
@@ -12,7 +8,9 @@ export const apiSlice = createApi({
     baseUrl: `${import.meta.env.VITE_BASE_URL}/api/v1`,
 
     prepareHeaders: (headers, { getState }) => {
-      const token = (getState() as RootState).auth.accessToken;
+      const token =
+        (getState() as RootState).auth.accessToken ||
+        localStorage.getItem("jobbox_accessToken");
 
       if (token) {
         headers.set("Authorization", `Bearer ${token}`);
