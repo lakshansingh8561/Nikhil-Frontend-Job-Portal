@@ -1,16 +1,17 @@
-import { baseApi } from "./baseApi";
+import { apiSlice } from "../../Redux/api/apiSlice";
+
 import type {
+  AuthResponse,
   LoginRequest,
   RegisterRequest,
-  AuthResponse,
   User,
 } from "../../types/auth.types";
 
-export const authApi = baseApi.injectEndpoints({
+export const authApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     register: builder.mutation<AuthResponse, RegisterRequest>({
       query: (body) => ({
-        url: "auth/register",
+        url: "/auth/register",
         method: "POST",
         body,
       }),
@@ -19,7 +20,7 @@ export const authApi = baseApi.injectEndpoints({
 
     login: builder.mutation<AuthResponse, LoginRequest>({
       query: (body) => ({
-        url: "auth/login",
+        url: "/auth/login",
         method: "POST",
         body,
       }),
@@ -27,13 +28,15 @@ export const authApi = baseApi.injectEndpoints({
     }),
 
     me: builder.query<User, void>({
-      query: () => "auth/me",
+      query: () => ({
+        url: "/auth/me",
+      }),
       providesTags: ["Auth"],
     }),
 
     logout: builder.mutation<void, void>({
       query: () => ({
-        url: "auth/logout",
+        url: "/auth/logout",
         method: "POST",
       }),
       invalidatesTags: ["Auth"],

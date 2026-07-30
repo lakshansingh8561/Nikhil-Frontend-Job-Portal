@@ -1,45 +1,55 @@
 import { useState } from "react";
-import { Link, NavLink } from "react-router-dom";
-import { FiChevronDown } from "react-icons/fi";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import { FiChevronDown, FiUser, FiFileText, FiLogOut } from "react-icons/fi";
 import Container from "./Container";
 import Logo from "../../assets/logo.svg";
+import { useAppDispatch } from "../../hooks/useAppDispatch";
+import { useAppSelector } from "../../hooks/useAppSelector";
+import { logout } from "../../features/auth/authSlice";
 
 const links = [
   {
     name: "Home",
     path: "/",
-    dropdownItems: ["Home 1", "Home 2", "Home 3", "Home 4", "Home 5", "Home 6"],
   },
   {
     name: "Find a Job",
     path: "/jobs",
-    dropdownItems: ["Jobs Grid", "Jobs List", "Job Details", "Job Categories"],
+    dropdownItems: ["Jobs Grid", "Jobs List", "Job Details"],
   },
   {
     name: "Recruiters",
     path: "/recruiters",
-    dropdownItems: ["Recruiters List", "Recruiter Details"],
   },
   {
     name: "Candidates",
     path: "/candidates",
-    dropdownItems: ["Candidates List", "Candidate Details"],
+    dropdownItems: ["Candidate Directory", "My Profile", "My Applications"],
   },
   {
     name: "Pages",
     path: "/pages",
-    dropdownItems: ["About Us", "Pricing", "FAQ", "Terms & Conditions"],
   },
   {
     name: "Blog",
     path: "/blog",
-    dropdownItems: ["Blog Grid", "Blog Single"],
   },
   { name: "Contact", path: "/contact" },
 ];
 
 const Navbar = () => {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
+
+  const { user } = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    dispatch(logout());
+    setProfileDropdownOpen(false);
+    navigate("/login");
+  };
 
   return (
     <header
@@ -76,9 +86,6 @@ const Navbar = () => {
                         : "text-[#05264E] hover:text-[#3C65F5]"
                     }`
                   }
-                  style={({ isActive }) => ({
-                    color: isActive ? "#3C65F5" : "#05264E",
-                  })}
                 >
                   {item.name}
                   {item.dropdownItems && (
@@ -105,7 +112,15 @@ const Navbar = () => {
                       {item.dropdownItems.map((subItem) => (
                         <li key={subItem}>
                           <Link
-                            to="#"
+                            to={
+                              subItem === "Candidate Directory"
+                                ? "/candidates"
+                                : subItem === "My Profile"
+                                ? "/job-seeker/profile"
+                                : subItem === "My Applications"
+                                ? "/job-seeker/applications"
+                                : "/jobs"
+                            }
                             className="block px-5 py-2 text-[14px] font-medium text-gray-600 hover:text-[#3C65F5] hover:bg-blue-50/70 transition-colors"
                           >
                             • {subItem}
@@ -120,28 +135,65 @@ const Navbar = () => {
           </nav>
 
           {/* Right Action Buttons */}
-          <div className="flex items-center gap-6 shrink-0">
-            <Link
-              to="/register"
-              className="text-[15px] font-medium hover:text-[#3C65F5] underline underline-offset-4 whitespace-nowrap transition-colors"
-              style={{ color: "#05264E" }}
-            >
-              Register
-            </Link>
+          <div className="flex items-center gap-4 shrink-0">
+            {user ? (
+              <div className="relative">
+                <button
+                  onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
+                  className="flex items-center gap-2.5 rounded-full bg-[#EBF2FF] p-1.5 pr-3 text-sm font-semibold text-[#05264E] hover:bg-blue-100 transition"
+                >
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#3C65F5] text-white font-bold text-xs">
+                    {user.email ? user.email.charAt(0).toUpperCase() : "U"}
+                  </div>
+                  <span className="hidden sm:inline max-w-[120px] truncate">
+                    {user.email}
+                  </span>
+                  <FiChevronDown className="text-xs text-gray-500" />
+                </button>
 
-            <Link
-              to="/login"
-              className="font-semibold text-white whitespace-nowrap transition hover:bg-[#254BD6]"
-              style={{
-                backgroundColor: "#3C65F5",
-                color: "#ffffff",
-                padding: "10px 24px",
-                borderRadius: "12px",
-                boxShadow: "0 4px 12px rgba(60, 101, 245, 0.2)",
-              }}
-            >
-              Sign in
-            </Link>
+                {profileDropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-52 rounded-2xl border border-[#EAEFF7] bg-white py-2 shadow-xl z-50">
+                    <Link
+                      to="/job-seeker/profile"
+                      onClick={() => setProfileDropdownOpen(false)}
+                      className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-[#3C65F5]"
+                    >
+                      <FiUser /> My Profile
+                    </Link>
+                    <Link
+                      to="/job-seeker/applications"
+                      onClick={() => setProfileDropdownOpen(false)}
+                      className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-[#3C65F5]"
+                    >
+                      <FiFileText /> My Applications
+                    </Link>
+                    <div className="my-1 border-t border-gray-100" />
+                    <button
+                      onClick={handleLogout}
+                      className="flex w-full items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50"
+                    >
+                      <FiLogOut /> Sign Out
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="flex items-center gap-6">
+                <Link
+                  to="/register"
+                  className="text-[15px] font-medium text-[#05264E] hover:text-[#3C65F5] underline underline-offset-4 whitespace-nowrap transition-colors"
+                >
+                  Register
+                </Link>
+
+                <Link
+                  to="/login"
+                  className="rounded-xl bg-[#3C65F5] px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-[#254BD6] shadow-md whitespace-nowrap"
+                >
+                  Sign in
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </Container>

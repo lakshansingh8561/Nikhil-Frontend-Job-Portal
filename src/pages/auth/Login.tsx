@@ -1,29 +1,22 @@
-import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
 import { useForm } from "react-hook-form";
-
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-
 import toast from "react-hot-toast";
 
 import AuthLayout from "../../layouts/AuthLayout";
+import AuthInput from "../../components/auth/AuthInput";
+import AuthButton from "../../components/auth/AuthButton";
+import Divider from "../../components/auth/Divider";
+import SocialLogin from "../../components/auth/SocialLogin";
 
-import { useLoginMutation } from "../../Redux/api/authApi";
-
+import { useLoginMutation } from "../../features/auth/authApi";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
-
-import { setCredentials } from "../../Redux/slices/authSlice";
+import { setCredentials } from "../../features/auth/authSlice";
 
 const schema = z.object({
-  email: z
-    .string()
-    .email("Enter a valid email"),
-
-  password: z
-    .string()
-    .min(1, "Password is required"),
+  email: z.string().email("Enter a valid email"),
+  password: z.string().min(1, "Password is required"),
 });
 
 type LoginForm = z.infer<typeof schema>;
@@ -33,9 +26,8 @@ const Login = () => {
 
   const dispatch = useAppDispatch();
 
-  const [login] = useLoginMutation();
-
-  const [loading, setLoading] = useState(false);
+  const [loginUser, { isLoading }] =
+    useLoginMutation();
 
   const {
     register,
@@ -49,85 +41,92 @@ const Login = () => {
     values: LoginForm
   ) => {
     try {
-      setLoading(true);
-
       const data =
-        await login(values).unwrap();
+        await loginUser(values).unwrap();
 
       dispatch(setCredentials(data));
 
       toast.success("Login Successful");
 
-      if (data.user.role === "ADMIN") {
-        navigate("/admin");
-      } else if (
-        data.user.role === "RECRUITER"
-      ) {
-        navigate("/recruiter");
-      } else {
-        navigate("/");
+      switch (data.user.role) {
+        case "ADMIN":
+          navigate("/admin");
+          break;
+
+        case "RECRUITER":
+          navigate("/recruiter");
+          break;
+
+        default:
+          navigate("/");
       }
     } catch (error: any) {
       toast.error(
         error?.data?.message ??
-        "Login Failed"
+          "Invalid email or password"
       );
-    } finally {
-      setLoading(false);
     }
   };
 
   return (
     <AuthLayout
       title="Welcome Back"
-      subtitle="Sign in to continue"
+      subtitle="Sign in to continue your job search journey."
     >
+      <SocialLogin />
+
+      <Divider />
+
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="space-y-5"
+        className="space-y-6"
       >
-        <div>
-          <input
-            {...register("email")}
-            placeholder="Email"
-            className="w-full rounded-xl border p-4"
-          />
+        <AuthInput
+          label="Email Address"
+          placeholder="Enter your email"
+          {...register("email")}
+          error={errors.email?.message}
+        />
 
-          <p className="text-sm text-red-500">
-            {errors.email?.message}
-          </p>
-        </div>
+        <AuthInput
+          type="password"
+          label="Password"
+          placeholder="Enter your password"
+          {...register("password")}
+          error={errors.password?.message}
+        />
 
-        <div>
-          <input
-            type="password"
-            {...register("password")}
-            placeholder="Password"
-            className="w-full rounded-xl border p-4"
-          />
-
-          <p className="text-sm text-red-500">
-            {errors.password?.message}
-          </p>
-        </div>
-
-        <button className="w-full rounded-xl bg-[#3C65F5] py-4 font-semibold text-white">
-          {loading
-            ? "Signing In..."
-            : "Sign In"}
-        </button>
-
-        <p className="text-center">
-          Don't have an account?
+        <div className="flex items-center justify-between">
+          <label className="flex items-center gap-2 text-sm text-[#66789C]">
+            <input
+              type="checkbox"
+              className="accent-[#3C65F5]"
+            />
+            Remember me
+          </label>
 
           <Link
-            to="/register"
-            className="ml-2 font-semibold text-[#3C65F5]"
+            to="/forgot-password"
+            className="text-sm font-semibold text-[#3C65F5] hover:underline"
           >
-            Register
+            Forgot Password?
           </Link>
-        </p>
+        </div>
+
+        <AuthButton loading={isLoading}>
+          Sign In
+        </AuthButton>
       </form>
+
+      <p className="mt-8 text-center text-[#66789C]">
+        Don't have an account?{" "}
+        <Link
+          to="/register"
+          className="font-semibold text-[#3C65F5]"
+        >
+          Create Account
+        </Link>
+      </p>
     </AuthLayout>
   );
 };

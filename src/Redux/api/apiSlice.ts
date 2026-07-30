@@ -1,11 +1,15 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import {
+  createApi,
+  fetchBaseQuery,
+} from "@reduxjs/toolkit/query/react";
+
 import type { RootState } from "../../app/store";
 
-export const baseApi = createApi({
+export const apiSlice = createApi({
   reducerPath: "api",
 
   baseQuery: fetchBaseQuery({
-    baseUrl: "https://nikhil-backend-job-portal.vercel.app/api/v1/",
+    baseUrl: `${import.meta.env.VITE_BASE_URL}/api/v1`,
 
     prepareHeaders: (headers, { getState }) => {
       const token = (getState() as RootState).auth.accessToken;
@@ -13,6 +17,8 @@ export const baseApi = createApi({
       if (token) {
         headers.set("Authorization", `Bearer ${token}`);
       }
+
+      headers.set("Content-Type", "application/json");
 
       return headers;
     },
