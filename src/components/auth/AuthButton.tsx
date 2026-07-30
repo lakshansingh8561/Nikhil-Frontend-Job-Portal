@@ -1,22 +1,15 @@
-import type {
-  ButtonHTMLAttributes,
-} from "react";
+import type { ButtonHTMLAttributes } from "react";
 
-interface Props
-  extends ButtonHTMLAttributes<HTMLButtonElement> {
+interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   loading?: boolean;
 }
 
-const AuthButton = ({
-  children,
-  loading,
-  ...props
-}: Props) => {
+const AuthButton = ({ children, loading, ...props }: Props) => {
   return (
     <button
       {...props}
       disabled={loading || props.disabled}
-      className="flex h-14 w-full items-center justify-center rounded-xl bg-[#3C65F5] text-[16px] font-semibold text-white shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#2954F3] disabled:cursor-not-allowed disabled:opacity-70"
+      className="flex h-13 w-full items-center justify-center rounded-xl bg-[#05264E] text-xs font-bold text-white shadow-md transition-all duration-200 hover:bg-[#031936] disabled:cursor-not-allowed disabled:opacity-70 cursor-pointer"
     >
       {loading ? "Please wait..." : children}
     </button>

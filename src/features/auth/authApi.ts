@@ -7,6 +7,12 @@ import type {
   User,
 } from "../../types/auth.types";
 
+interface ApiResponseWrapper<T> {
+  success: boolean;
+  message: string;
+  data: T;
+}
+
 export const authApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     register: builder.mutation<AuthResponse, RegisterRequest>({
@@ -15,6 +21,8 @@ export const authApi = apiSlice.injectEndpoints({
         method: "POST",
         body,
       }),
+      transformResponse: (response: ApiResponseWrapper<AuthResponse>) =>
+        response.data,
       invalidatesTags: ["Auth"],
     }),
 
@@ -24,6 +32,8 @@ export const authApi = apiSlice.injectEndpoints({
         method: "POST",
         body,
       }),
+      transformResponse: (response: ApiResponseWrapper<AuthResponse>) =>
+        response.data,
       invalidatesTags: ["Auth"],
     }),
 
@@ -31,6 +41,8 @@ export const authApi = apiSlice.injectEndpoints({
       query: () => ({
         url: "/auth/me",
       }),
+      transformResponse: (response: ApiResponseWrapper<User>) =>
+        response.data,
       providesTags: ["Auth"],
     }),
 

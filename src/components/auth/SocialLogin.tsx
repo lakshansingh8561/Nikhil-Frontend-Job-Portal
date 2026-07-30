@@ -1,44 +1,18 @@
-import {
-  FcGoogle,
-} from "react-icons/fc";
+import { FcGoogle } from "react-icons/fc";
 
-import {
-  FaGithub,
-  FaLinkedinIn,
-} from "react-icons/fa";
+interface SocialLoginProps {
+  label?: string;
+}
 
-const SocialLogin = () => {
+const SocialLogin = ({ label = "Sign up with Google" }: SocialLoginProps) => {
   return (
-    <div className="grid grid-cols-3 gap-4">
-
-      <button
-        type="button"
-        className="flex h-12 items-center justify-center rounded-xl border border-[#D5DEEF] transition hover:border-[#3C65F5]"
-      >
-        <FcGoogle size={24} />
-      </button>
-
-      <button
-        type="button"
-        className="flex h-12 items-center justify-center rounded-xl border border-[#D5DEEF] transition hover:border-[#3C65F5]"
-      >
-        <FaGithub
-          size={20}
-          className="text-[#05264E]"
-        />
-      </button>
-
-      <button
-        type="button"
-        className="flex h-12 items-center justify-center rounded-xl border border-[#D5DEEF] transition hover:border-[#3C65F5]"
-      >
-        <FaLinkedinIn
-          size={20}
-          className="text-[#0A66C2]"
-        />
-      </button>
-
-    </div>
+    <button
+      type="button"
+      className="flex h-13 w-full items-center justify-center gap-3 rounded-xl border border-[#EAEFF7] bg-white py-3 px-4 text-sm font-semibold text-[#05264E] shadow-2xs hover:bg-gray-50 transition cursor-pointer"
+    >
+      <FcGoogle size={22} />
+      <span>{label}</span>
+    </button>
   );
 };
 

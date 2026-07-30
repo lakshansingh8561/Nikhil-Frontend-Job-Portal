@@ -1,13 +1,11 @@
 const Divider = () => {
   return (
-    <div className="my-8 flex items-center gap-4">
-      <div className="h-px flex-1 bg-gray-200" />
-
-      <span className="text-sm font-medium text-gray-400">
-        OR
+    <div className="my-6 flex items-center gap-4">
+      <div className="h-px flex-1 bg-[#EAEFF7]" />
+      <span className="text-xs font-semibold text-[#66789C]">
+        Or continue with
       </span>
-
-      <div className="h-px flex-1 bg-gray-200" />
+      <div className="h-px flex-1 bg-[#EAEFF7]" />
     </div>
   );
 };
