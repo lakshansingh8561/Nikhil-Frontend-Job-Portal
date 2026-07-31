@@ -17,11 +17,14 @@ export const ProtectedRoute = ({
   }
 
   if (allowedRoles && !allowedRoles.includes(user.role)) {
+    if (user.role === "ADMIN") {
+      return <Navigate to="/admin/dashboard" replace />;
+    }
     if (user.role === "RECRUITER") {
       return <Navigate to="/recruiter/dashboard" replace />;
     }
     if (user.role === "JOB_SEEKER") {
-      return <Navigate to="/job-seeker/profile" replace />;
+      return <Navigate to="/job-seeker/dashboard" replace />;
     }
     return <Navigate to="/login" replace />;
   }

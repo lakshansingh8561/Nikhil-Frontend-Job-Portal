@@ -1,17 +1,7 @@
-import { PageHeader } from "../components/PageHeader";
-import { RecentApplications } from "../dashboard/RecentApplications";
+import RecruiterApplications from "../../applications/pages/RecruiterApplications";
 
 export const Applications = () => {
-  return (
-    <div className="space-y-6">
-      <PageHeader
-        title="Candidate Applications"
-        description="Filter, review candidate profiles, and shortlist applicants for interviews."
-      />
-
-      <RecentApplications />
-    </div>
-  );
+  return <RecruiterApplications />;
 };
 
 export default Applications;

@@ -88,8 +88,30 @@ const EditProfileModal = ({ isOpen, onClose, existingProfile }: EditProfileModal
     );
   };
 
-  const onSubmit = async (data: CreateJobSeekerProfileInput) => {
+  const onSubmit = async (rawParams: CreateJobSeekerProfileInput) => {
     try {
+      const data = { ...rawParams };
+
+      if (Array.isArray(data.education)) {
+        data.education = data.education
+          .filter((edu) => edu.institution?.trim() || edu.degree?.trim())
+          .map((edu) => ({
+            ...edu,
+            startDate: edu.startDate || undefined,
+            endDate: edu.endDate || undefined,
+          }));
+      }
+
+      if (Array.isArray(data.experience)) {
+        data.experience = data.experience
+          .filter((exp) => exp.company?.trim() || exp.designation?.trim())
+          .map((exp) => ({
+            ...exp,
+            startDate: exp.startDate || undefined,
+            endDate: exp.endDate || undefined,
+          }));
+      }
+
       if (existingProfile) {
         await updateProfile(data).unwrap();
         toast.success("Profile updated successfully!");
@@ -317,6 +339,24 @@ const EditProfileModal = ({ isOpen, onClose, existingProfile }: EditProfileModal
                     className="rounded-xl border border-gray-200 p-2.5 text-sm bg-white outline-none"
                   />
                 </div>
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-600 mb-1">Start Date</label>
+                    <input
+                      type="date"
+                      {...register(`education.${idx}.startDate` as const)}
+                      className="w-full rounded-xl border border-gray-200 p-2.5 text-sm bg-white outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-600 mb-1">End Date</label>
+                    <input
+                      type="date"
+                      {...register(`education.${idx}.endDate` as const)}
+                      className="w-full rounded-xl border border-gray-200 p-2.5 text-sm bg-white outline-none"
+                    />
+                  </div>
+                </div>
               </div>
             ))}
           </div>
@@ -372,6 +412,24 @@ const EditProfileModal = ({ isOpen, onClose, existingProfile }: EditProfileModal
                     placeholder="Description snippet..."
                     className="rounded-xl border border-gray-200 p-2.5 text-sm bg-white outline-none"
                   />
+                </div>
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-600 mb-1">Start Date</label>
+                    <input
+                      type="date"
+                      {...register(`experience.${idx}.startDate` as const)}
+                      className="w-full rounded-xl border border-gray-200 p-2.5 text-sm bg-white outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-600 mb-1">End Date</label>
+                    <input
+                      type="date"
+                      {...register(`experience.${idx}.endDate` as const)}
+                      className="w-full rounded-xl border border-gray-200 p-2.5 text-sm bg-white outline-none"
+                    />
+                  </div>
                 </div>
               </div>
             ))}

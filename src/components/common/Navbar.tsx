@@ -44,7 +44,12 @@ const Navbar = () => {
   };
 
   const isRecruiter = user?.role === "RECRUITER";
-  const profilePath = isRecruiter ? "/recruiter/dashboard" : "/job-seeker/profile";
+  const isAdmin = user?.role === "ADMIN";
+  const profilePath = isAdmin
+    ? "/admin/dashboard"
+    : isRecruiter
+    ? "/recruiter/dashboard"
+    : "/job-seeker/dashboard";
 
   return (
     <header
@@ -151,9 +156,9 @@ const Navbar = () => {
                       onClick={() => setProfileDropdownOpen(false)}
                       className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-[#3C65F5]"
                     >
-                      <FiUser /> {isRecruiter ? "Dashboard" : "My Profile"}
+                      <FiUser /> {isAdmin ? "Admin Dashboard" : isRecruiter ? "Dashboard" : "My Profile"}
                     </Link>
-                    {!isRecruiter && (
+                    {!isRecruiter && !isAdmin && (
                       <Link
                         to="/job-seeker/applications"
                         onClick={() => setProfileDropdownOpen(false)}

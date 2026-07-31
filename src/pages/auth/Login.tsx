@@ -54,10 +54,12 @@ const Login = () => {
 
       toast.success("Login Successful!");
 
-      if (user.role === "RECRUITER") {
+      if (user.role === "ADMIN") {
+        navigate("/admin/dashboard", { replace: true });
+      } else if (user.role === "RECRUITER") {
         navigate("/recruiter/dashboard", { replace: true });
       } else if (user.role === "JOB_SEEKER") {
-        navigate("/job-seeker/profile", { replace: true });
+        navigate("/job-seeker/dashboard", { replace: true });
       } else {
         navigate("/", { replace: true });
       }

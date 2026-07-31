@@ -1,45 +1,57 @@
 import { StatCard } from "../components/StatCard";
 import type { StatItem } from "../types/dashboard.types";
-
-const mockStats: StatItem[] = [
-  {
-    id: "1",
-    title: "Total Jobs Posted",
-    value: 24,
-    change: "+12.5%",
-    isPositive: true,
-    iconName: "jobs",
-  },
-  {
-    id: "2",
-    title: "Active Openings",
-    value: 18,
-    change: "+8.2%",
-    isPositive: true,
-    iconName: "activeJobs",
-  },
-  {
-    id: "3",
-    title: "Total Applicants",
-    value: 452,
-    change: "+24.8%",
-    isPositive: true,
-    iconName: "applicants",
-  },
-  {
-    id: "4",
-    title: "Shortlisted Candidates",
-    value: 38,
-    change: "-3.1%",
-    isPositive: false,
-    iconName: "shortlisted",
-  },
-];
+import { useGetRecruiterJobsQuery } from "../../jobs/api/jobsApi";
 
 export const DashboardStats = () => {
+  const { data: jobs } = useGetRecruiterJobsQuery();
+  const jobsList = jobs || [];
+
+  const totalJobs = jobsList.length;
+  const activeJobs = jobsList.filter((j) => j.isActive).length;
+  const totalApplicants = jobsList.reduce(
+    (acc, j) => acc + (j.applicantCount || 0),
+    0
+  );
+  const closedJobs = totalJobs - activeJobs;
+
+  const liveStats: StatItem[] = [
+    {
+      id: "1",
+      title: "Total Jobs Posted",
+      value: totalJobs,
+      change: "Live",
+      isPositive: true,
+      iconName: "jobs",
+    },
+    {
+      id: "2",
+      title: "Active Openings",
+      value: activeJobs,
+      change: "Live",
+      isPositive: true,
+      iconName: "activeJobs",
+    },
+    {
+      id: "3",
+      title: "Total Applicants",
+      value: totalApplicants,
+      change: "Live",
+      isPositive: true,
+      iconName: "applicants",
+    },
+    {
+      id: "4",
+      title: "Closed Postings",
+      value: closedJobs,
+      change: "Live",
+      isPositive: false,
+      iconName: "shortlisted",
+    },
+  ];
+
   return (
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-      {mockStats.map((stat) => (
+      {liveStats.map((stat) => (
         <StatCard key={stat.id} stat={stat} />
       ))}
     </div>
