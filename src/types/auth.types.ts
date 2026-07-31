@@ -24,7 +24,7 @@ export interface LoginRequest {
 export interface RegisterRequest {
   email: string;
   password: string;
-  role: "JOB_SEEKER" | "RECRUITER";
+  role: Role;
 }
 
 export interface AuthResponse {

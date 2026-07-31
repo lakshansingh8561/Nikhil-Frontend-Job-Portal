@@ -2,7 +2,7 @@ export interface Education {
   institution: string;
   degree: string;
   fieldOfStudy: string;
-  startDate: string;
+  startDate?: string;
   endDate?: string;
   currentlyStudying?: boolean;
 }
@@ -11,7 +11,7 @@ export interface Experience {
   company: string;
   designation: string;
   employmentType: string;
-  startDate: string;
+  startDate?: string;
   endDate?: string;
   currentlyWorking?: boolean;
   description?: string;
@@ -38,6 +38,7 @@ export interface JobSeekerProfile {
   skills: string[];
   education: Education[];
   experience: Experience[];
+  resume?: string;
   createdAt?: string;
   updatedAt?: string;
 }

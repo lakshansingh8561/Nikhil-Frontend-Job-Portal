@@ -1,8 +1,6 @@
-import { useState } from "react";
 import { FiClock, FiBriefcase, FiZap, FiMapPin } from "react-icons/fi";
 import toast from "react-hot-toast";
 import type { Job } from "../../types/job.types";
-import { useApplyJobMutation } from "../../features/jobSeeker/api/applicationsApi";
 import { useAppSelector } from "../../hooks/useAppSelector";
 
 interface JobCardProps {
@@ -10,34 +8,20 @@ interface JobCardProps {
   onSelect?: (job: Job) => void;
 }
 
-const companyIcons: Record<string, string> = {
-  LinkedIn: "https://cdn-icons-png.flaticon.com/512/174/174857.png",
-  "Adobe Illustrator": "https://cdn-icons-png.flaticon.com/512/5968/5968472.png",
-  "Bing Search": "https://cdn-icons-png.flaticon.com/512/732/732228.png",
-  Dailymotion: "https://cdn-icons-png.flaticon.com/512/174/174845.png",
-  "Quora JSC": "https://cdn-icons-png.flaticon.com/512/3536/3536735.png",
-  "TechNova Solutions": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-};
-
 const JobCard = ({ job, onSelect }: JobCardProps) => {
-  const [isApplying, setIsApplying] = useState(false);
-  const [applyJob] = useApplyJobMutation();
   const { user } = useAppSelector((state) => state.auth);
 
   const companyName =
     typeof job.companyId === "object" && job.companyId !== null
       ? job.companyId.companyName
-      : "Tech Company";
+      : "Company";
 
   const companyLogo =
     typeof job.companyId === "object" && job.companyId?.logo
       ? job.companyId.logo
-      : companyIcons[companyName] || undefined;
+      : undefined;
 
-  const skillsList =
-    job.skills && job.skills.length > 0
-      ? job.skills
-      : ["React", "NodeJS", "TypeScript"];
+  const skillsList = job.skills || [];
 
   const formattedSalary =
     job.salaryMin && job.salaryMax
@@ -46,11 +30,11 @@ const JobCard = ({ job, onSelect }: JobCardProps) => {
         : `$${job.salaryMin} – $${job.salaryMax}`
       : job.salaryMin
       ? `$${job.salaryMin.toLocaleString()}`
-      : "$500";
+      : "Competitive";
 
-  const salaryUnit = job.salaryMin && job.salaryMin >= 1000 ? "/Year" : "/Hour";
+  const salaryUnit = job.salaryMin && job.salaryMin >= 1000 ? "/Year" : "";
 
-  const handleApply = async (e: React.MouseEvent) => {
+  const handleApply = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (!user) {
       toast.error("Please sign in to apply for jobs.");
@@ -61,14 +45,8 @@ const JobCard = ({ job, onSelect }: JobCardProps) => {
       return;
     }
 
-    try {
-      setIsApplying(true);
-      await applyJob({ jobId: job._id }).unwrap();
-      toast.success("Application submitted successfully!");
-    } catch (err: any) {
-      toast.error(err?.data?.message || "Failed to submit application.");
-    } finally {
-      setIsApplying(false);
+    if (onSelect) {
+      onSelect(job);
     }
   };
 
@@ -100,7 +78,7 @@ const JobCard = ({ job, onSelect }: JobCardProps) => {
               </h4>
               <p className="text-xs text-[#66789C] flex items-center gap-1 mt-1 truncate">
                 <FiMapPin className="text-gray-400 shrink-0" />
-                <span className="truncate">{job.location || "New York, US"}</span>
+                <span className="truncate">{job.location}</span>
               </p>
             </div>
           </div>
@@ -157,10 +135,9 @@ const JobCard = ({ job, onSelect }: JobCardProps) => {
 
         <button
           onClick={handleApply}
-          disabled={isApplying}
-          className="rounded-xl bg-[#E8F0FE] px-4 py-2.5 text-xs font-semibold text-[#3C65F5] transition-all duration-200 hover:bg-[#3C65F5] hover:text-white disabled:opacity-50 cursor-pointer"
+          className="rounded-xl bg-[#E8F0FE] px-4 py-2.5 text-xs font-semibold text-[#3C65F5] transition-all duration-200 hover:bg-[#3C65F5] hover:text-white cursor-pointer"
         >
-          {isApplying ? "Applying..." : "Apply Now"}
+          Apply Now
         </button>
       </div>
     </div>
