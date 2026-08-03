@@ -71,6 +71,8 @@ function App() {
           <Route path="dashboard" element={<JobSeekerDashboard />} />
           <Route path="profile" element={<JobSeekerProfilePage />} />
           <Route path="applications" element={<MyApplications />} />
+          <Route path="jobs" element={<BrowseJobs />} />
+          <Route path="jobs/:id" element={<JobSeekerJobDetails />} />
           <Route path="settings" element={<JobSeekerSettings />} />
         </Route>
       </Route>

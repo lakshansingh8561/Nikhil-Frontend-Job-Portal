@@ -77,7 +77,7 @@ export const Dashboard: React.FC = () => {
               <FiUser /> Edit Profile
             </Link>
             <Link
-              to="/jobs"
+              to="/job-seeker/jobs"
               className="flex items-center gap-2 rounded-2xl bg-[#3C65F5] px-5 py-3 text-xs font-bold text-white shadow-sm transition hover:bg-[#254BD6] cursor-pointer border border-blue-400/30"
             >
               <FiSearch /> Browse Jobs
@@ -184,7 +184,7 @@ export const Dashboard: React.FC = () => {
                 Explore available job postings and apply with your uploaded resume.
               </p>
               <Link
-                to="/jobs"
+                to="/job-seeker/jobs"
                 className="inline-flex items-center gap-2 rounded-2xl bg-[#3C65F5] px-5 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-[#254BD6]"
               >
                 <FiSearch /> Browse Active Jobs

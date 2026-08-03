@@ -10,7 +10,9 @@ import AuthButton from "../../components/auth/AuthButton";
 import Divider from "../../components/auth/Divider";
 import SocialLogin from "../../components/auth/SocialLogin";
 
-import { useRegisterMutation } from "../../features/auth/authApi";
+import { useRegisterMutation, useGoogleLoginMutation } from "../../features/auth/authApi";
+import { useAppDispatch } from "../../hooks/useAppDispatch";
+import { setCredentials } from "../../features/auth/authSlice";
 
 const schema = z.object({
   email: z.string().email("Enter a valid email address"),
@@ -24,11 +26,14 @@ type RegisterForm = z.infer<typeof schema>;
 
 const Register = () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const [registerUser, { isLoading }] = useRegisterMutation();
+  const [googleLogin, { isLoading: isGoogleLoading }] = useGoogleLoginMutation();
 
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm<RegisterForm>({
     resolver: zodResolver(schema),
@@ -36,6 +41,8 @@ const Register = () => {
       role: "JOB_SEEKER",
     },
   });
+
+  const selectedRole = watch("role");
 
   const onSubmit = async (values: RegisterForm) => {
     try {
@@ -49,13 +56,53 @@ const Register = () => {
     }
   };
 
+  const handleGoogleSuccess = async (credential: string) => {
+    try {
+      const response: any = await googleLogin({ credential, role: selectedRole }).unwrap();
+      const authData = response.data || response;
+      const user = authData.user;
+
+      if (!user) {
+        throw new Error("User profile not received");
+      }
+
+      dispatch(
+        setCredentials({
+          user: user,
+          accessToken: authData.accessToken,
+          refreshToken: authData.refreshToken,
+        })
+      );
+
+      toast.success("Google Registration Successful!");
+
+      if (user.role === "ADMIN") {
+        navigate("/admin/dashboard", { replace: true });
+      } else if (user.role === "RECRUITER") {
+        navigate("/recruiter/dashboard", { replace: true });
+      } else if (user.role === "JOB_SEEKER") {
+        navigate("/job-seeker/dashboard", { replace: true });
+      } else {
+        navigate("/", { replace: true });
+      }
+    } catch (error: any) {
+      toast.error(
+        error?.data?.message ?? "Google Registration failed."
+      );
+    }
+  };
+
   return (
     <AuthLayout
       category="Register"
       title="Start for free Today"
       subtitle="Access to all features. No credit card required."
     >
-      <SocialLogin label="Sign up with Google" />
+      <SocialLogin
+        label="Sign up with Google"
+        onSuccess={handleGoogleSuccess}
+        isLoading={isGoogleLoading}
+      />
 
       <Divider />
 
@@ -105,7 +152,7 @@ const Register = () => {
           </a>
         </div>
 
-        <AuthButton loading={isLoading}>
+        <AuthButton loading={isLoading || isGoogleLoading}>
           Submit & Register
         </AuthButton>
       </form>

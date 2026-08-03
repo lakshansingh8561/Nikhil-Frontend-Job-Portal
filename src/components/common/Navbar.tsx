@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { FiChevronDown, FiUser, FiFileText, FiLogOut } from "react-icons/fi";
-import Container from "./Container";
 import Logo from "../../assets/logo.svg";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { useAppSelector } from "../../hooks/useAppSelector";
 import { logout } from "../../features/auth/authSlice";
+
+import NotificationDropdown from "./NotificationDropdown";
 
 const links = [
   {
@@ -15,22 +16,18 @@ const links = [
   {
     name: "Find a Job",
     path: "/jobs",
-    dropdownItems: ["Jobs Grid", "Jobs List"],
   },
   {
     name: "Recruiters",
     path: "/recruiters",
-    dropdownItems: ["Recruiter Directory"],
   },
   {
     name: "Candidates",
     path: "/candidates",
-    dropdownItems: ["Candidate Directory"],
   },
 ];
 
 const Navbar = () => {
-  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
 
   const { user } = useAppSelector((state) => state.auth);
@@ -55,92 +52,49 @@ const Navbar = () => {
     <header
       className="fixed inset-x-0 top-0 z-50 w-full"
       style={{
-        backgroundColor: "rgba(245, 247, 252, 0.95)",
+        backgroundColor: "rgba(245, 248, 255, 0.95)",
         backdropFilter: "blur(10px)",
         WebkitBackdropFilter: "blur(10px)",
         borderBottom: "1px solid #EAEFF7",
       }}
     >
-      <Container>
-        <div className="flex h-[85px] items-center justify-between gap-4">
+      <div className="mx-auto w-full max-w-[1200px] px-[20px]">
+        <div className="flex h-[85px] items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center shrink-0">
             <img src={Logo} alt="JobBox" className="h-9 w-auto" />
           </Link>
 
-          {/* Nav Links with Hover Dropdowns */}
-          <nav className="hidden items-center gap-7 lg:flex">
+          {/* Nav Links - Centered */}
+          <nav className="hidden items-center justify-center gap-9 lg:flex flex-1">
             {links.map((item) => (
-              <div
+              <NavLink
                 key={item.name}
-                className="relative group py-6"
-                onMouseEnter={() => setActiveDropdown(item.name)}
-                onMouseLeave={() => setActiveDropdown(null)}
+                to={item.path}
+                className={({ isActive }) =>
+                  `text-[15px] font-semibold whitespace-nowrap transition-colors ${
+                    isActive
+                      ? "text-[#3B5BDB]"
+                      : "text-[#05264E] hover:text-[#3B5BDB]"
+                  }`
+                }
               >
-                <NavLink
-                  to={item.path}
-                  className={({ isActive }) =>
-                    `flex items-center gap-1.5 text-[15px] font-medium whitespace-nowrap transition-colors ${
-                      isActive
-                        ? "text-[#3C65F5]"
-                        : "text-[#05264E] hover:text-[#3C65F5]"
-                    }`
-                  }
-                >
-                  {item.name}
-                  {item.dropdownItems && (
-                    <FiChevronDown className="text-gray-500 text-xs shrink-0 transition-transform duration-200 group-hover:rotate-180" />
-                  )}
-                </NavLink>
-
-                {/* Dropdown Menu */}
-                {item.dropdownItems && (
-                  <div
-                    className={`absolute top-full left-0 w-48 rounded-2xl border py-3 transition-all duration-200 ${
-                      activeDropdown === item.name
-                        ? "opacity-100 visible translate-y-0"
-                        : "opacity-0 invisible translate-y-2 pointer-events-none"
-                    }`}
-                    style={{
-                      backgroundColor: "#ffffff",
-                      borderRadius: "16px",
-                      boxShadow: "0 15px 35px rgba(0,0,0,0.08)",
-                      borderColor: "#EAEFF7",
-                    }}
-                  >
-                    <ul className="flex flex-col">
-                      {item.dropdownItems.map((subItem) => (
-                        <li key={subItem}>
-                          <Link
-                            to={
-                              subItem === "Candidate Directory"
-                                ? "/candidates"
-                                : subItem === "Recruiter Directory"
-                                ? "/recruiters"
-                                : "/jobs"
-                            }
-                            className="block px-5 py-2 text-[14px] font-medium text-gray-600 hover:text-[#3C65F5] hover:bg-blue-50/70 transition-colors"
-                          >
-                            • {subItem}
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </div>
+                {item.name}
+              </NavLink>
             ))}
           </nav>
 
           {/* Right Action Buttons */}
           <div className="flex items-center gap-4 shrink-0">
             {user ? (
-              <div className="relative">
-                <button
-                  onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
-                  className="flex items-center gap-2.5 rounded-full bg-[#EBF2FF] p-1.5 pr-3 text-sm font-semibold text-[#05264E] hover:bg-blue-100 transition cursor-pointer"
-                >
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#3C65F5] text-white font-bold text-xs">
+              <div className="flex items-center gap-3">
+                <NotificationDropdown />
+                <div className="relative">
+                  <button
+                    onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
+                    className="flex items-center gap-2.5 rounded-full bg-[#EBF2FF] p-1.5 pr-3 text-sm font-semibold text-[#05264E] hover:bg-blue-100 transition cursor-pointer"
+                  >
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#3B5BDB] text-white font-bold text-xs">
                     {user.email ? user.email.charAt(0).toUpperCase() : "U"}
                   </div>
                   <span className="hidden sm:inline max-w-[120px] truncate">
@@ -154,7 +108,7 @@ const Navbar = () => {
                     <Link
                       to={profilePath}
                       onClick={() => setProfileDropdownOpen(false)}
-                      className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-[#3C65F5]"
+                      className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-[#3B5BDB]"
                     >
                       <FiUser /> {isAdmin ? "Admin Dashboard" : isRecruiter ? "Dashboard" : "My Profile"}
                     </Link>
@@ -162,7 +116,7 @@ const Navbar = () => {
                       <Link
                         to="/job-seeker/applications"
                         onClick={() => setProfileDropdownOpen(false)}
-                        className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-[#3C65F5]"
+                        className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-[#3B5BDB]"
                       >
                         <FiFileText /> My Applications
                       </Link>
@@ -176,19 +130,20 @@ const Navbar = () => {
                     </button>
                   </div>
                 )}
+                </div>
               </div>
             ) : (
               <div className="flex items-center gap-6">
                 <Link
                   to="/register"
-                  className="text-[15px] font-medium text-[#05264E] hover:text-[#3C65F5] underline underline-offset-4 whitespace-nowrap transition-colors"
+                  className="text-[15px] font-medium text-[#05264E] hover:text-[#3B5BDB] underline underline-offset-4 whitespace-nowrap transition-colors"
                 >
                   Register
                 </Link>
 
                 <Link
                   to="/login"
-                  className="rounded-xl bg-[#3C65F5] px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-[#254BD6] shadow-md whitespace-nowrap"
+                  className="flex h-[50px] items-center justify-center rounded-[12px] bg-[#3B5BDB] px-7 text-sm font-semibold text-white shadow-md shadow-blue-500/20 transition hover:bg-[#2B47C5] whitespace-nowrap"
                 >
                   Sign in
                 </Link>
@@ -196,7 +151,7 @@ const Navbar = () => {
             )}
           </div>
         </div>
-      </Container>
+      </div>
     </header>
   );
 };

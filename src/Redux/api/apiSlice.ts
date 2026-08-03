@@ -30,6 +30,7 @@ export const apiSlice = createApi({
     "Job",
     "Application",
     "Admin",
+    "Notification",
   ],
 
   endpoints: () => ({}),

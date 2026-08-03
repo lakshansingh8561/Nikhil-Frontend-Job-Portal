@@ -112,6 +112,12 @@ export const ApplicantCard: React.FC<ApplicantCardProps> = ({
           <ResumeViewer
             resumeUrl={application.resume}
             applicantName={applicantName}
+            applicantEmail={applicantEmail}
+            applicantPhone={applicant?.phone || ""}
+            applicantLocation={location}
+            applicantHeadline={headline}
+            applicantSkills={applicant?.skills || []}
+            coverLetter={application.coverLetter}
           />
 
           <div className="flex items-center gap-2">

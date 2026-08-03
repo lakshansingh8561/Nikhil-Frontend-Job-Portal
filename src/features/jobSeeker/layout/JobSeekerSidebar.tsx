@@ -24,7 +24,7 @@ const navItems = [
   { name: "Dashboard", path: "/job-seeker/dashboard", icon: FiGrid },
   { name: "My Profile", path: "/job-seeker/profile", icon: FiUser },
   { name: "My Applications", path: "/job-seeker/applications", icon: FiFileText },
-  { name: "Find Jobs", path: "/jobs", icon: FiSearch },
+  { name: "Find Jobs", path: "/job-seeker/jobs", icon: FiSearch },
   { name: "Settings", path: "/job-seeker/settings", icon: FiSettings },
 ];
 
@@ -62,7 +62,7 @@ export const JobSeekerSidebar = ({
           isMobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         }`}
       >
-        <div>
+        <div className="flex-1 min-h-0 overflow-y-auto pr-1">
           {/* Header Logo + Mobile Close */}
           <div className="flex items-center justify-between pb-6 border-b border-[#F0F4FC]">
             <Link to="/" className="flex items-center shrink-0">
@@ -125,9 +125,9 @@ export const JobSeekerSidebar = ({
         </div>
 
         {/* Bottom Actions */}
-        <div className="space-y-3 pt-6 border-t border-[#F0F4FC]">
+        <div className="space-y-3 pt-6 border-t border-[#F0F4FC] shrink-0">
           <Link
-            to="/jobs"
+            to="/job-seeker/jobs"
             onClick={onCloseMobile}
             className="flex w-full items-center justify-center gap-2 rounded-xl border border-[#EAEFF7] bg-[#F8FAFC] py-2.5 text-xs font-bold text-[#05264E] hover:bg-[#E8F0FE] hover:text-[#3C65F5] transition"
           >

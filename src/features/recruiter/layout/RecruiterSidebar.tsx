@@ -59,7 +59,7 @@ export const RecruiterSidebar = ({
           isMobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         }`}
       >
-        <div>
+        <div className="flex-1 min-h-0 overflow-y-auto pr-1">
           {/* Header Logo + Mobile Close */}
           <div className="flex items-center justify-between pb-6 border-b border-[#F0F4FC]">
             <Link to="/" className="flex items-center shrink-0">
@@ -122,7 +122,7 @@ export const RecruiterSidebar = ({
         </div>
 
         {/* Logout Button */}
-        <div className="pt-6 border-t border-[#F0F4FC]">
+        <div className="pt-6 border-t border-[#F0F4FC] shrink-0">
           <button
             onClick={handleLogout}
             className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-xs font-bold text-red-600 hover:bg-red-50 transition cursor-pointer"

@@ -106,13 +106,29 @@ const BrowseJobs: React.FC = () => {
         {/* Top Search Bar */}
         <SearchBar
           search={search}
-          setSearch={setSearch}
+          setSearch={(val) => {
+            setSearch(val);
+            setPage(1);
+            setActiveParams((prev) => ({ ...prev, search: val }));
+          }}
           location={location}
-          setLocation={setLocation}
+          setLocation={(val) => {
+            setLocation(val);
+            setPage(1);
+            setActiveParams((prev) => ({ ...prev, location: val }));
+          }}
           employmentType={employmentType}
-          setEmploymentType={setEmploymentType}
+          setEmploymentType={(val) => {
+            setEmploymentType(val);
+            setPage(1);
+            setActiveParams((prev) => ({ ...prev, employmentType: val }));
+          }}
           experienceLevel={experienceLevel}
-          setExperienceLevel={setExperienceLevel}
+          setExperienceLevel={(val) => {
+            setExperienceLevel(val);
+            setPage(1);
+            setActiveParams((prev) => ({ ...prev, experienceLevel: val }));
+          }}
           onSearchSubmit={handleSearchSubmit}
         />
 

@@ -37,6 +37,10 @@ const JobCard: React.FC<JobCardProps> = ({ job, layout = "grid" }) => {
 
   const { formattedText, period } = formatSalary(job.salaryMin, job.salaryMax);
 
+  const getJobDetailsUrl = (jobId: string) => {
+    return user?.role === "JOB_SEEKER" ? `/job-seeker/jobs/${jobId}` : `/jobs/${jobId}`;
+  };
+
   const handleApplyClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
@@ -50,13 +54,13 @@ const JobCard: React.FC<JobCardProps> = ({ job, layout = "grid" }) => {
       return;
     }
 
-    // Navigate to job details or apply page flow
-    navigate(`/jobs/${job._id}`);
+    // Navigate to job details within job seeker dashboard workspace
+    navigate(`/job-seeker/jobs/${job._id}`);
   };
 
   const handleViewDetails = (e: React.MouseEvent) => {
     e.stopPropagation();
-    navigate(`/jobs/${job._id}`);
+    navigate(getJobDetailsUrl(job._id));
   };
 
   const postedDate = job.createdAt

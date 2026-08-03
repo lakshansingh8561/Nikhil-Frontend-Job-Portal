@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FiX, FiSend, FiFileText, FiMessageSquare } from "react-icons/fi";
 import toast from "react-hot-toast";
 import { useApplyJobMutation } from "../api/applicationApi";
+import { useGetProfileQuery } from "../../jobSeeker/api/jobSeekerApi";
 
 interface ApplyJobModalProps {
   isOpen: boolean;
@@ -20,15 +21,18 @@ export const ApplyJobModal: React.FC<ApplyJobModalProps> = ({
   companyName = "Company",
   initialResumeUrl = "",
 }) => {
-  const [resume, setResume] = useState(initialResumeUrl);
+  const { data: profile } = useGetProfileQuery();
+  const [resume, setResume] = useState(initialResumeUrl || profile?.resume || "");
   const [coverLetter, setCoverLetter] = useState("");
   const [applyJob, { isLoading }] = useApplyJobMutation();
 
   useEffect(() => {
     if (initialResumeUrl) {
       setResume(initialResumeUrl);
+    } else if (profile?.resume) {
+      setResume(profile.resume);
     }
-  }, [initialResumeUrl]);
+  }, [initialResumeUrl, profile]);
 
   if (!isOpen) return null;
 

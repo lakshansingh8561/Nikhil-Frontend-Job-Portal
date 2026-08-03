@@ -2,8 +2,6 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   FiSearch,
-  FiBell,
-  FiMessageSquare,
   FiChevronDown,
   FiUser,
   FiSettings,
@@ -13,6 +11,8 @@ import {
 import { useAppDispatch } from "../../../hooks/useAppDispatch";
 import { useAppSelector } from "../../../hooks/useAppSelector";
 import { logout } from "../../auth/authSlice";
+
+import NotificationDropdown from "../../../components/common/NotificationDropdown";
 
 interface RecruiterHeaderProps {
   onOpenMobileMenu?: () => void;
@@ -53,17 +53,8 @@ export const RecruiterHeader = ({ onOpenMobileMenu }: RecruiterHeaderProps) => {
 
       {/* Right Icons + Avatar Profile Dropdown */}
       <div className="flex items-center gap-3 shrink-0">
-        {/* Messages */}
-        <button className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-white text-gray-600 border border-[#EAEFF7] hover:bg-gray-50 transition cursor-pointer shadow-xs">
-          <FiMessageSquare className="text-lg" />
-          <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-[#3C65F5]" />
-        </button>
-
         {/* Notifications */}
-        <button className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-white text-gray-600 border border-[#EAEFF7] hover:bg-gray-50 transition cursor-pointer shadow-xs">
-          <FiBell className="text-lg" />
-          <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-emerald-500" />
-        </button>
+        <NotificationDropdown />
 
         {/* User Dropdown */}
         <div className="relative ml-2">
