@@ -31,7 +31,7 @@ export const StatusDropdown: React.FC<StatusDropdownProps> = ({
 
     try {
       await updateStatus({ id: applicationId, status: newStatus }).unwrap();
-      toast.success(`Application status updated to ${newStatus}!`);
+      toast.success(`Status updated to ${newStatus}! Email notification sent to applicant.`);
       if (onStatusChange) {
         onStatusChange(newStatus);
       }

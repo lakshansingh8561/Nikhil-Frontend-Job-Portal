@@ -5,9 +5,17 @@ import { useAppSelector } from "../hooks/useAppSelector";
 const MainLayout = () => {
   const { user, isAuthenticated } = useAppSelector((state) => state.auth);
 
-  // Recruiter is restricted to recruiter dashboard workspace and cannot access public seeker layout
-  if (isAuthenticated && user?.role === "RECRUITER") {
-    return <Navigate to="/recruiter/dashboard" replace />;
+  // Authenticated users are restricted to their respective workspace dashboard layouts and cannot access public layout
+  if (isAuthenticated && user) {
+    if (user.role === "ADMIN") {
+      return <Navigate to="/admin/dashboard" replace />;
+    }
+    if (user.role === "RECRUITER") {
+      return <Navigate to="/recruiter/dashboard" replace />;
+    }
+    if (user.role === "JOB_SEEKER") {
+      return <Navigate to="/job-seeker/dashboard" replace />;
+    }
   }
 
   return (

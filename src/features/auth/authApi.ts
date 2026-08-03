@@ -37,6 +37,17 @@ export const authApi = apiSlice.injectEndpoints({
       invalidatesTags: ["Auth"],
     }),
 
+    googleLogin: builder.mutation<AuthResponse, { credential: string; role?: string }>({
+      query: (body) => ({
+        url: "/auth/google",
+        method: "POST",
+        body,
+      }),
+      transformResponse: (response: ApiResponseWrapper<AuthResponse>) =>
+        response.data,
+      invalidatesTags: ["Auth"],
+    }),
+
     me: builder.query<User, void>({
       query: () => ({
         url: "/auth/me",
@@ -59,6 +70,7 @@ export const authApi = apiSlice.injectEndpoints({
 export const {
   useRegisterMutation,
   useLoginMutation,
+  useGoogleLoginMutation,
   useMeQuery,
   useLogoutMutation,
 } = authApi;

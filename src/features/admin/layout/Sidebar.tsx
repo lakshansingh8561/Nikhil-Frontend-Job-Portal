@@ -61,12 +61,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       )}
 
       <aside
-        className={`fixed top-0 bottom-0 left-0 z-50 flex w-64 flex-col border-r border-[#EAEFF7] bg-white transition-transform duration-300 ease-in-out lg:static lg:translate-x-0 ${
+        className={`fixed top-0 bottom-0 left-0 z-50 flex w-64 flex-col border-r border-[#EAEFF7] bg-white transition-transform duration-300 ease-in-out lg:static lg:h-screen lg:shrink-0 lg:translate-x-0 ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
         {/* Top Logo Section */}
-        <div className="flex h-20 items-center justify-between border-b border-[#EAEFF7] px-6">
+        <div className="flex h-20 items-center justify-between border-b border-[#EAEFF7] px-6 shrink-0">
           <Link to="/admin/dashboard" className="flex items-center gap-2.5">
             <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#3C65F5] font-extrabold text-white text-xl shadow-md">
               J
@@ -118,7 +118,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         </div>
 
         {/* Bottom Back to Main Portal Link */}
-        <div className="p-4 border-t border-[#EAEFF7]">
+        <div className="p-4 border-t border-[#EAEFF7] shrink-0">
           <Link
             to="/jobs"
             className="flex items-center justify-center gap-2 rounded-2xl border border-[#EAEFF7] bg-[#F8FAFC] py-3 text-xs font-bold text-[#05264E] transition hover:bg-[#E8F0FE] hover:text-[#3C65F5]"

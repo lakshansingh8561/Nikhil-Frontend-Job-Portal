@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   FiMenu,
-  FiBell,
   FiUser,
   FiFileText,
   FiLogOut,
@@ -12,6 +11,8 @@ import { useAppDispatch } from "../../../hooks/useAppDispatch";
 import { useAppSelector } from "../../../hooks/useAppSelector";
 import { logout } from "../../auth/authSlice";
 import { useGetProfileQuery } from "../api/jobSeekerApi";
+
+import NotificationDropdown from "../../../components/common/NotificationDropdown";
 
 interface JobSeekerHeaderProps {
   onToggleMobileMenu: () => void;
@@ -59,13 +60,7 @@ export const JobSeekerHeader = ({ onToggleMobileMenu }: JobSeekerHeaderProps) =>
       {/* Right Actions */}
       <div className="flex items-center gap-3">
         {/* Notifications */}
-        <button
-          className="relative flex h-10 w-10 items-center justify-center rounded-xl border border-[#EAEFF7] bg-[#F8FAFC] text-gray-600 transition hover:bg-[#E8F0FE] hover:text-[#3C65F5] cursor-pointer"
-          title="Notifications"
-        >
-          <FiBell className="text-lg" />
-          <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-[#3C65F5] ring-2 ring-white" />
-        </button>
+        <NotificationDropdown />
 
         {/* Profile Dropdown */}
         <div className="relative">

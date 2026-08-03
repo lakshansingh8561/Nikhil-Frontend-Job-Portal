@@ -88,7 +88,7 @@ const JobDetails: React.FC = () => {
                 <FiRefreshCw /> Retry
               </button>
               <Link
-                to="/jobs"
+                to={user?.role === "JOB_SEEKER" ? "/job-seeker/jobs" : "/jobs"}
                 className="flex items-center gap-2 rounded-2xl bg-[#3C65F5] px-6 py-2.5 text-xs font-bold text-white shadow-md transition hover:bg-[#254BD6]"
               >
                 <FiArrowLeft /> Back to Jobs
@@ -130,12 +130,14 @@ const JobDetails: React.FC = () => {
       })
     : "Not specified";
 
+  const backJobsUrl = user?.role === "JOB_SEEKER" ? "/job-seeker/jobs" : "/jobs";
+
   return (
     <div className="min-h-screen bg-[#F5F7FC] pt-28 pb-16">
       <Container>
         {/* Back Link */}
         <Link
-          to="/jobs"
+          to={backJobsUrl}
           className="inline-flex items-center gap-2 text-xs font-bold text-[#66789C] transition hover:text-[#3C65F5] mb-6"
         >
           <FiArrowLeft /> Back to All Jobs

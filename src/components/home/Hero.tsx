@@ -4,9 +4,12 @@ import {
   FiMapPin,
   FiSearch,
   FiGrid,
+  FiX,
 } from "react-icons/fi";
-import Container from "../common/Container";
 import Banner1 from "../../assets/images/banner1.png";
+import Banner2 from "../../assets/images/banner2.png";
+import JobCard from "../jobs/JobCard";
+import { useGetJobsQuery } from "../../features/jobs/api/jobsApi";
 
 const popularSearches = [
   "Designer",
@@ -23,53 +26,71 @@ const Hero = () => {
   const [location, setLocation] = useState("");
   const [keyword, setKeyword] = useState("");
 
+  const hasSearch = Boolean(industry.trim() || location.trim() || keyword.trim());
+
+  // Search parameters passed to RTK Query
+  const searchQuery = (keyword || industry) ? `${keyword} ${industry}`.trim() : undefined;
+  const locationQuery = location.trim() ? location.trim() : undefined;
+
+  const { data, isLoading } = useGetJobsQuery(
+    hasSearch
+      ? {
+          search: searchQuery,
+          location: locationQuery,
+          limit: 12,
+        }
+      : undefined,
+    { skip: !hasSearch }
+  );
+
+  const jobsList = data?.jobs || [];
+
+  const handleClear = () => {
+    setIndustry("");
+    setLocation("");
+    setKeyword("");
+  };
+
   return (
     <section
-      className="relative overflow-hidden w-full"
+      className="relative overflow-hidden w-full min-h-[720px] bg-[#F5F8FF]"
       style={{
-        backgroundColor: "#F5F7FC",
-        paddingTop: "140px",
-        paddingBottom: "100px",
+        paddingTop: "145px",
+        paddingBottom: hasSearch ? "60px" : "90px",
       }}
     >
-      {/* Decorative ambient background blobs */}
+      <style>{`
+        @keyframes floatVertical {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-12px); }
+        }
+        @keyframes floatHorizontal {
+          0%, 100% { transform: translateX(0px); }
+          50% { transform: translateX(16px); }
+        }
+      `}</style>
+
+      {/* Light abstract background ambient blobs */}
       <div
         className="absolute pointer-events-none rounded-full"
         style={{
-          top: "-120px",
-          right: "-80px",
-          width: "560px",
-          height: "560px",
-          backgroundColor: "#EAF1FF",
-          filter: "blur(60px)",
-          opacity: 0.7,
+          top: "-100px",
+          right: "-60px",
+          width: "580px",
+          height: "580px",
+          backgroundColor: "#E8F0FE",
+          filter: "blur(70px)",
+          opacity: 0.75,
         }}
       ></div>
 
-      <Container>
-        <div className="grid items-center gap-10 lg:gap-12 lg:grid-cols-12">
+      <div className="mx-auto w-full max-w-[1200px] px-[20px]">
+        <div className="grid items-center gap-8 lg:grid-cols-12 min-h-[560px]">
           {/* Left Column: Heading, Subtitle, Search box, Popular searches */}
-          <div className="lg:col-span-6 xl:col-span-7 z-10">
-            <h1
-              className="font-extrabold text-[#05264E] leading-tight tracking-tight"
-              style={{
-                fontSize: "clamp(32px, 4.5vw, 54px)",
-                lineHeight: "1.18",
-                color: "#05264E",
-              }}
-            >
+          <div className="lg:col-span-6 xl:col-span-7 z-10 flex flex-col justify-center">
+            <h1 className="font-bold text-[#05264E] text-[38px] sm:text-[52px] lg:text-[64px] leading-[1.1] tracking-tight">
               The{" "}
-              <span
-                className="inline-block font-extrabold"
-                style={{
-                  backgroundColor: "#D5E4FF",
-                  color: "#3C65F5",
-                  padding: "4px 16px",
-                  borderRadius: "12px",
-                  margin: "4px 0",
-                  whiteSpace: "nowrap",
-                }}
-              >
+              <span className="inline-block font-bold text-[#3B5BDB] bg-[#D5E4FF] px-4 py-1 rounded-[14px] my-1 whitespace-nowrap">
                 Easiest Way
               </span>
               <br />
@@ -78,29 +99,19 @@ const Hero = () => {
               Job
             </h1>
 
-            <p
-              className="font-normal"
-              style={{
-                color: "#66789C",
-                fontSize: "17px",
-                lineHeight: "1.7",
-                marginTop: "24px",
-                marginBottom: "44px",
-                maxWidth: "480px",
-              }}
-            >
+            <p className="font-medium text-[#66789C] text-[17px] sm:text-[20px] lg:text-[22px] leading-[1.6] mt-6 mb-9 max-w-[500px]">
               Each month, more than 3 million job seekers turn to website in
               their search for work, making over 140,000 applications every
               single day
             </p>
 
-            {/* Floating Search Bar */}
+            {/* Search Bar */}
             <div
-              className="flex flex-col md:flex-row items-center gap-3 w-full max-w-2xl"
+              className="flex flex-col md:flex-row items-center gap-2 w-full max-w-[560px] min-h-[72px]"
               style={{
                 backgroundColor: "#ffffff",
-                borderRadius: "16px",
-                padding: "12px",
+                borderRadius: "14px",
+                padding: "10px 12px",
                 boxShadow: "0 15px 40px rgba(50, 75, 130, 0.08)",
                 border: "1px solid #EAEFF7",
               }}
@@ -111,41 +122,32 @@ const Hero = () => {
                 <select
                   value={industry}
                   onChange={(e) => setIndustry(e.target.value)}
-                  className="w-full bg-transparent text-sm lg:text-base font-medium text-gray-500 focus:text-slate-800 outline-none cursor-pointer"
+                  className="w-full bg-transparent text-sm font-semibold text-gray-500 focus:text-slate-800 outline-none cursor-pointer"
                 >
                   <option value="">Industry</option>
-                  <option value="software">Software & Tech</option>
-                  <option value="finance">Finance</option>
-                  <option value="marketing">Marketing</option>
-                  <option value="design">Design</option>
+                  <option value="Software">Software & Tech</option>
+                  <option value="Finance">Finance</option>
+                  <option value="Marketing">Marketing</option>
+                  <option value="Design">Design</option>
+                  <option value="Engineering">Engineering</option>
                 </select>
               </div>
 
-              <div
-                className="hidden md:block shrink-0"
-                style={{ width: "1px", height: "32px", backgroundColor: "#E5E7EB" }}
-              ></div>
+              <div className="hidden md:block h-8 w-[1px] bg-gray-200 shrink-0" />
 
-              {/* Location Select */}
+              {/* Location Input */}
               <div className="flex items-center gap-2.5 px-3 py-2 w-full md:w-auto md:flex-1 border-b md:border-b-0 border-gray-100">
                 <FiMapPin className="text-gray-400 text-lg shrink-0" />
-                <select
+                <input
+                  type="text"
+                  placeholder="Location (e.g. NY)..."
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
-                  className="w-full bg-transparent text-sm lg:text-base font-medium text-gray-500 focus:text-slate-800 outline-none cursor-pointer"
-                >
-                  <option value="">Location</option>
-                  <option value="us">United States</option>
-                  <option value="uk">United Kingdom</option>
-                  <option value="remote">Remote</option>
-                  <option value="canada">Canada</option>
-                </select>
+                  className="w-full bg-transparent text-sm font-normal text-slate-800 placeholder-gray-400 outline-none"
+                />
               </div>
 
-              <div
-                className="hidden md:block shrink-0"
-                style={{ width: "1px", height: "32px", backgroundColor: "#E5E7EB" }}
-              ></div>
+              <div className="hidden md:block h-8 w-[1px] bg-gray-200 shrink-0" />
 
               {/* Keyword Input */}
               <div className="flex items-center gap-2.5 px-3 py-2 w-full md:w-auto md:flex-1">
@@ -155,25 +157,29 @@ const Hero = () => {
                   placeholder="Your keyword..."
                   value={keyword}
                   onChange={(e) => setKeyword(e.target.value)}
-                  className="w-full bg-transparent text-sm lg:text-base font-normal text-slate-800 placeholder-gray-400 outline-none"
+                  className="w-full bg-transparent text-sm font-normal text-slate-800 placeholder-gray-400 outline-none"
                 />
               </div>
 
-              {/* Search Button */}
-              <button
-                type="button"
-                className="w-full md:w-auto font-semibold flex items-center justify-center gap-2.5 transition duration-200 whitespace-nowrap shrink-0 cursor-pointer"
-                style={{
-                  backgroundColor: "#3C65F5",
-                  color: "#ffffff",
-                  padding: "14px 28px",
-                  borderRadius: "12px",
-                  boxShadow: "0 8px 20px rgba(60, 101, 245, 0.25)",
-                }}
-              >
-                <FiSearch className="text-lg shrink-0" />
-                <span>Search</span>
-              </button>
+              {/* Search / Clear Button */}
+              {hasSearch ? (
+                <button
+                  type="button"
+                  onClick={handleClear}
+                  className="w-full md:w-auto h-[52px] px-6 font-semibold flex items-center justify-center gap-2 transition duration-200 whitespace-nowrap shrink-0 cursor-pointer text-red-600 bg-red-50 hover:bg-red-100 border border-red-200 rounded-[12px]"
+                >
+                  <FiX className="text-lg shrink-0" />
+                  <span>Clear</span>
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  className="w-full md:w-auto h-[52px] px-7 font-semibold flex items-center justify-center gap-2.5 transition duration-200 whitespace-nowrap shrink-0 cursor-pointer text-white bg-[#3B5BDB] hover:bg-[#2B47C5] rounded-[12px] shadow-md shadow-blue-500/20 text-sm"
+                >
+                  <FiSearch className="text-lg shrink-0" />
+                  <span>Search</span>
+                </button>
+              )}
             </div>
 
             {/* Popular Searches */}
@@ -181,56 +187,129 @@ const Hero = () => {
               <span className="font-semibold text-[#05264E] whitespace-nowrap">
                 Popular Searches :
               </span>
-              {popularSearches.map((item, idx) => (
-                <span
-                  key={item}
-                  className="hover:text-[#3C65F5] underline underline-offset-2 cursor-pointer transition-colors whitespace-nowrap"
-                >
-                  {item}
-                  {idx < popularSearches.length - 1 ? "," : ""}
-                </span>
-              ))}
+              {popularSearches.map((item, idx) => {
+                const isSelected = keyword === item;
+                return (
+                  <button
+                    key={item}
+                    type="button"
+                    onClick={() => setKeyword(isSelected ? "" : item)}
+                    className={`cursor-pointer transition-colors whitespace-nowrap ${
+                      isSelected
+                        ? "text-[#3B5BDB] font-bold underline"
+                        : "hover:text-[#3B5BDB] underline underline-offset-2"
+                    }`}
+                  >
+                    {item}
+                    {idx < popularSearches.length - 1 ? "," : ""}
+                  </button>
+                );
+              })}
             </div>
           </div>
 
-          {/* Right Column: Hero Banner Image with Floating Animation */}
-          <div className="lg:col-span-6 xl:col-span-5 relative z-10 flex justify-center lg:justify-end mt-6 lg:mt-0">
-            <div className="relative max-w-[460px] w-full">
-              {/* Dot matrix pattern overlay top-right */}
-              <div className="absolute -top-6 -right-6 z-20 hidden sm:block pointer-events-none">
-                <svg
-                  width="100"
-                  height="100"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <pattern
-                    id="dotGrid"
-                    x="0"
-                    y="0"
-                    width="14"
-                    height="14"
-                    patternUnits="userSpaceOnUse"
-                  >
-                    <circle cx="2" cy="2" r="2" fill="#3C65F5" fillOpacity="0.4" />
+          {/* Right Column: Hero Banner Images Stacked Vertically with Space */}
+          <div className="lg:col-span-6 xl:col-span-5 relative z-10 flex flex-col items-center lg:items-end justify-center mt-10 lg:mt-0">
+            <div className="relative max-w-[420px] w-full flex flex-col items-end">
+              {/* Dotted Grid Pattern behind Top Image */}
+              <div className="absolute -top-6 -right-6 z-0 hidden sm:block pointer-events-none">
+                <svg width="110" height="90" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <pattern id="dotGridHeroTop" x="0" y="0" width="12" height="12" patternUnits="userSpaceOnUse">
+                    <circle cx="2.5" cy="2.5" r="2.5" fill="#3B5BDB" fillOpacity="0.35" />
                   </pattern>
-                  <rect width="100" height="100" fill="url(#dotGrid)" />
+                  <rect width="110" height="90" fill="url(#dotGridHeroTop)" />
                 </svg>
               </div>
 
-              {/* Main Banner Image with Up and Down Floating Animation */}
-              <img
-                src={Banner1}
-                alt="JobBox Hero Banner"
-                className="w-full h-auto relative z-10 object-contain drop-shadow-xl animate-float"
+              {/* Top Banner Image (Banner 1 - Vertical Float) */}
+              <div
+                className="relative z-10 max-w-[380px] w-full rounded-[32px] overflow-hidden shadow-xl border-[4px] border-[#3B5BDB] bg-[#3B5BDB] flex leading-none"
                 style={{
-                  animation: "floatAnimation 4s ease-in-out infinite",
+                  animation: "floatVertical 4s ease-in-out infinite",
                 }}
-              />
+              >
+                <img
+                  src={Banner1}
+                  alt="JobBox Hero Banner 1"
+                  className="w-full h-full block object-cover shrink-0"
+                />
+              </div>
+
+              {/* Bottom Banner Area with Dotted Pattern & Banner 2 (Horizontal Float) */}
+              <div className="relative w-full flex items-center justify-end mt-6 sm:mt-8">
+                {/* Bottom Dotted Pattern Accent to the Left of Banner 2 */}
+                <div className="absolute left-2 bottom-2 z-0 hidden sm:block pointer-events-none">
+                  <svg width="100" height="70" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <pattern id="dotGridHeroBot" x="0" y="0" width="12" height="12" patternUnits="userSpaceOnUse">
+                      <circle cx="2.5" cy="2.5" r="2.5" fill="#3B5BDB" fillOpacity="0.35" />
+                    </pattern>
+                    <rect width="100" height="70" fill="url(#dotGridHeroBot)" />
+                  </svg>
+                </div>
+
+                {/* Bottom Banner Image (Banner 2 - Horizontal Float) */}
+                <div
+                  className="relative z-10 max-w-[320px] w-[82%] rounded-[28px] overflow-hidden shadow-xl border-[4px] border-[#3B5BDB] bg-[#3B5BDB] flex leading-none"
+                  style={{
+                    animation: "floatHorizontal 5s ease-in-out infinite",
+                  }}
+                >
+                  <img
+                    src={Banner2}
+                    alt="JobBox Hero Banner 2"
+                    className="w-full h-full block object-cover shrink-0"
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </Container>
+
+        {/* Live Search Results Container (Appears directly below the search bar when searching) */}
+        {hasSearch && (
+          <div className="mt-10 rounded-3xl border border-[#EAEFF7] bg-white p-6 sm:p-8 shadow-xl relative z-20">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-[#EAEFF7]">
+              <div>
+                <h3 className="text-xl font-extrabold text-[#05264E]">
+                  Search Results
+                </h3>
+                <p className="text-xs font-medium text-[#66789C] mt-0.5">
+                  {isLoading
+                    ? "Searching live jobs..."
+                    : `Found ${jobsList.length} matching job${jobsList.length === 1 ? "" : "s"}`}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={handleClear}
+                className="inline-flex items-center gap-1.5 text-xs font-bold text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 px-3.5 py-2 rounded-xl transition cursor-pointer self-start sm:self-auto"
+              >
+                <FiX />
+                <span>Close Search</span>
+              </button>
+            </div>
+
+            {isLoading ? (
+              <div className="flex h-48 items-center justify-center">
+                <div className="h-10 w-10 animate-spin rounded-full border-4 border-[#3B5BDB] border-t-transparent" />
+              </div>
+            ) : jobsList.length > 0 ? (
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {jobsList.map((job) => (
+                  <JobCard key={job._id} job={job} />
+                ))}
+              </div>
+            ) : (
+              <div className="p-8 text-center bg-[#F8FAFC] rounded-2xl border border-[#EAEFF7]">
+                <p className="text-sm font-bold text-[#05264E]">No jobs found matching your search criteria</p>
+                <p className="text-xs text-[#66789C] mt-1">
+                  Try searching for a different keyword or location.
+                </p>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
     </section>
   );
 };

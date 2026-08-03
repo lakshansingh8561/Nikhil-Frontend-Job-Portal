@@ -7,7 +7,7 @@ export const RecruiterLayout = () => {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-[#F5F7FC]">
+    <div className="flex h-screen overflow-hidden bg-[#F5F7FC]">
       {/* Fixed Sidebar */}
       <RecruiterSidebar
         isMobileOpen={isMobileOpen}
@@ -15,12 +15,12 @@ export const RecruiterLayout = () => {
       />
 
       {/* Main Content Workspace */}
-      <div className="lg:pl-72 flex flex-col min-h-screen">
+      <div className="flex flex-1 flex-col min-w-0 h-screen overflow-hidden lg:pl-72">
         {/* Sticky Top Header */}
         <RecruiterHeader onOpenMobileMenu={() => setIsMobileOpen(true)} />
 
         {/* Dynamic Nested Route Content */}
-        <main className="flex-1 p-6 md:p-8">
+        <main className="flex-1 overflow-y-auto p-6 md:p-8">
           <Outlet />
         </main>
       </div>

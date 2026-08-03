@@ -21,12 +21,56 @@ const RecruitersDirectory = () => {
   const [selectedPostedDate, setSelectedPostedDate] = useState("");
   const [selectedType, setSelectedType] = useState("");
 
+  const setIndustryAndResetPage = (val: string) => {
+    setSelectedIndustry(val);
+    setPage(1);
+  };
+  const setSalaryRangeAndResetPage = (val: string) => {
+    setSelectedSalaryRange(val);
+    setPage(1);
+  };
+  const setKeywordAndResetPage = (val: string) => {
+    setSelectedKeyword(val);
+    setPage(1);
+  };
+  const setPositionAndResetPage = (val: string) => {
+    setSelectedPosition(val);
+    setPage(1);
+  };
+  const setExperienceAndResetPage = (val: string) => {
+    setSelectedExperience(val);
+    setPage(1);
+  };
+  const setWorkplaceAndResetPage = (val: string) => {
+    setSelectedWorkplace(val);
+    setPage(1);
+  };
+  const setPostedDateAndResetPage = (val: string) => {
+    setSelectedPostedDate(val);
+    setPage(1);
+  };
+  const setTypeAndResetPage = (val: string) => {
+    setSelectedType(val);
+    setPage(1);
+  };
+  const setLocationAndResetPage = (val: string) => {
+    setLocation(val);
+    setPage(1);
+  };
+
   const { data, isLoading } = useGetAllRecruitersQuery({
     page,
     limit,
     search: selectedKeyword || undefined,
     letter: selectedLetter || undefined,
     location: location || undefined,
+    industry: selectedIndustry || undefined,
+    salaryRange: selectedSalaryRange || undefined,
+    position: selectedPosition || undefined,
+    experience: selectedExperience || undefined,
+    workplace: selectedWorkplace || undefined,
+    postedDate: selectedPostedDate || undefined,
+    type: selectedType || undefined,
   });
 
   const recruiters = data?.recruiters || [];
@@ -98,23 +142,23 @@ const RecruitersDirectory = () => {
           <div className="lg:col-span-4 xl:col-span-3">
             <RecruiterFilterSidebar
               location={location}
-              setLocation={setLocation}
+              setLocation={setLocationAndResetPage}
               selectedIndustry={selectedIndustry}
-              setSelectedIndustry={setSelectedIndustry}
+              setSelectedIndustry={setIndustryAndResetPage}
               selectedSalaryRange={selectedSalaryRange}
-              setSelectedSalaryRange={setSelectedSalaryRange}
+              setSelectedSalaryRange={setSalaryRangeAndResetPage}
               selectedKeyword={selectedKeyword}
-              setSelectedKeyword={setSelectedKeyword}
+              setSelectedKeyword={setKeywordAndResetPage}
               selectedPosition={selectedPosition}
-              setSelectedPosition={setSelectedPosition}
+              setSelectedPosition={setPositionAndResetPage}
               selectedExperience={selectedExperience}
-              setSelectedExperience={setSelectedExperience}
+              setSelectedExperience={setExperienceAndResetPage}
               selectedWorkplace={selectedWorkplace}
-              setSelectedWorkplace={setSelectedWorkplace}
+              setSelectedWorkplace={setWorkplaceAndResetPage}
               selectedPostedDate={selectedPostedDate}
-              setSelectedPostedDate={setSelectedPostedDate}
+              setSelectedPostedDate={setPostedDateAndResetPage}
               selectedType={selectedType}
-              setSelectedType={setSelectedType}
+              setSelectedType={setTypeAndResetPage}
               onReset={handleResetFilters}
             />
           </div>

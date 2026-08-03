@@ -10,7 +10,7 @@ import AuthButton from "../../components/auth/AuthButton";
 import Divider from "../../components/auth/Divider";
 import SocialLogin from "../../components/auth/SocialLogin";
 
-import { useLoginMutation } from "../../features/auth/authApi";
+import { useLoginMutation, useGoogleLoginMutation } from "../../features/auth/authApi";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { setCredentials } from "../../features/auth/authSlice";
 
@@ -25,6 +25,7 @@ const Login = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [loginUser, { isLoading }] = useLoginMutation();
+  const [googleLogin, { isLoading: isGoogleLoading }] = useGoogleLoginMutation();
 
   const {
     register,
@@ -34,38 +35,53 @@ const Login = () => {
     resolver: zodResolver(schema),
   });
 
+  const handleAuthSuccess = (authData: any) => {
+    const user = authData.user;
+    if (!user) {
+      throw new Error("User data missing from response");
+    }
+
+    dispatch(
+      setCredentials({
+        user: user,
+        accessToken: authData.accessToken,
+        refreshToken: authData.refreshToken,
+      })
+    );
+
+    toast.success("Login Successful!");
+
+    if (user.role === "ADMIN") {
+      navigate("/admin/dashboard", { replace: true });
+    } else if (user.role === "RECRUITER") {
+      navigate("/recruiter/dashboard", { replace: true });
+    } else if (user.role === "JOB_SEEKER") {
+      navigate("/job-seeker/dashboard", { replace: true });
+    } else {
+      navigate("/", { replace: true });
+    }
+  };
+
   const onSubmit = async (values: LoginForm) => {
     try {
       const response: any = await loginUser(values).unwrap();
       const authData = response.data || response;
-      const user = authData.user;
-
-      if (!user) {
-        throw new Error("User data missing from response");
-      }
-
-      dispatch(
-        setCredentials({
-          user: user,
-          accessToken: authData.accessToken,
-          refreshToken: authData.refreshToken,
-        })
-      );
-
-      toast.success("Login Successful!");
-
-      if (user.role === "ADMIN") {
-        navigate("/admin/dashboard", { replace: true });
-      } else if (user.role === "RECRUITER") {
-        navigate("/recruiter/dashboard", { replace: true });
-      } else if (user.role === "JOB_SEEKER") {
-        navigate("/job-seeker/dashboard", { replace: true });
-      } else {
-        navigate("/", { replace: true });
-      }
+      handleAuthSuccess(authData);
     } catch (error: any) {
       toast.error(
         error?.data?.message ?? error?.message ?? "Invalid email or password"
+      );
+    }
+  };
+
+  const handleGoogleSuccess = async (credential: string) => {
+    try {
+      const response: any = await googleLogin({ credential }).unwrap();
+      const authData = response.data || response;
+      handleAuthSuccess(authData);
+    } catch (error: any) {
+      toast.error(
+        error?.data?.message ?? "Google Authentication failed."
       );
     }
   };
@@ -76,7 +92,11 @@ const Login = () => {
       title="Welcome Back"
       subtitle="Access to all features. Sign in to your account."
     >
-      <SocialLogin label="Sign in with Google" />
+      <SocialLogin
+        label="Sign in with Google"
+        onSuccess={handleGoogleSuccess}
+        isLoading={isGoogleLoading}
+      />
 
       <Divider />
 
@@ -113,7 +133,7 @@ const Login = () => {
           </Link>
         </div>
 
-        <AuthButton loading={isLoading}>
+        <AuthButton loading={isLoading || isGoogleLoading}>
           Sign In
         </AuthButton>
       </form>

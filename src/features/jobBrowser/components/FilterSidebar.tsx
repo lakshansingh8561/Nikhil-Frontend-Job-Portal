@@ -50,9 +50,9 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
   };
 
   return (
-    <div className="rounded-3xl border border-[#EAEFF7] bg-white p-6 shadow-sm">
+    <aside className="w-full rounded-3xl border border-[#EAEFF7] bg-white p-6 shadow-sm sticky top-28 max-h-[calc(100vh-130px)] overflow-y-auto overscroll-contain [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-gray-200 [&::-webkit-scrollbar-thumb]:rounded-full">
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-[#EAEFF7] pb-4 mb-6">
+      <div className="sticky top-0 z-10 -mx-6 -mt-6 bg-white p-6 pb-4 mb-2 border-b border-[#EAEFF7] flex items-center justify-between">
         <div className="flex items-center gap-2.5">
           <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#E8F0FE] text-[#3C65F5]">
             <FiFilter className="text-sm" />
@@ -196,7 +196,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
           </div>
         </div>
       </div>
-    </div>
+    </aside>
   );
 };
 
