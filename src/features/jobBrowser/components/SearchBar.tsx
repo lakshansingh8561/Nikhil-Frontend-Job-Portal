@@ -1,5 +1,6 @@
-import React from "react";
-import { FiSearch, FiMapPin, FiBriefcase, FiAward } from "react-icons/fi";
+import React, { useEffect } from "react";
+import { FiSearch, FiMapPin, FiBriefcase, FiAward, FiNavigation } from "react-icons/fi";
+import { useLocation } from "../../../hooks/useLocation";
 
 interface SearchBarProps {
   search: string;
@@ -24,14 +25,23 @@ const SearchBar: React.FC<SearchBarProps> = ({
   setExperienceLevel,
   onSearchSubmit,
 }) => {
+  const { location: detectedLoc, detectLocation } = useLocation();
+
+  // Auto prefill location field with detected city
+  useEffect(() => {
+    if (!location && detectedLoc?.city) {
+      setLocation(detectedLoc.city);
+    }
+  }, [detectedLoc, location, setLocation]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSearchSubmit();
   };
 
   return (
-    <div className="relative z-10 rounded-3xl border border-[#EAEFF7] bg-white p-4 sm:p-6 shadow-xl mb-10 transition-all">
-      <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4 lg:grid-cols-12 items-center">
+    <div className="sticky top-0 z-20 rounded-3xl border border-[#EAEFF7] bg-white/95 backdrop-blur-xs p-4 sm:p-5 shadow-sm mb-6 transition-all">
+      <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-12 items-center">
         {/* Search Input */}
         <div className="flex items-center gap-3 rounded-2xl bg-[#F8FAFC] px-4 py-3 border border-[#EAEFF7] lg:col-span-3">
           <FiSearch className="text-[#3C65F5] text-lg shrink-0" />
@@ -44,16 +54,24 @@ const SearchBar: React.FC<SearchBarProps> = ({
           />
         </div>
 
-        {/* Location Dropdown / Input */}
-        <div className="flex items-center gap-3 rounded-2xl bg-[#F8FAFC] px-4 py-3 border border-[#EAEFF7] lg:col-span-3">
+        {/* Location Dropdown / Input with Auto Detect Button */}
+        <div className="relative flex items-center gap-2 rounded-2xl bg-[#F8FAFC] px-4 py-3 border border-[#EAEFF7] lg:col-span-3">
           <FiMapPin className="text-[#3C65F5] text-lg shrink-0" />
           <input
             type="text"
             value={location}
             onChange={(e) => setLocation(e.target.value)}
             placeholder="Location, city..."
-            className="w-full bg-transparent text-sm font-medium text-[#05264E] outline-none placeholder:text-gray-400"
+            className="w-full bg-transparent text-sm font-medium text-[#05264E] outline-none placeholder:text-gray-400 pr-6"
           />
+          <button
+            type="button"
+            onClick={() => detectLocation(true)}
+            title="Auto detect location"
+            className="absolute right-3.5 p-1 text-gray-400 hover:text-[#3C65F5] transition cursor-pointer"
+          >
+            <FiNavigation className="text-xs" />
+          </button>
         </div>
 
         {/* Employment Type Dropdown */}

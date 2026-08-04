@@ -34,6 +34,7 @@ export interface RecruiterProfile {
   portfolio?: string;
   profilePicture?: string;
   companyId?: Company | string;
+  openJobsCount?: number;
   createdAt?: string;
   updatedAt?: string;
 }

@@ -46,9 +46,16 @@ import AdminJobs from "./features/admin/pages/Jobs";
 import AdminApplications from "./features/admin/pages/Applications";
 import AdminSettings from "./features/admin/pages/Settings";
 
+// Real-Time Chat Feature Page
+import { ChatPage } from "./features/chat";
+
+import { LocationDeniedBanner } from "./components/common/LocationDeniedBanner";
+
 function App() {
   return (
-    <Routes>
+    <>
+      <LocationDeniedBanner />
+      <Routes>
       {/* Public Auth Routes (Redirects to dashboard if already logged in) */}
       <Route element={<PublicOnlyRoute />}>
         <Route path="/login" element={<Login />} />
@@ -71,6 +78,7 @@ function App() {
           <Route path="dashboard" element={<JobSeekerDashboard />} />
           <Route path="profile" element={<JobSeekerProfilePage />} />
           <Route path="applications" element={<MyApplications />} />
+          <Route path="messages" element={<ChatPage />} />
           <Route path="jobs" element={<BrowseJobs />} />
           <Route path="jobs/:id" element={<JobSeekerJobDetails />} />
           <Route path="settings" element={<JobSeekerSettings />} />
@@ -91,6 +99,7 @@ function App() {
           <Route path="jobs/:jobId/applications" element={<RecruiterApplications />} />
           <Route path="jobs/edit/:id" element={<EditJob />} />
           <Route path="applications" element={<RecruiterApplications />} />
+          <Route path="messages" element={<ChatPage />} />
           <Route path="settings" element={<Settings />} />
           <Route path="profile" element={<RecruiterProfile />} />
         </Route>
@@ -112,6 +121,7 @@ function App() {
       {/* Fallback Route */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
+    </>
   );
 }
 

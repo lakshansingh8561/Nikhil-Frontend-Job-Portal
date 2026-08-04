@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { FiBriefcase, FiAlertTriangle, FiRefreshCw, FiSearch } from "react-icons/fi";
-import Container from "../../../components/common/Container";
 import ScrollToTop from "../../../components/common/ScrollToTop";
 import { useGetMyApplicationsQuery } from "../api/applicationApi";
 import ApplicationCard from "../components/ApplicationCard";
@@ -40,9 +39,8 @@ export const MyApplications: React.FC = () => {
   });
 
   return (
-    <div className="min-h-screen bg-[#F5F7FC] pt-28 pb-16">
-      <Container>
-        {/* Page Header */}
+    <div className="h-full overflow-y-auto overscroll-contain pt-1 sm:pt-2 pr-1 pb-12 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-gray-200 [&::-webkit-scrollbar-thumb]:rounded-full">
+      {/* Page Header */}
         <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-[#05264E]">
@@ -145,7 +143,6 @@ export const MyApplications: React.FC = () => {
             ))}
           </div>
         )}
-      </Container>
 
       <ScrollToTop />
     </div>

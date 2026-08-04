@@ -9,6 +9,9 @@ import App from "./App";
 import "./index.css";
 import { store } from "./app/store";
 
+import { SocketProvider } from "./features/chat/context/SocketContext";
+import { LocationProvider } from "./context/LocationContext";
+
 const googleClientId =
   import.meta.env.VITE_GOOGLE_CLIENT_ID ||
   "189180222609-l49871p9p27cub7etoh8t4hm2haf0aec.apps.googleusercontent.com";
@@ -18,8 +21,12 @@ createRoot(document.getElementById("root")!).render(
     <GoogleOAuthProvider clientId={googleClientId}>
       <Provider store={store}>
         <BrowserRouter>
-          <Toaster position="top-right" />
-          <App />
+          <SocketProvider>
+            <LocationProvider>
+              <Toaster position="top-right" />
+              <App />
+            </LocationProvider>
+          </SocketProvider>
         </BrowserRouter>
       </Provider>
     </GoogleOAuthProvider>

@@ -9,11 +9,14 @@ import {
   FiLogOut,
   FiX,
   FiUser,
+  FiMessageSquare,
 } from "react-icons/fi";
 import Logo from "../../../assets/logo.svg";
 import { useAppDispatch } from "../../../hooks/useAppDispatch";
 import { useAppSelector } from "../../../hooks/useAppSelector";
 import { logout } from "../../auth/authSlice";
+import { useGetUnreadCountQuery } from "../../chat/api/chatApi";
+import { UnreadBadge } from "../../chat/components/UnreadBadge";
 
 interface RecruiterSidebarProps {
   isMobileOpen?: boolean;
@@ -26,6 +29,7 @@ const navItems = [
   { name: "Post a Job", path: "/recruiter/post-job", icon: FiPlusSquare },
   { name: "My Jobs", path: "/recruiter/my-jobs", icon: FiBriefcase },
   { name: "Applications", path: "/recruiter/applications", icon: FiFileText },
+  { name: "Messages", path: "/recruiter/messages", icon: FiMessageSquare, hasBadge: true },
   { name: "Recruiter Profile", path: "/recruiter/profile", icon: FiUser },
   { name: "Settings", path: "/recruiter/settings", icon: FiSettings },
 ];
@@ -35,6 +39,7 @@ export const RecruiterSidebar = ({
   onCloseMobile,
 }: RecruiterSidebarProps) => {
   const { user } = useAppSelector((state) => state.auth);
+  const { data: unreadData } = useGetUnreadCountQuery();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
@@ -106,15 +111,20 @@ export const RecruiterSidebar = ({
                   to={item.path}
                   onClick={onCloseMobile}
                   className={({ isActive }) =>
-                    `flex items-center gap-3.5 rounded-xl px-4 py-3 text-xs font-bold transition-all duration-200 ${
+                    `flex items-center justify-between gap-3.5 rounded-xl px-4 py-3 text-xs font-bold transition-all duration-200 ${
                       isActive
                         ? "bg-[#3C65F5] text-white shadow-md"
                         : "text-[#66789C] hover:bg-[#F8FAFC] hover:text-[#05264E]"
                     }`
                   }
                 >
-                  <Icon className="text-lg shrink-0" />
-                  <span>{item.name}</span>
+                  <div className="flex items-center gap-3.5 min-w-0">
+                    <Icon className="text-lg shrink-0" />
+                    <span className="truncate">{item.name}</span>
+                  </div>
+                  {item.hasBadge && unreadData && unreadData.unreadCount > 0 && (
+                    <UnreadBadge count={unreadData.unreadCount} />
+                  )}
                 </NavLink>
               );
             })}

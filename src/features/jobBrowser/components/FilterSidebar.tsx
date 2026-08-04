@@ -28,7 +28,7 @@ const popularSkillsList = [
   "AWS",
 ];
 
-const FilterSidebar: React.FC<FilterSidebarProps> = ({
+export const FilterSidebar: React.FC<FilterSidebarProps> = ({
   location,
   setLocation,
   employmentType,
@@ -50,20 +50,20 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
   };
 
   return (
-    <aside className="w-full rounded-3xl border border-[#EAEFF7] bg-white p-6 shadow-sm sticky top-28 max-h-[calc(100vh-130px)] overflow-y-auto overscroll-contain [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-gray-200 [&::-webkit-scrollbar-thumb]:rounded-full">
-      {/* Header */}
-      <div className="sticky top-0 z-10 -mx-6 -mt-6 bg-white p-6 pb-4 mb-2 border-b border-[#EAEFF7] flex items-center justify-between">
+    <aside className="w-full rounded-3xl border border-[#EAEFF7] bg-white p-5 sm:p-6 shadow-sm">
+      {/* Sidebar Header */}
+      <div className="sticky top-0 z-10 -mx-5 -mt-5 sm:-mx-6 sm:-mt-6 bg-white p-5 sm:p-6 pb-4 mb-4 border-b border-[#EAEFF7] flex items-center justify-between">
         <div className="flex items-center gap-2.5">
           <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#E8F0FE] text-[#3C65F5]">
             <FiFilter className="text-sm" />
           </div>
-          <h3 className="text-base font-bold text-[#05264E]">Filter Jobs</h3>
+          <h3 className="text-base font-extrabold text-[#05264E]">Filter Jobs</h3>
         </div>
         <button
           onClick={onReset}
           className="flex items-center gap-1.5 text-xs font-semibold text-[#66789C] transition hover:text-[#3C65F5] cursor-pointer"
         >
-          <FiRotateCcw />
+          <FiRotateCcw className="text-xs" />
           <span>Reset</span>
         </button>
       </div>
@@ -71,7 +71,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
       <div className="space-y-6">
         {/* Location Filter */}
         <div>
-          <label className="mb-2.5 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#05264E]">
+          <label className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#05264E]">
             <FiMapPin className="text-[#3C65F5]" /> Location
           </label>
           <input
@@ -79,16 +79,16 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
             value={location}
             onChange={(e) => setLocation(e.target.value)}
             placeholder="e.g. New York, Remote"
-            className="w-full rounded-2xl border border-[#EAEFF7] bg-[#F8FAFC] px-4 py-2.5 text-xs font-semibold text-[#05264E] outline-none focus:border-[#3C65F5] transition"
+            className="w-full rounded-xl border border-[#EAEFF7] bg-[#F8FAFC] px-3.5 py-2 text-xs font-semibold text-[#05264E] outline-none focus:border-[#3C65F5] focus:bg-white transition"
           />
         </div>
 
         {/* Employment Type */}
         <div>
-          <label className="mb-3 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#05264E]">
+          <label className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#05264E]">
             <FiBriefcase className="text-[#3C65F5]" /> Employment Type
           </label>
-          <div className="space-y-2">
+          <div className="space-y-1">
             {[
               { id: "", label: "All Types" },
               { id: "FULL_TIME", label: "Full Time" },
@@ -99,9 +99,13 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
             ].map((type) => (
               <label
                 key={type.id}
-                className="flex items-center justify-between rounded-xl p-2 transition hover:bg-[#F8FAFC] cursor-pointer"
+                className={`flex items-center justify-between rounded-xl px-3 py-2 transition cursor-pointer text-xs font-semibold ${
+                  employmentType === type.id
+                    ? "bg-[#E8F0FE] text-[#3C65F5]"
+                    : "text-[#05264E] hover:bg-[#F8FAFC]"
+                }`}
               >
-                <span className="text-xs font-medium text-[#05264E]">{type.label}</span>
+                <span>{type.label}</span>
                 <input
                   type="radio"
                   name="employmentType"
@@ -116,10 +120,10 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
 
         {/* Experience Level */}
         <div>
-          <label className="mb-3 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#05264E]">
+          <label className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#05264E]">
             <FiAward className="text-[#3C65F5]" /> Experience Level
           </label>
-          <div className="space-y-2">
+          <div className="space-y-1">
             {[
               { id: "", label: "Any Experience" },
               { id: "FRESHER", label: "Fresher / Entry Level" },
@@ -129,9 +133,13 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
             ].map((lvl) => (
               <label
                 key={lvl.id}
-                className="flex items-center justify-between rounded-xl p-2 transition hover:bg-[#F8FAFC] cursor-pointer"
+                className={`flex items-center justify-between rounded-xl px-3 py-2 transition cursor-pointer text-xs font-semibold ${
+                  experienceLevel === lvl.id
+                    ? "bg-[#E8F0FE] text-[#3C65F5]"
+                    : "text-[#05264E] hover:bg-[#F8FAFC]"
+                }`}
               >
-                <span className="text-xs font-medium text-[#05264E]">{lvl.label}</span>
+                <span>{lvl.label}</span>
                 <input
                   type="radio"
                   name="experienceLevel"
@@ -146,7 +154,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
 
         {/* Salary Range */}
         <div>
-          <div className="mb-2.5 flex items-center justify-between">
+          <div className="mb-2 flex items-center justify-between">
             <label className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#05264E]">
               <FiDollarSign className="text-[#3C65F5]" /> Minimum Salary
             </label>
@@ -163,7 +171,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
             onChange={(e) => setSalaryMin(Number(e.target.value))}
             className="w-full accent-[#3C65F5] cursor-pointer"
           />
-          <div className="mt-1 flex justify-between text-[11px] font-medium text-gray-400">
+          <div className="mt-1 flex justify-between text-[10px] font-medium text-gray-400">
             <span>$0</span>
             <span>$100k</span>
             <span>$200k+</span>
@@ -172,7 +180,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
 
         {/* Skills Filter */}
         <div>
-          <label className="mb-3 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#05264E]">
+          <label className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#05264E]">
             <FiCode className="text-[#3C65F5]" /> Skills
           </label>
           <div className="flex flex-wrap gap-1.5">
@@ -183,9 +191,9 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
                   key={skill}
                   type="button"
                   onClick={() => handleSkillToggle(skill)}
-                  className={`rounded-xl px-3 py-1.5 text-xs font-semibold transition-all duration-200 cursor-pointer ${
+                  className={`rounded-xl px-2.5 py-1 text-xs font-semibold transition-all duration-200 cursor-pointer ${
                     isSelected
-                      ? "bg-[#3C65F5] text-white shadow-sm"
+                      ? "bg-[#3C65F5] text-white shadow-xs"
                       : "bg-[#F8FAFC] text-[#66789C] hover:bg-[#E8F0FE] hover:text-[#3C65F5]"
                   }`}
                 >

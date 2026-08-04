@@ -6,6 +6,7 @@ import {
   FiChevronDown,
   FiChevronUp,
   FiExternalLink,
+  FiMessageSquare,
 } from "react-icons/fi";
 import type { Application } from "../types/application.types";
 import StatusBadge from "./StatusBadge";
@@ -86,19 +87,28 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
           </div>
         </div>
 
-        {/* Right Actions: Status Badge & Resume & View Job */}
+        {/* Right Actions: Status Badge & Resume & View Job & Chat */}
         <div className="flex flex-wrap items-center gap-3 shrink-0 pt-4 md:pt-0 border-t md:border-t-0 border-gray-100">
           <StatusBadge status={application.status} />
 
           <ResumeViewer resumeUrl={application.resume} />
 
           {jobId && (
-            <Link
-              to={`/jobs/${jobId}`}
-              className="inline-flex items-center gap-1.5 rounded-xl bg-[#F8FAFC] border border-[#EAEFF7] px-3.5 py-1.5 text-xs font-bold text-[#05264E] transition hover:bg-[#E8F0FE] hover:text-[#3C65F5]"
-            >
-              <FiExternalLink /> View Job
-            </Link>
+            <>
+              <Link
+                to={`/job-seeker/messages?jobId=${jobId}`}
+                className="inline-flex items-center gap-1.5 rounded-xl bg-[#3C65F5] px-3.5 py-1.5 text-xs font-bold text-white shadow-xs transition hover:bg-blue-700"
+              >
+                <FiMessageSquare /> Chat with Recruiter
+              </Link>
+
+              <Link
+                to={`/jobs/${jobId}`}
+                className="inline-flex items-center gap-1.5 rounded-xl bg-[#F8FAFC] border border-[#EAEFF7] px-3.5 py-1.5 text-xs font-bold text-[#05264E] transition hover:bg-[#E8F0FE] hover:text-[#3C65F5]"
+              >
+                <FiExternalLink /> View Job
+              </Link>
+            </>
           )}
         </div>
       </div>

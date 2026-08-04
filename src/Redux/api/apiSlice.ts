@@ -31,6 +31,7 @@ export const apiSlice = createApi({
     "Application",
     "Admin",
     "Notification",
+    "Chat",
   ],
 
   endpoints: () => ({}),

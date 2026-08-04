@@ -1,13 +1,15 @@
 import React, { useState } from "react";
-import Container from "../../../components/common/Container";
+import { useLocation } from "react-router-dom";
 import SearchBar from "../components/SearchBar";
 import FilterSidebar from "../components/FilterSidebar";
 import JobList from "../components/JobList";
 import Pagination from "../components/Pagination";
-import ScrollToTop from "../../../components/common/ScrollToTop";
 import { useGetJobsQuery } from "../api/jobBrowserApi";
 
 const BrowseJobs: React.FC = () => {
+  const routerLocation = useLocation();
+  const isDashboardMode = routerLocation.pathname.startsWith("/job-seeker");
+
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(12);
   const [search, setSearch] = useState("");
@@ -87,23 +89,22 @@ const BrowseJobs: React.FC = () => {
   // Sync pagination page change
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
-    window.scrollTo({ top: 300, behavior: "smooth" });
   };
 
-  return (
-    <div className="min-h-screen bg-[#F5F7FC] pt-28 pb-16">
-      <Container>
-        {/* Page Title Header */}
-        <div className="mb-8 text-center sm:text-left">
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#05264E]">
+  // Shared inner content with independent column scrolling
+  const renderIndependentContent = (isPublicPage = false) => (
+    <div className={`flex flex-col w-full min-h-0 overflow-hidden ${isPublicPage ? "h-[calc(100vh-110px)]" : "h-full"}`}>
+      {/* Fixed Top Header & Search Bar */}
+      <div className="shrink-0 mb-3">
+        <div className="mb-2">
+          <h1 className="text-xl sm:text-2xl font-extrabold text-[#05264E]">
             Browse Jobs
           </h1>
-          <p className="mt-1.5 text-xs sm:text-sm font-medium text-[#66789C]">
+          <p className="text-xs font-medium text-[#66789C]">
             Explore live job opportunities from top tech companies
           </p>
         </div>
 
-        {/* Top Search Bar */}
         <SearchBar
           search={search}
           setSearch={(val) => {
@@ -131,75 +132,85 @@ const BrowseJobs: React.FC = () => {
           }}
           onSearchSubmit={handleSearchSubmit}
         />
+      </div>
 
-        {/* Main Two Column Layout */}
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
-          {/* Left Column: Filter Sidebar */}
-          <div className="lg:col-span-4 xl:col-span-3">
-            <FilterSidebar
-              location={location}
-              setLocation={(val) => {
-                setLocation(val);
-                setActiveParams((prev) => ({ ...prev, location: val }));
-              }}
-              employmentType={employmentType}
-              setEmploymentType={(val) => {
-                setEmploymentType(val);
-                setActiveParams((prev) => ({ ...prev, employmentType: val }));
-              }}
-              experienceLevel={experienceLevel}
-              setExperienceLevel={(val) => {
-                setExperienceLevel(val);
-                setActiveParams((prev) => ({ ...prev, experienceLevel: val }));
-              }}
-              salaryMin={salaryMin}
-              setSalaryMin={(val) => {
-                setSalaryMin(val);
-                setActiveParams((prev) => ({ ...prev, salaryMin: val }));
-              }}
-              selectedSkills={selectedSkills}
-              setSelectedSkills={(updater) => {
-                setSelectedSkills((prevSkills) => {
-                  const newSkills =
-                    typeof updater === "function" ? updater(prevSkills) : updater;
-                  setActiveParams((prev) => ({ ...prev, skills: newSkills }));
-                  return newSkills;
-                });
-              }}
-              onReset={handleResetFilters}
-            />
-          </div>
-
-          {/* Right Column: Job Cards List & Pagination */}
-          <div className="lg:col-span-8 xl:col-span-9">
-            <JobList
-              jobs={jobsList}
-              pagination={pagination}
-              isLoading={isLoading}
-              isError={isError}
-              error={error}
-              refetch={refetch}
-              limit={limit}
-              setLimit={(val) => {
-                setLimit(val);
-                setPage(1);
-              }}
-              layout={layout}
-              setLayout={setLayout}
-              onResetFilters={handleResetFilters}
-            />
-
-            {!isLoading && !isError && jobsList.length > 0 && (
-              <Pagination
-                pagination={pagination}
-                onPageChange={handlePageChange}
-              />
-            )}
-          </div>
+      {/* Independent Scrolling Columns Container */}
+      <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-0 overflow-hidden">
+        {/* Left Column: Independent Scrollable Filter Jobs Sidebar */}
+        <div className="lg:col-span-4 xl:col-span-3 h-full overflow-y-auto overscroll-contain pr-1 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-gray-200 [&::-webkit-scrollbar-thumb]:rounded-full">
+          <FilterSidebar
+            location={location}
+            setLocation={(val) => {
+              setLocation(val);
+              setActiveParams((prev) => ({ ...prev, location: val }));
+            }}
+            employmentType={employmentType}
+            setEmploymentType={(val) => {
+              setEmploymentType(val);
+              setActiveParams((prev) => ({ ...prev, employmentType: val }));
+            }}
+            experienceLevel={experienceLevel}
+            setExperienceLevel={(val) => {
+              setExperienceLevel(val);
+              setActiveParams((prev) => ({ ...prev, experienceLevel: val }));
+            }}
+            salaryMin={salaryMin}
+            setSalaryMin={(val) => {
+              setSalaryMin(val);
+              setActiveParams((prev) => ({ ...prev, salaryMin: val }));
+            }}
+            selectedSkills={selectedSkills}
+            setSelectedSkills={(updater) => {
+              setSelectedSkills((prevSkills) => {
+                const newSkills =
+                  typeof updater === "function" ? updater(prevSkills) : updater;
+                setActiveParams((prev) => ({ ...prev, skills: newSkills }));
+                return newSkills;
+              });
+            }}
+            onReset={handleResetFilters}
+          />
         </div>
-      </Container>
 
-      <ScrollToTop />
+        {/* Right Column: Independent Scrollable Main Jobs List */}
+        <div className="lg:col-span-8 xl:col-span-9 h-full overflow-y-auto overscroll-contain pr-1 pb-8 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-gray-200 [&::-webkit-scrollbar-thumb]:rounded-full">
+          <JobList
+            jobs={jobsList}
+            pagination={pagination}
+            isLoading={isLoading}
+            isError={isError}
+            error={error}
+            refetch={refetch}
+            limit={limit}
+            setLimit={(val) => {
+              setLimit(val);
+              setPage(1);
+            }}
+            layout={layout}
+            setLayout={setLayout}
+            onResetFilters={handleResetFilters}
+          />
+
+          {!isLoading && !isError && jobsList.length > 0 && (
+            <Pagination
+              pagination={pagination}
+              onPageChange={handlePageChange}
+            />
+          )}
+        </div>
+      </div>
+    </div>
+  );
+
+  // Dashboard Mode
+  if (isDashboardMode) {
+    return renderIndependentContent(false);
+  }
+
+  // Public Landing Page Mode (http://localhost:5173/jobs)
+  return (
+    <div className="h-screen w-full bg-[#F5F7FC] pt-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto overflow-hidden">
+      {renderIndependentContent(true)}
     </div>
   );
 };

@@ -55,6 +55,8 @@ export interface JobQueryParams {
   salaryMin?: number;
   salaryMax?: number;
   skills?: string[];
+  recruiterId?: string;
+  companyId?: string;
   page?: number;
   limit?: number;
 }

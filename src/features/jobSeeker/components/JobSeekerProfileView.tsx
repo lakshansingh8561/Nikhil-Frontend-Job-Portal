@@ -24,34 +24,36 @@ const JobSeekerProfileView = ({ profile }: JobSeekerProfileViewProps) => {
       {/* Header Card */}
       <div className="relative overflow-hidden rounded-3xl bg-white p-6 md:p-8 shadow-sm border border-[#EAEFF7]">
         {/* Cover Accent */}
-        <div className="h-32 -mx-8 -mt-8 bg-gradient-to-r from-[#3C65F5] to-[#05264E] mb-6" />
+        <div className="h-32 -mx-8 -mt-8 bg-gradient-to-r from-[#3C65F5] via-[#254BD6] to-[#05264E] mb-4" />
 
-        <div className="relative flex flex-col md:flex-row md:items-end justify-between gap-6 -mt-16">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div className="flex flex-col sm:flex-row sm:items-end gap-5">
-            {/* Avatar */}
-            <div className="flex h-28 w-28 items-center justify-center rounded-2xl bg-[#3C65F5] text-4xl font-extrabold text-white shadow-xl ring-4 ring-white">
+            {/* Avatar overlapping cover */}
+            <div className="flex h-24 w-24 sm:h-28 sm:w-28 shrink-0 items-center justify-center rounded-2xl bg-[#3C65F5] text-4xl font-extrabold text-white shadow-xl ring-4 ring-white -mt-16 sm:-mt-20">
               {profile.firstName ? profile.firstName.charAt(0) : "J"}
             </div>
 
-            <div>
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-[#05264E]">
+            <div className="mt-2 sm:mt-0">
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-[#05264E] tracking-tight">
                 {profile.firstName} {profile.lastName}
               </h1>
-              <p className="text-base font-semibold text-[#3C65F5] mt-1">
-                {profile.headline}
+              <p className="text-sm sm:text-base font-semibold text-[#3C65F5] mt-0.5">
+                {profile.headline || "Job Seeker"}
               </p>
-              <div className="mt-3 flex flex-wrap items-center gap-4 text-xs font-medium text-[#66789C]">
-                <span className="flex items-center gap-1">
-                  <FiMapPin className="text-gray-400" />
-                  {profile.currentLocation}
-                </span>
-                <span className="flex items-center gap-1">
-                  <FiMail className="text-gray-400" />
+              <div className="mt-2 flex flex-wrap items-center gap-4 text-xs font-semibold text-[#66789C]">
+                {profile.currentLocation && (
+                  <span className="flex items-center gap-1.5">
+                    <FiMapPin className="text-[#3C65F5]" />
+                    {profile.currentLocation}
+                  </span>
+                )}
+                <span className="flex items-center gap-1.5">
+                  <FiMail className="text-[#3C65F5]" />
                   {profile.userId?.email}
                 </span>
                 {profile.phone && (
-                  <span className="flex items-center gap-1">
-                    <FiPhone className="text-gray-400" />
+                  <span className="flex items-center gap-1.5">
+                    <FiPhone className="text-[#3C65F5]" />
                     {profile.phone}
                   </span>
                 )}
