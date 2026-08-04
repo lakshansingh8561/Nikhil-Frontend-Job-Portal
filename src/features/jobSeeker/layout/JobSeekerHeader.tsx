@@ -13,6 +13,7 @@ import { logout } from "../../auth/authSlice";
 import { useGetProfileQuery } from "../api/jobSeekerApi";
 
 import NotificationDropdown from "../../../components/common/NotificationDropdown";
+import { DetectLocationButton } from "../../../components/common/DetectLocationButton";
 
 interface JobSeekerHeaderProps {
   onToggleMobileMenu: () => void;
@@ -59,6 +60,9 @@ export const JobSeekerHeader = ({ onToggleMobileMenu }: JobSeekerHeaderProps) =>
 
       {/* Right Actions */}
       <div className="flex items-center gap-3">
+        {/* Swiggy-Style Detected Location Badge */}
+        <DetectLocationButton variant="badge" />
+
         {/* Notifications */}
         <NotificationDropdown />
 

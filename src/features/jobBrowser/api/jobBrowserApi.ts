@@ -25,6 +25,8 @@ export const jobBrowserApi = apiSlice.injectEndpoints({
           if (params.skills && params.skills.length > 0) {
             queryParams.skills = params.skills.join(",");
           }
+          if (params.recruiterId) queryParams.recruiterId = params.recruiterId;
+          if (params.companyId) queryParams.companyId = params.companyId;
           if (params.page) queryParams.page = params.page;
           if (params.limit) queryParams.limit = params.limit;
         }

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import {
   FiMail,
   FiPhone,
@@ -7,6 +8,7 @@ import {
   FiChevronDown,
   FiChevronUp,
   FiBriefcase,
+  FiMessageSquare,
 } from "react-icons/fi";
 import type { Application } from "../types/application.types";
 import StatusBadge from "./StatusBadge";
@@ -26,6 +28,18 @@ export const ApplicantCard: React.FC<ApplicantCardProps> = ({
     typeof application.applicantId === "object" && application.applicantId !== null
       ? application.applicantId
       : null;
+
+  const applicantUserId =
+    applicant && typeof applicant.userId === "object" && applicant.userId !== null
+      ? applicant.userId._id || (typeof applicant.userId === "string" ? applicant.userId : "")
+      : (typeof applicant?.userId === "string" ? applicant.userId : "");
+
+  const jobId =
+    typeof application.jobId === "object" && application.jobId !== null
+      ? application.jobId._id
+      : typeof application.jobId === "string"
+      ? application.jobId
+      : "";
 
   const applicantName = applicant
     ? `${applicant.firstName || ""} ${applicant.lastName || ""}`.trim() || "Applicant"
@@ -107,8 +121,17 @@ export const ApplicantCard: React.FC<ApplicantCardProps> = ({
           </div>
         </div>
 
-        {/* Right Section: Resume & Status Dropdown */}
+        {/* Right Section: Resume & Status Dropdown & Message Applicant */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 shrink-0 pt-4 lg:pt-0 border-t lg:border-t-0 border-gray-100">
+          {jobId && applicantUserId && (
+            <Link
+              to={`/recruiter/messages?jobId=${jobId}&applicantId=${applicantUserId}`}
+              className="inline-flex items-center gap-1.5 rounded-xl bg-[#3C65F5] px-3.5 py-2 text-xs font-bold text-white shadow-xs transition hover:bg-blue-700"
+            >
+              <FiMessageSquare /> Message Candidate
+            </Link>
+          )}
+
           <ResumeViewer
             resumeUrl={application.resume}
             applicantName={applicantName}

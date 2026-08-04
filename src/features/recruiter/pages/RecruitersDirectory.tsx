@@ -4,10 +4,13 @@ import Container from "../../../components/common/Container";
 import ScrollToTop from "../../../components/common/ScrollToTop";
 import RecruiterFilterSidebar from "../components/RecruiterFilterSidebar";
 import { useGetAllRecruitersQuery } from "../api/recruiterApi";
+import type { RecruiterProfile } from "../types/recruiter.types";
+import RecruiterJobsModal from "../components/RecruiterJobsModal";
 
 const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 
 const RecruitersDirectory = () => {
+  const [selectedRecruiterForJobs, setSelectedRecruiterForJobs] = useState<RecruiterProfile | null>(null);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(12);
   const [selectedLetter, setSelectedLetter] = useState("");
@@ -198,13 +201,16 @@ const RecruitersDirectory = () => {
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 {recruiters.map((rec) => {
                   const companyName = rec.currentCompany || (rec.firstName ? `${rec.firstName} ${rec.lastName}` : "Top Company");
+                  const openCount = rec.openJobsCount || 0;
+
                   return (
                     <div
                       key={rec._id}
-                      className="flex flex-col items-center justify-between rounded-2xl border border-[#EAEFF7] bg-white p-6 text-center shadow-sm hover:-translate-y-1 hover:shadow-md transition-all duration-300 min-h-[300px]"
+                      onClick={() => setSelectedRecruiterForJobs(rec)}
+                      className="group flex flex-col items-center justify-between rounded-2xl border border-[#EAEFF7] bg-white p-6 text-center shadow-sm hover:-translate-y-1.5 hover:shadow-xl hover:border-[#3C65F5]/40 transition-all duration-300 min-h-[300px] cursor-pointer"
                     >
                       <div className="flex flex-col items-center">
-                        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[#3C65F5] font-extrabold text-white text-2xl shadow-md overflow-hidden mb-4">
+                        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[#3C65F5] font-extrabold text-white text-2xl shadow-md overflow-hidden mb-4 group-hover:scale-105 transition-transform">
                           {rec.profilePicture ? (
                             <img
                               src={rec.profilePicture}
@@ -216,7 +222,7 @@ const RecruitersDirectory = () => {
                           )}
                         </div>
 
-                        <h3 className="text-lg font-bold text-[#05264E]">
+                        <h3 className="text-lg font-bold text-[#05264E] group-hover:text-[#3C65F5] transition-colors">
                           {companyName}
                         </h3>
 
@@ -236,9 +242,9 @@ const RecruitersDirectory = () => {
                         </p>
                       </div>
 
-                      {/* Open Jobs Pill */}
-                      <div className="mt-6 w-full rounded-xl bg-[#EBF2FF] py-2.5 text-xs font-extrabold text-[#3C65F5]">
-                        12 Jobs Open
+                      {/* Open Jobs Pill Button */}
+                      <div className="mt-6 w-full rounded-xl bg-[#EBF2FF] py-2.5 text-xs font-extrabold text-[#3C65F5] group-hover:bg-[#3C65F5] group-hover:text-white transition-colors">
+                        {openCount} Job{openCount === 1 ? "" : "s"} Open
                       </div>
                     </div>
                   );
@@ -280,6 +286,13 @@ const RecruitersDirectory = () => {
           </div>
         </div>
       </Container>
+
+      {/* Recruiter Jobs Modal */}
+      <RecruiterJobsModal
+        isOpen={Boolean(selectedRecruiterForJobs)}
+        onClose={() => setSelectedRecruiterForJobs(null)}
+        recruiter={selectedRecruiterForJobs}
+      />
       <ScrollToTop />
     </div>
   );

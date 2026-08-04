@@ -51,7 +51,7 @@ export const Settings: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 max-w-4xl">
+    <div className="h-full overflow-y-auto overscroll-contain pr-1 pb-12 space-y-6 max-w-4xl [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-gray-200 [&::-webkit-scrollbar-thumb]:rounded-full">
       {/* Header Bar */}
       <div>
         <h1 className="text-2xl sm:text-3xl font-extrabold text-[#05264E]">

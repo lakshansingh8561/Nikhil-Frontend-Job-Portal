@@ -1,12 +1,15 @@
 import { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { FiChevronDown, FiUser, FiFileText, FiLogOut } from "react-icons/fi";
+import { FiChevronDown, FiUser, FiFileText, FiLogOut, FiMessageSquare } from "react-icons/fi";
 import Logo from "../../assets/logo.svg";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { useAppSelector } from "../../hooks/useAppSelector";
 import { logout } from "../../features/auth/authSlice";
+import { useGetUnreadCountQuery } from "../../features/chat/api/chatApi";
+import { UnreadBadge } from "../../features/chat/components/UnreadBadge";
 
 import NotificationDropdown from "./NotificationDropdown";
+import { DetectLocationButton } from "./DetectLocationButton";
 
 const links = [
   {
@@ -48,6 +51,12 @@ const Navbar = () => {
     ? "/recruiter/dashboard"
     : "/job-seeker/dashboard";
 
+  const { data: unreadData } = useGetUnreadCountQuery(undefined, {
+    skip: !user || user.role === "ADMIN",
+  });
+
+  const chatPath = isRecruiter ? "/recruiter/messages" : "/job-seeker/messages";
+
   return (
     <header
       className="fixed inset-x-0 top-0 z-50 w-full"
@@ -60,10 +69,14 @@ const Navbar = () => {
     >
       <div className="mx-auto w-full max-w-[1200px] px-[20px]">
         <div className="flex h-[85px] items-center justify-between">
-          {/* Logo */}
-          <Link to="/" className="flex items-center shrink-0">
-            <img src={Logo} alt="JobBox" className="h-9 w-auto" />
-          </Link>
+          {/* Logo & Location Badge */}
+          <div className="flex items-center gap-3 shrink-0">
+            <Link to="/" className="flex items-center shrink-0">
+              <img src={Logo} alt="JobBox" className="h-9 w-auto" />
+            </Link>
+
+            <DetectLocationButton variant="badge" />
+          </div>
 
           {/* Nav Links - Centered */}
           <nav className="hidden items-center justify-center gap-9 lg:flex flex-1">
@@ -89,6 +102,22 @@ const Navbar = () => {
             {user ? (
               <div className="flex items-center gap-3">
                 <NotificationDropdown />
+
+                {!isAdmin && (
+                  <Link
+                    to={chatPath}
+                    title="Real-Time Messages"
+                    className="relative flex h-10 w-10 items-center justify-center rounded-full bg-[#EBF2FF] text-[#05264E] hover:bg-blue-100 hover:text-[#3B5BDB] transition"
+                  >
+                    <FiMessageSquare className="text-lg" />
+                    {unreadData && unreadData.unreadCount > 0 && (
+                      <span className="absolute -top-1 -right-1">
+                        <UnreadBadge count={unreadData.unreadCount} />
+                      </span>
+                    )}
+                  </Link>
+                )}
+
                 <div className="relative">
                   <button
                     onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
@@ -112,6 +141,20 @@ const Navbar = () => {
                     >
                       <FiUser /> {isAdmin ? "Admin Dashboard" : isRecruiter ? "Dashboard" : "My Profile"}
                     </Link>
+                    {!isAdmin && (
+                      <Link
+                        to={chatPath}
+                        onClick={() => setProfileDropdownOpen(false)}
+                        className="flex items-center justify-between px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-[#3B5BDB]"
+                      >
+                        <div className="flex items-center gap-2.5">
+                          <FiMessageSquare /> Messages
+                        </div>
+                        {unreadData && unreadData.unreadCount > 0 && (
+                          <UnreadBadge count={unreadData.unreadCount} />
+                        )}
+                      </Link>
+                    )}
                     {!isRecruiter && !isAdmin && (
                       <Link
                         to="/job-seeker/applications"

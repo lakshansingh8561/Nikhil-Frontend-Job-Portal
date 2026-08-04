@@ -9,6 +9,7 @@ import {
   FiArrowRight,
   FiAward,
   FiFileText,
+  FiMessageSquare,
 } from "react-icons/fi";
 import { useGetProfileQuery } from "../api/jobSeekerApi";
 import { useGetMyApplicationsQuery } from "../../applications/api/applicationApi";
@@ -52,7 +53,7 @@ export const Dashboard: React.FC = () => {
   const totalActiveJobs = jobsResponse?.pagination?.total || matchingJobs.length;
 
   return (
-    <div className="space-y-8">
+    <div className="h-full overflow-y-auto overscroll-contain pr-1 pb-12 space-y-8 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-gray-200 [&::-webkit-scrollbar-thumb]:rounded-full">
       {/* Welcome Banner */}
       <div className="rounded-3xl border border-[#EAEFF7] bg-gradient-to-r from-[#05264E] to-[#1D4ED8] p-6 sm:p-8 text-white shadow-md relative overflow-hidden">
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -199,11 +200,13 @@ export const Dashboard: React.FC = () => {
                     <th className="py-3.5 px-5">Resume</th>
                     <th className="py-3.5 px-5">Status</th>
                     <th className="py-3.5 px-5">Applied Date</th>
+                    <th className="py-3.5 px-5 text-right">Action</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#F0F4FC] text-xs font-medium">
                   {recentApps.map((app) => {
                     const job = typeof app.jobId === "object" ? app.jobId : null;
+                    const jobId = job?._id || (typeof app.jobId === "string" ? app.jobId : "");
                     const company =
                       job && typeof job.companyId === "object" ? job.companyId : null;
 
@@ -227,6 +230,16 @@ export const Dashboard: React.FC = () => {
                         </td>
                         <td className="py-3.5 px-5 text-[#66789C]">
                           {new Date(app.createdAt).toLocaleDateString()}
+                        </td>
+                        <td className="py-3.5 px-5 text-right">
+                          {jobId && (
+                            <Link
+                              to={`/job-seeker/messages?jobId=${jobId}`}
+                              className="inline-flex items-center gap-1 rounded-xl bg-[#3C65F5] px-3 py-1.5 text-[11px] font-bold text-white shadow-2xs hover:bg-blue-700"
+                            >
+                              <FiMessageSquare /> Chat
+                            </Link>
+                          )}
                         </td>
                       </tr>
                     );

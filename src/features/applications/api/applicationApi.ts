@@ -35,6 +35,13 @@ export const applicationApi = apiSlice.injectEndpoints({
       ],
     }),
 
+    getRecruiterAllApplications: builder.query<Application[], void>({
+      query: () => "/applications/recruiter/all",
+      transformResponse: (response: ApplicationApiResponse<Application[]>) =>
+        response.data,
+      providesTags: ["Application"],
+    }),
+
     updateStatus: builder.mutation<Application, UpdateStatusPayload>({
       query: ({ id, status }) => ({
         url: `/applications/${id}/status`,
@@ -52,5 +59,6 @@ export const {
   useApplyJobMutation,
   useGetMyApplicationsQuery,
   useGetApplicationsForJobQuery,
+  useGetRecruiterAllApplicationsQuery,
   useUpdateStatusMutation,
 } = applicationApi;
