@@ -15,10 +15,10 @@ import { logout } from "../../auth/authSlice";
 import NotificationDropdown from "../../../components/common/NotificationDropdown";
 
 interface RecruiterHeaderProps {
-  onOpenMobileMenu?: () => void;
+  onToggleSidebar?: () => void;
 }
 
-export const RecruiterHeader = ({ onOpenMobileMenu }: RecruiterHeaderProps) => {
+export const RecruiterHeader = ({ onToggleSidebar }: RecruiterHeaderProps) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const { user } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
@@ -32,11 +32,12 @@ export const RecruiterHeader = ({ onOpenMobileMenu }: RecruiterHeaderProps) => {
 
   return (
     <header className="sticky top-0 z-30 flex h-[85px] w-full items-center justify-between bg-[#F5F7FC]/90 backdrop-blur-md px-6 border-b border-[#EAEFF7]">
-      {/* Search Bar + Mobile Menu Button */}
+      {/* Search Bar + Sidebar Toggle Button */}
       <div className="flex items-center gap-4 flex-1 max-w-md">
         <button
-          onClick={onOpenMobileMenu}
-          className="lg:hidden p-2 text-gray-600 hover:bg-white rounded-xl border border-[#EAEFF7]"
+          onClick={onToggleSidebar}
+          className="p-2 text-gray-600 hover:bg-white rounded-xl border border-[#EAEFF7] lg:hidden transition cursor-pointer"
+          title="Toggle Sidebar Menu"
         >
           <FiMenu className="text-xl" />
         </button>
