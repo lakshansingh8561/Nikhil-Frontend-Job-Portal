@@ -37,10 +37,12 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
   const {
     joinConversation,
     leaveConversation,
+    isConnected,
     onlineUserIds,
     typingUsersMap,
     emitTyping,
     emitStopTyping,
+    emitMarkRead,
   } = useSocket();
 
   const [replyingTo, setReplyingTo] = useState<IMessage | null>(null);
@@ -62,17 +64,40 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
   const [markAsRead] = useMarkAsReadMutation();
   const [triggerSearch] = useLazySearchMessagesQuery();
 
-  // Socket join/leave & Mark Read
+  // Socket join/leave & Mark Read on Mount
   useEffect(() => {
     if (!conversationId) return;
 
-    joinConversation(conversationId);
-    markAsRead(conversationId);
+    if (isConnected) {
+      joinConversation(conversationId);
+      markAsRead(conversationId);
+      emitMarkRead(conversationId);
+    }
 
     return () => {
-      leaveConversation(conversationId);
+      if (isConnected) {
+        leaveConversation(conversationId);
+      }
     };
-  }, [conversationId, joinConversation, leaveConversation, markAsRead]);
+  }, [conversationId, isConnected, joinConversation, leaveConversation, markAsRead, emitMarkRead]);
+
+  // Mark as read whenever new messages arrive while ChatWindow is active
+  useEffect(() => {
+    if (!conversationId || !messagesData?.messages?.length) return;
+
+    const hasUnread = messagesData.messages.some(
+      (m) =>
+        (typeof m.sender === "object" ? (m.sender as any)._id : m.sender) !== currentUserId &&
+        (!m.read || m.status !== "seen")
+    );
+
+    if (hasUnread) {
+      markAsRead(conversationId);
+      if (isConnected) {
+        emitMarkRead(conversationId);
+      }
+    }
+  }, [conversationId, messagesData?.messages, currentUserId, isConnected, markAsRead, emitMarkRead]);
 
   // Auto-scroll to bottom on load/new message
   useEffect(() => {
@@ -145,7 +170,8 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
           {onBack && (
             <button
               onClick={onBack}
-              className="lg:hidden p-2 text-gray-500 hover:text-gray-900 cursor-pointer"
+              className="p-2 text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded-xl transition cursor-pointer flex items-center justify-center"
+              title="Back to conversations"
             >
               <FiArrowLeft className="text-xl" />
             </button>

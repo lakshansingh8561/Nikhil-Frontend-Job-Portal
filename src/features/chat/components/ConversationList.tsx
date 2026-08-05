@@ -12,6 +12,30 @@ interface ConversationListProps {
   onOpenNewChatModal?: () => void;
 }
 
+const formatWhatsAppTime = (dateStr?: string) => {
+  if (!dateStr) return "";
+  const date = new Date(dateStr);
+  const now = new Date();
+  const isToday = date.toDateString() === now.toDateString();
+
+  if (isToday) {
+    return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  }
+
+  const yesterday = new Date();
+  yesterday.setDate(now.getDate() - 1);
+  if (date.toDateString() === yesterday.toDateString()) {
+    return "Yesterday";
+  }
+
+  const diffInDays = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
+  if (diffInDays < 7) {
+    return date.toLocaleDateString([], { weekday: "long" });
+  }
+
+  return date.toLocaleDateString([], { month: "short", day: "numeric" });
+};
+
 export const ConversationList: React.FC<ConversationListProps> = ({
   conversations,
   activeConversationId,
@@ -22,7 +46,13 @@ export const ConversationList: React.FC<ConversationListProps> = ({
 }) => {
   const [searchQuery, setSearchQuery] = useState("");
 
-  const filteredConversations = conversations.filter((conv) => {
+  const sortedConversations = [...conversations].sort((a, b) => {
+    const timeA = new Date(a.lastMessageAt || a.updatedAt || a.createdAt).getTime();
+    const timeB = new Date(b.lastMessageAt || b.updatedAt || b.createdAt).getTime();
+    return timeB - timeA;
+  });
+
+  const filteredConversations = sortedConversations.filter((conv) => {
     const q = searchQuery.toLowerCase();
     const recipientName = conv.recipient?.name?.toLowerCase() || "";
     const jobTitle = conv.jobId?.title?.toLowerCase() || "";
@@ -97,12 +127,7 @@ export const ConversationList: React.FC<ConversationListProps> = ({
                 : conv.lastMessage.message
               : "No messages yet";
 
-            const lastTime = conv.lastMessageAt
-              ? new Date(conv.lastMessageAt).toLocaleDateString([], {
-                  month: "short",
-                  day: "numeric",
-                })
-              : "";
+            const lastTime = formatWhatsAppTime(conv.lastMessageAt || conv.updatedAt);
 
             return (
               <button

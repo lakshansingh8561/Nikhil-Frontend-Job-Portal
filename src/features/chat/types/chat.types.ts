@@ -18,6 +18,8 @@ export interface IRecipientProfile {
   companyName?: string;
 }
 
+export type MessageStatus = "sent" | "delivered" | "seen";
+
 export interface IMessage {
   id: string;
   _id: string;
@@ -27,8 +29,11 @@ export interface IMessage {
   message: string;
   messageType: MessageType;
   attachments?: IAttachment[];
+  status?: MessageStatus;
+  sentAt?: string;
   read: boolean;
   readAt?: string;
+  seenAt?: string;
   delivered: boolean;
   deliveredAt?: string;
   replyTo?: {
