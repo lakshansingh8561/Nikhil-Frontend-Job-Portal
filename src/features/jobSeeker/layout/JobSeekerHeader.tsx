@@ -16,10 +16,10 @@ import NotificationDropdown from "../../../components/common/NotificationDropdow
 import { DetectLocationButton } from "../../../components/common/DetectLocationButton";
 
 interface JobSeekerHeaderProps {
-  onToggleMobileMenu: () => void;
+  onToggleSidebar: () => void;
 }
 
-export const JobSeekerHeader = ({ onToggleMobileMenu }: JobSeekerHeaderProps) => {
+export const JobSeekerHeader = ({ onToggleSidebar }: JobSeekerHeaderProps) => {
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const { user } = useAppSelector((state) => state.auth);
   const { data: profile } = useGetProfileQuery();
@@ -38,10 +38,10 @@ export const JobSeekerHeader = ({ onToggleMobileMenu }: JobSeekerHeaderProps) =>
 
   return (
     <header className="sticky top-0 z-30 flex h-20 items-center justify-between border-b border-[#EAEFF7] bg-white px-4 sm:px-8 shadow-2xs">
-      {/* Left: Mobile Toggle & Page Context */}
+      {/* Left: Sidebar Toggle & Page Context */}
       <div className="flex items-center gap-3">
         <button
-          onClick={onToggleMobileMenu}
+          onClick={onToggleSidebar}
           className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#EAEFF7] bg-[#F8FAFC] text-[#05264E] lg:hidden hover:bg-[#E8F0FE] hover:text-[#3C65F5] transition cursor-pointer"
           title="Toggle Sidebar Menu"
         >
