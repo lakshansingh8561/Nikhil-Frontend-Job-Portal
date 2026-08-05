@@ -69,95 +69,169 @@ export class LocationService {
   }
 
   /**
-   * Reverse Geocode coordinates via free OpenStreetMap Nominatim API
+   * Reverse Geocode coordinates using BigDataCloud API with Nominatim fallback
    */
   static async reverseGeocode(
     latitude: number,
     longitude: number
   ): Promise<LocationData> {
+    // Primary: BigDataCloud Reverse Geocoding (high accuracy for city & state)
+    try {
+      const bdcUrl = `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`;
+      const res = await axios.get(bdcUrl);
+
+      if (res.data) {
+        const city =
+          res.data.city ||
+          res.data.locality ||
+          res.data.localityInfo?.administrative?.find(
+            (a: any) => a.order === 3 || a.order === 4
+          )?.name ||
+          res.data.localityInfo?.informative?.find(
+            (i: any) => i.description === "city" || i.description === "town"
+          )?.name ||
+          "Unknown City";
+
+        const state = res.data.principalSubdivision || "";
+        const country = res.data.countryName || "";
+        const postalCode = res.data.postcode || "";
+
+        if (city && city !== "Unknown City") {
+          return {
+            city,
+            state,
+            country,
+            postalCode,
+            latitude,
+            longitude,
+          };
+        }
+      }
+    } catch (e) {
+      console.warn("[LocationService] BigDataCloud geocode warning, trying Nominatim:", e);
+    }
+
+    // Fallback: OpenStreetMap Nominatim
     try {
       const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&addressdetails=1`;
       const response = await axios.get(url, {
-        headers: {
-          "User-Agent": "JobBoxPortal/1.0",
-        },
+        headers: { "User-Agent": "JobBoxPortal/1.0" },
       });
 
-      if (!response.data || !response.data.address) {
-        throw new Error("Invalid address response from OpenStreetMap.");
+      if (response.data && response.data.address) {
+        const addr = response.data.address;
+        const city =
+          addr.city ||
+          addr.town ||
+          addr.village ||
+          addr.suburb ||
+          addr.municipality ||
+          addr.county ||
+          addr.state_district ||
+          "Unknown City";
+
+        return {
+          city,
+          state: addr.state || "",
+          country: addr.country || "",
+          postalCode: addr.postcode || "",
+          latitude,
+          longitude,
+        };
       }
-
-      const addr = response.data.address;
-
-      const city =
-        addr.city ||
-        addr.town ||
-        addr.village ||
-        addr.suburb ||
-        addr.county ||
-        addr.state_district ||
-        "Unknown City";
-
-      const state = addr.state || "";
-      const country = addr.country || "";
-      const postalCode = addr.postcode || "";
-
-      return {
-        city,
-        state,
-        country,
-        postalCode,
-        latitude,
-        longitude,
-      };
     } catch (error: any) {
       console.error("[LocationService] Reverse Geocoding Error:", error);
-      throw new Error(
-        error.message || "Failed to fetch city details from OpenStreetMap."
-      );
     }
+
+    return {
+      city: "Detected Location",
+      state: "",
+      country: "",
+      postalCode: "",
+      latitude,
+      longitude,
+    };
+  }
+
+  /**
+   * IP-based Location Fallback if GPS is unavailable/denied
+   */
+  static async getLocationByIP(): Promise<LocationData> {
+    try {
+      const res = await axios.get("https://ipapi.co/json/");
+      if (res.data && res.data.city) {
+        return {
+          city: res.data.city,
+          state: res.data.region || "",
+          country: res.data.country_name || "",
+          postalCode: res.data.postal || "",
+          latitude: res.data.latitude || 0,
+          longitude: res.data.longitude || 0,
+        };
+      }
+    } catch (e) {
+      console.warn("[LocationService] IP location fallback error:", e);
+    }
+
+    throw new Error("Could not detect location automatically.");
   }
 
   /**
    * Manual City Search via free OpenStreetMap Nominatim API
    */
   static async searchCities(query: string): Promise<SearchCityResult[]> {
-    if (!query || query.trim().length < 2) return [];
+    const trimmed = query ? query.trim() : "";
+    if (!trimmed || trimmed.length < 2) return [];
 
     try {
       const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
-        query.trim()
-      )}&addressdetails=1&limit=5`;
+        trimmed
+      )}&addressdetails=1&limit=8`;
       const response = await axios.get(url, {
-        headers: {
-          "User-Agent": "JobBoxPortal/1.0",
-        },
+        headers: { "User-Agent": "JobBoxPortal/1.0" },
       });
 
       if (!Array.isArray(response.data)) return [];
 
-      return response.data.map((item: any) => {
+      const results: SearchCityResult[] = response.data.map((item: any) => {
         const addr = item.address || {};
         const city =
           addr.city ||
           addr.town ||
           addr.village ||
           addr.suburb ||
+          addr.municipality ||
           addr.county ||
           addr.state_district ||
-          item.display_name.split(",")[0] ||
-          query;
+          item.display_name.split(",")[0].trim() ||
+          trimmed;
+
+        const state = addr.state || addr.region || "";
+        const country = addr.country || "";
+        const parts = [city, state, country].filter(Boolean);
+        const displayName = parts.join(", ");
 
         return {
-          displayName: item.display_name,
+          displayName,
           city,
-          state: addr.state || "",
-          country: addr.country || "",
+          state,
+          country,
           postalCode: addr.postcode || "",
           latitude: parseFloat(item.lat),
           longitude: parseFloat(item.lon),
         };
       });
+
+      // Remove duplicate city entries
+      const uniqueMap = new Map<string, SearchCityResult>();
+      results.forEach((item) => {
+        const key = `${item.city.toLowerCase()}-${item.state.toLowerCase()}`;
+        if (!uniqueMap.has(key)) {
+          uniqueMap.set(key, item);
+        }
+      });
+
+      return Array.from(uniqueMap.values());
     } catch (error) {
       console.error("[LocationService] City Search Error:", error);
       return [];

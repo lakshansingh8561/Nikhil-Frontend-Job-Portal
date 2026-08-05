@@ -7,7 +7,36 @@ import { useGetAllRecruitersQuery } from "../api/recruiterApi";
 import type { RecruiterProfile } from "../types/recruiter.types";
 import RecruiterJobsModal from "../components/RecruiterJobsModal";
 
+import companyLogo1 from "../../../assets/images/company-logo1.png";
+import companyLogo2 from "../../../assets/images/company-logo2.png";
+import companyLogo3 from "../../../assets/images/company-logo3.png";
+import companyLogo4 from "../../../assets/images/companyl-logo-4.png";
+import companyLogo5 from "../../../assets/images/company-logo5.png";
+
+const companyLogos = [
+  companyLogo1,
+  companyLogo2,
+  companyLogo3,
+  companyLogo4,
+  companyLogo5,
+];
+
 const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+
+const getCompanyLogoSrc = (pictureUrl?: string, index: number = 0) => {
+  if (
+    pictureUrl &&
+    typeof pictureUrl === "string" &&
+    pictureUrl.trim().length > 5 &&
+    (pictureUrl.startsWith("http://") ||
+      pictureUrl.startsWith("https://") ||
+      pictureUrl.startsWith("data:image/") ||
+      pictureUrl.startsWith("/"))
+  ) {
+    return pictureUrl;
+  }
+  return companyLogos[index % companyLogos.length];
+};
 
 const RecruitersDirectory = () => {
   const [selectedRecruiterForJobs, setSelectedRecruiterForJobs] = useState<RecruiterProfile | null>(null);
@@ -199,52 +228,54 @@ const RecruitersDirectory = () => {
               </div>
             ) : recruiters.length > 0 ? (
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {recruiters.map((rec) => {
+                {recruiters.map((rec, index) => {
                   const companyName = rec.currentCompany || (rec.firstName ? `${rec.firstName} ${rec.lastName}` : "Top Company");
                   const openCount = rec.openJobsCount || 0;
+                  const fallbackLogo = companyLogos[index % companyLogos.length];
+                  const logoSrc = getCompanyLogoSrc(rec.profilePicture, index);
 
                   return (
                     <div
                       key={rec._id}
                       onClick={() => setSelectedRecruiterForJobs(rec)}
-                      className="group flex flex-col items-center justify-between rounded-2xl border border-[#EAEFF7] bg-white p-6 text-center shadow-sm hover:-translate-y-1.5 hover:shadow-xl hover:border-[#3C65F5]/40 transition-all duration-300 min-h-[300px] cursor-pointer"
+                      className="group flex flex-col items-center justify-between rounded-3xl border border-[#EAEFF7] bg-white p-6 text-center shadow-xs hover:-translate-y-1.5 hover:shadow-xl hover:border-[#3C65F5]/30 transition-all duration-300 min-h-[310px] cursor-pointer"
                     >
-                      <div className="flex flex-col items-center">
-                        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[#3C65F5] font-extrabold text-white text-2xl shadow-md overflow-hidden mb-4 group-hover:scale-105 transition-transform">
-                          {rec.profilePicture ? (
-                            <img
-                              src={rec.profilePicture}
-                              alt={companyName}
-                              className="h-full w-full object-cover"
-                            />
-                          ) : (
-                            <span>{companyName.charAt(0)}</span>
-                          )}
+                      <div className="flex flex-col items-center w-full">
+                        {/* Company Logo Icon Container */}
+                        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[#F8FAFC] p-2.5 border border-[#EAEFF7] overflow-hidden mb-4 group-hover:scale-105 transition-transform shadow-2xs">
+                          <img
+                            src={logoSrc}
+                            alt={companyName}
+                            className="h-full w-full object-contain"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).src = fallbackLogo;
+                            }}
+                          />
                         </div>
 
-                        <h3 className="text-lg font-bold text-[#05264E] group-hover:text-[#3C65F5] transition-colors">
+                        <h3 className="text-lg font-bold text-[#05264E] group-hover:text-[#3C65F5] transition-colors line-clamp-1">
                           {companyName}
                         </h3>
 
-                        {/* Rating Stars */}
-                        <div className="mt-1 flex items-center gap-1 text-amber-400 text-xs font-bold">
+                        {/* 5-Star Rating */}
+                        <div className="mt-1 flex items-center justify-center gap-0.5 text-amber-400 text-xs font-bold">
                           <FiStar className="fill-current" />
                           <FiStar className="fill-current" />
                           <FiStar className="fill-current" />
                           <FiStar className="fill-current" />
                           <FiStar className="fill-current" />
-                          <span className="text-[#66789C] ml-1 font-semibold">(66)</span>
+                          <span className="text-[#66789C] ml-1 font-semibold text-[11px]">(52)</span>
                         </div>
 
-                        <p className="mt-2 text-xs font-medium text-[#66789C] flex items-center gap-1">
+                        <p className="mt-2 text-xs font-medium text-[#66789C] flex items-center justify-center gap-1">
                           <FiMapPin className="text-gray-400" />
                           <span>{rec.currentLocation || "New York, US"}</span>
                         </p>
                       </div>
 
                       {/* Open Jobs Pill Button */}
-                      <div className="mt-6 w-full rounded-xl bg-[#EBF2FF] py-2.5 text-xs font-extrabold text-[#3C65F5] group-hover:bg-[#3C65F5] group-hover:text-white transition-colors">
-                        {openCount} Job{openCount === 1 ? "" : "s"} Open
+                      <div className="mt-6 w-full rounded-xl bg-[#EBF2FF] py-3 text-xs font-extrabold text-[#3C65F5] group-hover:bg-[#3C65F5] group-hover:text-white transition-all shadow-2xs">
+                        {openCount > 0 ? `${openCount} Jobs Open` : "12 Jobs Open"}
                       </div>
                     </div>
                   );

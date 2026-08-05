@@ -14,12 +14,24 @@ import type { JobBrowserItem } from "../types/jobBrowser.types";
 import { formatSalary, formatEmploymentType, formatExperienceLevel } from "../utils/salaryFormatter";
 import { useAppSelector } from "../../../hooks/useAppSelector";
 
+import companyLogo1 from "../../../assets/images/company-logo1.png";
+import companyLogo2 from "../../../assets/images/company-logo2.png";
+import companyLogo3 from "../../../assets/images/company-logo3.png";
+import companyLogo4 from "../../../assets/images/companyl-logo-4.png";
+import companyLogo5 from "../../../assets/images/company-logo5.png";
+
+const companyLogos = [
+  companyLogo1,
+  companyLogo2,
+  companyLogo3,
+  companyLogo4,
+  companyLogo5,
+];
+
 interface JobCardProps {
   job: JobBrowserItem;
   layout?: "grid" | "list";
 }
-
-const defaultCompanyLogo = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
 
 const JobCard: React.FC<JobCardProps> = ({ job, layout = "grid" }) => {
   const navigate = useNavigate();
@@ -30,10 +42,19 @@ const JobCard: React.FC<JobCardProps> = ({ job, layout = "grid" }) => {
       ? job.companyId.companyName
       : "Company";
 
+  // Pick one of the company logos based on job ID hash if logo is missing
+  const getFallbackLogo = (idStr: string) => {
+    let hash = 0;
+    for (let i = 0; i < idStr.length; i++) {
+      hash += idStr.charCodeAt(i);
+    }
+    return companyLogos[Math.abs(hash) % companyLogos.length];
+  };
+
   const companyLogo =
     typeof job.companyId === "object" && job.companyId?.logo
       ? job.companyId.logo
-      : defaultCompanyLogo;
+      : getFallbackLogo(job._id || "1");
 
   const { formattedText, period } = formatSalary(job.salaryMin, job.salaryMax);
 
@@ -188,7 +209,7 @@ const JobCard: React.FC<JobCardProps> = ({ job, layout = "grid" }) => {
                 alt={companyName}
                 className="h-full w-full object-contain"
                 onError={(e) => {
-                  (e.target as HTMLElement).style.display = "none";
+                  (e.target as HTMLImageElement).src = getFallbackLogo(job._id || "1");
                 }}
               />
             </div>

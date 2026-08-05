@@ -3,6 +3,28 @@ import toast from "react-hot-toast";
 import type { Job } from "../../types/job.types";
 import { useAppSelector } from "../../hooks/useAppSelector";
 
+import companyLogo1 from "../../assets/images/company-logo1.png";
+import companyLogo2 from "../../assets/images/company-logo2.png";
+import companyLogo3 from "../../assets/images/company-logo3.png";
+import companyLogo4 from "../../assets/images/companyl-logo-4.png";
+import companyLogo5 from "../../assets/images/company-logo5.png";
+
+const companyLogos = [
+  companyLogo1,
+  companyLogo2,
+  companyLogo3,
+  companyLogo4,
+  companyLogo5,
+];
+
+const getFallbackLogo = (idStr: string) => {
+  let hash = 0;
+  for (let i = 0; i < idStr.length; i++) {
+    hash += idStr.charCodeAt(i);
+  }
+  return companyLogos[Math.abs(hash) % companyLogos.length];
+};
+
 interface JobCardProps {
   job: Job;
   onSelect?: (job: Job) => void;
@@ -16,10 +38,16 @@ const JobCard = ({ job, onSelect }: JobCardProps) => {
       ? job.companyId.companyName
       : "Company";
 
-  const companyLogo =
+  const customLogo =
     typeof job.companyId === "object" && job.companyId?.logo
       ? job.companyId.logo
       : undefined;
+
+  const fallbackLogo = getFallbackLogo(job._id || "1");
+  const logoSrc =
+    customLogo && customLogo.trim().length > 5 && (customLogo.startsWith("http") || customLogo.startsWith("/"))
+      ? customLogo
+      : fallbackLogo;
 
   const skillsList = job.skills || [];
 
@@ -60,17 +88,14 @@ const JobCard = ({ job, onSelect }: JobCardProps) => {
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-3.5 min-w-0">
             <div className="flex h-[52px] w-[52px] min-w-[52px] items-center justify-center rounded-xl bg-[#F8FAFC] p-2 border border-[#EAEFF7] overflow-hidden shrink-0">
-              {companyLogo ? (
-                <img
-                  src={companyLogo}
-                  alt={companyName}
-                  className="h-full w-full object-contain"
-                />
-              ) : (
-                <div className="flex h-full w-full items-center justify-center rounded-lg bg-[#3C65F5] font-bold text-white text-base">
-                  {companyName.charAt(0)}
-                </div>
-              )}
+              <img
+                src={logoSrc}
+                alt={companyName}
+                className="h-full w-full object-contain"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = fallbackLogo;
+                }}
+              />
             </div>
             <div className="min-w-0 flex-1">
               <h4 className="text-[15px] font-semibold text-[#05264E] leading-tight truncate">
