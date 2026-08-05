@@ -112,19 +112,19 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
           {/* Read / Delivered Checkmarks for Own Messages */}
           {isOwn && !message.isDeleted && (
             <span className="flex items-center ml-0.5">
-              {message.read ? (
-                <span title="Read / Seen" className="text-[#38BDF8] font-black flex items-center">
+              {message.status === "seen" || message.read ? (
+                <span title="Seen" className="text-[#38BDF8] font-black flex items-center">
                   <FiCheck className="-mr-1.5 stroke-[2.5]" />
                   <FiCheck className="stroke-[2.5]" />
                 </span>
-              ) : message.delivered ? (
-                <span title="Delivered" className="text-white/80 flex items-center">
-                  <FiCheck className="-mr-1.5" />
-                  <FiCheck />
+              ) : message.status === "delivered" || message.delivered ? (
+                <span title="Delivered" className="text-white/90 flex items-center">
+                  <FiCheck className="-mr-1.5 stroke-[2]" />
+                  <FiCheck className="stroke-[2]" />
                 </span>
               ) : (
                 <span title="Sent" className="text-white/60">
-                  <FiCheck />
+                  <FiCheck className="stroke-[2]" />
                 </span>
               )}
             </span>

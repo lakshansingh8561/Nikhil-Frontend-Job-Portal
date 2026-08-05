@@ -92,16 +92,32 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
       setIsConnected(false);
     });
 
+    newSocket.on("online-users", (userIds: string[]) => {
+      if (Array.isArray(userIds)) {
+        setOnlineUserIds(new Set(userIds));
+      }
+    });
+
+    newSocket.on("online_users", (userIds: string[]) => {
+      if (Array.isArray(userIds)) {
+        setOnlineUserIds(new Set(userIds));
+      }
+    });
+
     newSocket.on("user_online", ({ userId }: { userId: string }) => {
-      setOnlineUserIds((prev) => new Set(prev).add(userId));
+      if (userId) {
+        setOnlineUserIds((prev) => new Set(prev).add(userId));
+      }
     });
 
     newSocket.on("user_offline", ({ userId }: { userId: string }) => {
-      setOnlineUserIds((prev) => {
-        const next = new Set(prev);
-        next.delete(userId);
-        return next;
-      });
+      if (userId) {
+        setOnlineUserIds((prev) => {
+          const next = new Set(prev);
+          next.delete(userId);
+          return next;
+        });
+      }
     });
 
     newSocket.on(
@@ -142,11 +158,23 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
       dispatch(chatApi.util.invalidateTags(["Chat"]));
     });
 
-    newSocket.on("receive_message", () => {
+    newSocket.on("receive_message", (_message: any) => {
       dispatch(chatApi.util.invalidateTags(["Chat"]));
     });
 
     newSocket.on("message_read", () => {
+      dispatch(chatApi.util.invalidateTags(["Chat"]));
+    });
+
+    newSocket.on("message_delivered", () => {
+      dispatch(chatApi.util.invalidateTags(["Chat"]));
+    });
+
+    newSocket.on("message_edited", () => {
+      dispatch(chatApi.util.invalidateTags(["Chat"]));
+    });
+
+    newSocket.on("message_deleted", () => {
       dispatch(chatApi.util.invalidateTags(["Chat"]));
     });
 

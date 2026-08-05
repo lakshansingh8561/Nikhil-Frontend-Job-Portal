@@ -17,6 +17,7 @@ export const ChatPage: React.FC = () => {
   const targetApplicantId = searchParams.get("applicantId");
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [hasNavigatedBack, setHasNavigatedBack] = useState(false);
 
   const { onlineUserIds } = useSocket();
   const { data: conversations = [], isLoading } = useGetUserConversationsQuery();
@@ -32,6 +33,7 @@ export const ChatPage: React.FC = () => {
     try {
       const conv = await createOrGetConversation(payload).unwrap();
       setActiveConversation(conv);
+      setHasNavigatedBack(false);
     } catch (err) {
       console.error("Failed to start chat from modal:", err);
     }
@@ -47,6 +49,7 @@ export const ChatPage: React.FC = () => {
         .unwrap()
         .then((conv) => {
           setActiveConversation(conv);
+          setHasNavigatedBack(false);
           // Clean up URL query params
           setSearchParams({}, { replace: true });
         })
@@ -62,11 +65,32 @@ export const ChatPage: React.FC = () => {
       const match = conversations.find(
         (c) => (c.id || c._id) === targetConvId
       );
-      if (match) setActiveConversation(match);
-    } else if (!activeConversation && conversations.length > 0 && !targetJobId) {
-      setActiveConversation(conversations[0]);
+      if (match) {
+        setActiveConversation(match);
+        setHasNavigatedBack(false);
+      }
+    } else if (
+      !activeConversation &&
+      !hasNavigatedBack &&
+      conversations.length > 0 &&
+      !targetJobId
+    ) {
+      // Auto-select 1st conversation on desktop ONLY on initial load if user hasn't explicitly navigated back
+      if (window.innerWidth >= 1024) {
+        setActiveConversation(conversations[0]);
+      }
     }
-  }, [targetConvId, conversations, activeConversation, targetJobId]);
+  }, [targetConvId, conversations, activeConversation, targetJobId, hasNavigatedBack]);
+
+  const handleSelectConversation = (conv: IConversation) => {
+    setActiveConversation(conv);
+    setHasNavigatedBack(false);
+  };
+
+  const handleBack = () => {
+    setActiveConversation(null);
+    setHasNavigatedBack(true);
+  };
 
   return (
     <div className="flex h-[calc(100vh-130px)] w-full overflow-hidden rounded-3xl border border-[#EAEFF7] bg-white shadow-xs">
@@ -79,7 +103,7 @@ export const ChatPage: React.FC = () => {
         <ConversationList
           conversations={conversations}
           activeConversationId={activeConversation?.id || activeConversation?._id}
-          onSelectConversation={(conv) => setActiveConversation(conv)}
+          onSelectConversation={handleSelectConversation}
           onlineUserIds={onlineUserIds}
           isLoading={isLoading}
           onOpenNewChatModal={() => setIsModalOpen(true)}
@@ -95,7 +119,7 @@ export const ChatPage: React.FC = () => {
         {activeConversation ? (
           <ChatWindow
             conversation={activeConversation}
-            onBack={() => setActiveConversation(null)}
+            onBack={handleBack}
           />
         ) : (
           <div className="flex h-full w-full flex-col items-center justify-center bg-[#F8FAFC] p-8 text-center">
