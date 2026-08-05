@@ -60,37 +60,34 @@ export const LocationProvider: React.FC<{ children: React.ReactNode }> = ({
       }
 
       try {
-        // Step 1: Get coordinates from browser
-        const coords = await LocationService.getCurrentCoordinates();
+        // Step 1: Attempt HTML5 Geolocation API
+        let locationData: LocationData | null = null;
+        try {
+          const coords = await LocationService.getCurrentCoordinates();
+          locationData = await LocationService.reverseGeocode(
+            coords.latitude,
+            coords.longitude
+          );
+        } catch (gpsErr: any) {
+          console.warn("[LocationContext] GPS Geolocation failed, trying IP fallback:", gpsErr?.message);
+          // Fallback to IP geolocation
+          locationData = await LocationService.getLocationByIP();
+        }
 
-        // Step 2: Reverse geocode via OpenStreetMap Nominatim
-        const locationData = await LocationService.reverseGeocode(
-          coords.latitude,
-          coords.longitude
-        );
+        if (locationData) {
+          setLocation(locationData);
+          setStatus("success");
+          setIsDenied(false);
+          LocationService.setCachedLocation(locationData);
 
-        // Step 3: Update state, cache in localStorage, sync to backend
-        setLocation(locationData);
-        setStatus("success");
-        setIsDenied(false);
-        LocationService.setCachedLocation(locationData);
-
-        if (isAuthenticated && accessToken) {
-          await LocationService.updateBackendLocation(locationData, accessToken);
+          if (isAuthenticated && accessToken) {
+            await LocationService.updateBackendLocation(locationData, accessToken);
+          }
         }
       } catch (err: any) {
-        console.warn("[LocationContext] Detection error:", err.message);
-        const isPermissionDenied =
-          err.message?.toLowerCase().includes("denied") || false;
-
-        if (isPermissionDenied) {
-          setStatus("denied");
-          setIsDenied(true);
-          setError("Location permission denied. You can still search jobs manually.");
-        } else {
-          setStatus("error");
-          setError(err.message || "Failed to detect location.");
-        }
+        console.warn("[LocationContext] All location detection failed:", err.message);
+        setStatus("error");
+        setError("Unable to auto-detect location. Please search your city manually.");
       }
     },
     [isAuthenticated, accessToken]
