@@ -27,7 +27,8 @@ export interface Job {
   title: string;
   description: string;
   companyId: CompanyInJob | string;
-  recruiterId: RecruiterInJob | string;
+  userId: RecruiterInJob | string;
+  recruiterId?: RecruiterInJob | string;
   location: string;
   salaryMin: number;
   salaryMax: number;
@@ -61,6 +62,7 @@ export type UpdateJobInput = Partial<CreateJobInput>;
 export interface JobQuery {
   search?: string;
   location?: string;
+  industry?: string;
   employmentType?: string;
   experienceLevel?: string;
   page?: number;

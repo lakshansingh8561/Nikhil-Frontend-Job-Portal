@@ -1,7 +1,10 @@
-import { FiClock, FiBriefcase, FiZap, FiMapPin } from "react-icons/fi";
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { FiClock, FiBriefcase, FiZap, FiMapPin, FiCheckCircle } from "react-icons/fi";
 import toast from "react-hot-toast";
 import type { Job } from "../../types/job.types";
 import { useAppSelector } from "../../hooks/useAppSelector";
+import { useGetMyApplicationsQuery } from "../../features/applications/api/applicationApi";
 
 import companyLogo1 from "../../assets/images/company-logo1.png";
 import companyLogo2 from "../../assets/images/company-logo2.png";
@@ -31,7 +34,18 @@ interface JobCardProps {
 }
 
 const JobCard = ({ job, onSelect }: JobCardProps) => {
+  const navigate = useNavigate();
   const { user } = useAppSelector((state) => state.auth);
+
+  const { data: myApplications } = useGetMyApplicationsQuery(undefined, {
+    skip: !user || user.role !== "JOB_SEEKER",
+  });
+
+  const isApplied = Boolean(
+    myApplications?.some(
+      (app) => (typeof app.jobId === "object" ? app.jobId._id : app.jobId) === job._id
+    )
+  );
 
   const companyName =
     typeof job.companyId === "object" && job.companyId !== null
@@ -65,7 +79,8 @@ const JobCard = ({ job, onSelect }: JobCardProps) => {
   const handleApply = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (!user) {
-      toast.error("Please sign in to apply for jobs.");
+      toast.error("Please sign up or log in to apply for jobs.");
+      navigate("/register");
       return;
     }
     if (user.role !== "JOB_SEEKER") {
@@ -158,12 +173,22 @@ const JobCard = ({ job, onSelect }: JobCardProps) => {
           <span className="text-xs font-semibold text-[#66789C]">{salaryUnit}</span>
         </div>
 
-        <button
-          onClick={handleApply}
-          className="rounded-xl bg-[#E8F0FE] px-4 py-2.5 text-xs font-semibold text-[#3C65F5] transition-all duration-200 hover:bg-[#3C65F5] hover:text-white cursor-pointer"
-        >
-          Apply Now
-        </button>
+        {isApplied ? (
+          <button
+            disabled
+            onClick={(e) => e.stopPropagation()}
+            className="rounded-xl bg-emerald-100 text-emerald-800 border border-emerald-200 px-4 py-2.5 text-xs font-extrabold cursor-not-allowed flex items-center gap-1.5 shadow-2xs"
+          >
+            <FiCheckCircle className="text-emerald-700 text-sm" /> Applied ✓
+          </button>
+        ) : (
+          <button
+            onClick={handleApply}
+            className="rounded-xl bg-[#E8F0FE] px-4 py-2.5 text-xs font-semibold text-[#3C65F5] transition-all duration-200 hover:bg-[#3C65F5] hover:text-white cursor-pointer"
+          >
+            Apply Now
+          </button>
+        )}
       </div>
     </div>
   );

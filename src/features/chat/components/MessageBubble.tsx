@@ -10,6 +10,7 @@ import type { IMessage } from "../types/chat.types";
 interface MessageBubbleProps {
   message: IMessage;
   isOwn: boolean;
+  isSameSenderPrevious?: boolean;
   onReply?: (message: IMessage) => void;
   onEdit?: (message: IMessage) => void;
   onDelete?: (messageId: string) => void;
@@ -18,11 +19,11 @@ interface MessageBubbleProps {
 export const MessageBubble: React.FC<MessageBubbleProps> = ({
   message,
   isOwn,
+  isSameSenderPrevious = false,
   onReply,
   onEdit,
   onDelete,
 }) => {
-
   const formattedTime = new Date(message.createdAt).toLocaleTimeString([], {
     hour: "2-digit",
     minute: "2-digit",
@@ -35,32 +36,32 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
 
   return (
     <div
-      className={`group relative flex w-full my-1.5 ${
-        isOwn ? "justify-end" : "justify-start"
-      }`}
+      className={`group relative flex w-full animate-bubble ${
+        isSameSenderPrevious ? "mt-0.5" : "mt-1.5"
+      } ${isOwn ? "justify-end" : "justify-start"}`}
     >
       <div
-        className={`relative max-w-[85%] sm:max-w-[70%] rounded-2xl px-4 py-2.5 shadow-2xs ${
+        className={`relative max-w-[80%] sm:max-w-[65%] shadow-2xs transition-all duration-200 ${
           message.isDeleted
-            ? "bg-gray-100 text-gray-500 border border-gray-200"
+            ? "bg-[#F1F5F9] text-slate-500 border border-[#E2E8F0] px-3 py-1.5 rounded-xl"
             : isOwn
-            ? "bg-[#3C65F5] text-white rounded-br-xs"
-            : "bg-white text-[#05264E] border border-[#EAEFF7] rounded-bl-xs"
+            ? "bg-gradient-to-r from-[#4F46E5] to-[#4338CA] text-white px-3 py-1.5 rounded-xl rounded-br-xs"
+            : "bg-white text-[#05264E] border border-[#E5E7EB] px-3 py-1.5 rounded-xl rounded-bl-xs"
         }`}
       >
         {/* Reply preview if replying to a message */}
         {message.replyTo && !message.isDeleted && (
           <div
-            className={`mb-2 rounded-lg p-2 text-xs border-l-3 ${
+            className={`mb-1 rounded-lg px-2 py-1 text-xs border-l-2 transition-colors ${
               isOwn
-                ? "bg-white/15 border-white/80 text-white"
-                : "bg-blue-50 border-[#3C65F5] text-gray-700"
+                ? "bg-white/15 border-white/90 text-white"
+                : "bg-indigo-50/80 border-[#4F46E5] text-slate-700"
             }`}
           >
-            <span className="font-semibold block text-[11px]">
+            <span className="font-bold block text-[10px] uppercase tracking-wider">
               Replying to message
             </span>
-            <p className="truncate italic">
+            <p className="truncate italic font-medium">
               {message.replyTo.isDeleted
                 ? "This message was deleted"
                 : message.replyTo.message}
@@ -68,26 +69,62 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
           </div>
         )}
 
-        {/* Message Content */}
-        <p
-          className={`text-sm leading-relaxed whitespace-pre-wrap break-words ${
-            message.isDeleted ? "italic text-gray-400 flex items-center gap-1.5" : ""
-          }`}
-        >
-          {message.isDeleted ? "🚫 This message was deleted" : message.message}
-        </p>
+        {/* Message Content & Inline/Compact Timestamp */}
+        {message.isDeleted ? (
+          <p className="text-xs italic text-slate-500 font-medium flex items-center gap-1 leading-tight">
+            <span>🚫</span>
+            <span>This message was deleted</span>
+          </p>
+        ) : (
+          <div className="flex flex-wrap items-baseline justify-between gap-x-2.5 gap-y-0.5">
+            <p className="text-xs sm:text-[13.5px] leading-snug whitespace-pre-wrap break-words font-normal flex-1 min-w-0">
+              {message.message}
+            </p>
+
+            {/* Compact inline timestamp */}
+            <div
+              className={`shrink-0 ml-auto text-[10px] font-medium leading-none flex items-center gap-0.5 self-end ${
+                isOwn ? "text-indigo-200" : "text-slate-400"
+              }`}
+            >
+              {message.isEdited && <span>(edited)</span>}
+              <span>{formattedTime}</span>
+
+              {/* Read / Delivered Checkmarks */}
+              {isOwn && (
+                <span className="flex items-center ml-0.5" aria-label={`Status: ${message.status || 'sent'}`}>
+                  {message.status === "seen" || message.read ? (
+                    <span title="Seen" className="text-cyan-300 font-black flex items-center">
+                      <FiCheck className="-mr-1.5 stroke-[2.5]" />
+                      <FiCheck className="stroke-[2.5]" />
+                    </span>
+                  ) : message.status === "delivered" || message.delivered ? (
+                    <span title="Delivered" className="text-white/90 flex items-center">
+                      <FiCheck className="-mr-1.5 stroke-[2]" />
+                      <FiCheck className="stroke-[2]" />
+                    </span>
+                  ) : (
+                    <span title="Sent" className="text-white/60">
+                      <FiCheck className="stroke-[2]" />
+                    </span>
+                  )}
+                </span>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* Attachments */}
         {!message.isDeleted && message.attachments && message.attachments.length > 0 && (
-          <div className="mt-2 space-y-1">
+          <div className="mt-1.5 space-y-1">
             {message.attachments.map((att, idx) => (
               <a
                 key={idx}
                 href={att.url}
                 target="_blank"
                 rel="noreferrer"
-                className={`block rounded-lg p-2 text-xs font-semibold underline truncate ${
-                  isOwn ? "text-blue-100 hover:text-white" : "text-blue-600"
+                className={`block rounded-md px-2 py-1 text-xs font-semibold underline truncate transition-colors ${
+                  isOwn ? "bg-white/10 text-indigo-100 hover:text-white" : "bg-gray-50 text-[#4F46E5] hover:bg-gray-100"
                 }`}
               >
                 📎 {att.fileName || "Attachment"}
@@ -96,53 +133,19 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
           </div>
         )}
 
-        {/* Timestamp & Status footer */}
-        <div
-          className={`mt-1 flex items-center justify-end gap-1.5 text-[10px] ${
-            message.isDeleted
-              ? "text-gray-400"
-              : isOwn
-              ? "text-blue-100"
-              : "text-gray-400"
-          }`}
-        >
-          {message.isEdited && !message.isDeleted && <span>(edited)</span>}
-          <span>{formattedTime}</span>
-
-          {/* Read / Delivered Checkmarks for Own Messages */}
-          {isOwn && !message.isDeleted && (
-            <span className="flex items-center ml-0.5">
-              {message.status === "seen" || message.read ? (
-                <span title="Seen" className="text-[#38BDF8] font-black flex items-center">
-                  <FiCheck className="-mr-1.5 stroke-[2.5]" />
-                  <FiCheck className="stroke-[2.5]" />
-                </span>
-              ) : message.status === "delivered" || message.delivered ? (
-                <span title="Delivered" className="text-white/90 flex items-center">
-                  <FiCheck className="-mr-1.5 stroke-[2]" />
-                  <FiCheck className="stroke-[2]" />
-                </span>
-              ) : (
-                <span title="Sent" className="text-white/60">
-                  <FiCheck className="stroke-[2]" />
-                </span>
-              )}
-            </span>
-          )}
-        </div>
-
-        {/* Options Hover Menu - Positioned cleanly right above bubble header */}
+        {/* Options Hover Menu - Positioned cleanly above bubble */}
         {!message.isDeleted && (
           <div
             className={`absolute -top-7 ${
-              isOwn ? "right-2" : "left-2"
-            } hidden group-hover:flex items-center gap-1.5 bg-white shadow-md border border-gray-200 rounded-full px-2 py-1 text-gray-600 z-20 transition-all`}
+              isOwn ? "right-1" : "left-1"
+            } hidden group-hover:flex items-center gap-1 bg-white shadow-md border border-[#E5E7EB] rounded-full px-2 py-0.5 text-slate-600 z-20 transition-all duration-200`}
           >
             {onReply && (
               <button
                 onClick={() => onReply(message)}
                 title="Reply"
-                className="p-0.5 hover:text-blue-600 cursor-pointer"
+                aria-label="Reply to message"
+                className="p-1 hover:text-[#4F46E5] hover:scale-110 transition-all cursor-pointer rounded-full"
               >
                 <FiCornerUpLeft className="text-xs" />
               </button>
@@ -151,8 +154,9 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
             {canEdit && onEdit && (
               <button
                 onClick={() => onEdit(message)}
-                title="Edit (within 10m)"
-                className="p-0.5 hover:text-blue-600 cursor-pointer"
+                title="Edit message"
+                aria-label="Edit message"
+                className="p-1 hover:text-[#4F46E5] hover:scale-110 transition-all cursor-pointer rounded-full"
               >
                 <FiEdit2 className="text-xs" />
               </button>
@@ -161,8 +165,9 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
             {isOwn && onDelete && (
               <button
                 onClick={() => onDelete(message.id || message._id)}
-                title="Delete"
-                className="p-0.5 hover:text-red-600 cursor-pointer"
+                title="Delete message"
+                aria-label="Delete message"
+                className="p-1 hover:text-red-600 hover:scale-110 transition-all cursor-pointer rounded-full"
               >
                 <FiTrash2 className="text-xs" />
               </button>
@@ -173,3 +178,6 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
     </div>
   );
 };
+
+
+

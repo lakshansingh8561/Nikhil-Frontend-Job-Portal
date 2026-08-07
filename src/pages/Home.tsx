@@ -18,7 +18,7 @@ import Hero from "../components/home/Hero";
 import Container from "../components/common/Container";
 import JobCard from "../components/jobs/JobCard";
 import ScrollToTop from "../components/common/ScrollToTop";
-import { useGetJobsQuery } from "../features/jobs/api/jobsApi";
+import { useGetJobsQuery } from "../features/jobBrowser/api/jobBrowserApi";
 
 import hiringImage1 from "../assets/images/hiring-image1.png";
 import hiringImage2 from "../assets/images/hiring-image2.png";

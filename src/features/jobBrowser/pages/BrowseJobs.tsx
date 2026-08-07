@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useLocation } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useLocation, useSearchParams } from "react-router-dom";
 import SearchBar from "../components/SearchBar";
 import FilterSidebar from "../components/FilterSidebar";
 import JobList from "../components/JobList";
@@ -8,14 +8,16 @@ import { useGetJobsQuery } from "../api/jobBrowserApi";
 
 const BrowseJobs: React.FC = () => {
   const routerLocation = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
   const isDashboardMode = routerLocation.pathname.startsWith("/job-seeker");
 
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(12);
-  const [search, setSearch] = useState("");
-  const [location, setLocation] = useState("");
-  const [employmentType, setEmploymentType] = useState("");
-  const [experienceLevel, setExperienceLevel] = useState("");
+  const [search, setSearch] = useState(searchParams.get("search") || "");
+  const [location, setLocation] = useState(searchParams.get("location") || "");
+  const [industry, setIndustry] = useState(searchParams.get("industry") || "");
+  const [employmentType, setEmploymentType] = useState(searchParams.get("employmentType") || "");
+  const [experienceLevel, setExperienceLevel] = useState(searchParams.get("experienceLevel") || "");
   const [salaryMin, setSalaryMin] = useState(0);
   const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
   const [layout, setLayout] = useState<"grid" | "list">("grid");
@@ -24,13 +26,39 @@ const BrowseJobs: React.FC = () => {
   const [activeParams, setActiveParams] = useState({
     page: 1,
     limit: 12,
-    search: "",
-    location: "",
-    employmentType: "",
-    experienceLevel: "",
+    search: searchParams.get("search") || "",
+    location: searchParams.get("location") || "",
+    industry: searchParams.get("industry") || "",
+    employmentType: searchParams.get("employmentType") || "",
+    experienceLevel: searchParams.get("experienceLevel") || "",
     salaryMin: 0,
     skills: [] as string[],
   });
+
+  // Sync state when URL query params change (e.g., navigating from Home page search bar)
+  useEffect(() => {
+    const urlSearch = searchParams.get("search") || "";
+    const urlLocation = searchParams.get("location") || "";
+    const urlIndustry = searchParams.get("industry") || "";
+    const urlEmpType = searchParams.get("employmentType") || "";
+    const urlExpLevel = searchParams.get("experienceLevel") || "";
+
+    setSearch(urlSearch);
+    setLocation(urlLocation);
+    setIndustry(urlIndustry);
+    if (urlEmpType) setEmploymentType(urlEmpType);
+    if (urlExpLevel) setExperienceLevel(urlExpLevel);
+
+    setActiveParams((prev) => ({
+      ...prev,
+      page: 1,
+      search: urlSearch,
+      location: urlLocation,
+      industry: urlIndustry,
+      employmentType: urlEmpType || prev.employmentType,
+      experienceLevel: urlExpLevel || prev.experienceLevel,
+    }));
+  }, [searchParams]);
 
   // Fetch jobs using RTK Query
   const { data, isLoading, isError, error, refetch } = useGetJobsQuery({
@@ -38,6 +66,7 @@ const BrowseJobs: React.FC = () => {
     limit,
     search: activeParams.search || undefined,
     location: activeParams.location || undefined,
+    industry: activeParams.industry || undefined,
     employmentType: activeParams.employmentType || undefined,
     experienceLevel: activeParams.experienceLevel || undefined,
     salaryMin: activeParams.salaryMin > 0 ? activeParams.salaryMin : undefined,
@@ -59,6 +88,7 @@ const BrowseJobs: React.FC = () => {
       limit,
       search,
       location,
+      industry,
       employmentType,
       experienceLevel,
       salaryMin,
@@ -69,16 +99,19 @@ const BrowseJobs: React.FC = () => {
   const handleResetFilters = () => {
     setSearch("");
     setLocation("");
+    setIndustry("");
     setEmploymentType("");
     setExperienceLevel("");
     setSalaryMin(0);
     setSelectedSkills([]);
     setPage(1);
+    setSearchParams({});
     setActiveParams({
       page: 1,
       limit,
       search: "",
       location: "",
+      industry: "",
       employmentType: "",
       experienceLevel: "",
       salaryMin: 0,
@@ -143,6 +176,11 @@ const BrowseJobs: React.FC = () => {
             setLocation={(val) => {
               setLocation(val);
               setActiveParams((prev) => ({ ...prev, location: val }));
+            }}
+            industry={industry}
+            setIndustry={(val) => {
+              setIndustry(val);
+              setActiveParams((prev) => ({ ...prev, industry: val }));
             }}
             employmentType={employmentType}
             setEmploymentType={(val) => {

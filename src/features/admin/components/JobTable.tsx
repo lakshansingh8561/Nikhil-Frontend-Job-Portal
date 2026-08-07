@@ -38,7 +38,9 @@ export const JobTable: React.FC<JobTableProps> = ({ jobs, onDeleteRequest }) => 
                 : null;
 
             const recruiterEmail =
-              typeof job.recruiterId === "object" && job.recruiterId !== null
+              typeof job.userId === "object" && job.userId !== null
+                ? (job.userId as any).email
+                : typeof job.recruiterId === "object" && job.recruiterId !== null
                 ? job.recruiterId.email
                 : "Recruiter";
 

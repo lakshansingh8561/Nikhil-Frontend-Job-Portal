@@ -8,6 +8,7 @@ import type {
 } from "../types/jobBrowser.types";
 
 export const jobBrowserApi = apiSlice.injectEndpoints({
+  overrideExisting: true,
   endpoints: (builder) => ({
     getJobs: builder.query<
       { jobs: JobBrowserItem[]; pagination: JobBrowserPagination },
@@ -18,6 +19,7 @@ export const jobBrowserApi = apiSlice.injectEndpoints({
         if (params) {
           if (params.search) queryParams.search = params.search;
           if (params.location) queryParams.location = params.location;
+          if (params.industry) queryParams.industry = params.industry;
           if (params.employmentType) queryParams.employmentType = params.employmentType;
           if (params.experienceLevel) queryParams.experienceLevel = params.experienceLevel;
           if (params.salaryMin) queryParams.salaryMin = params.salaryMin;
@@ -37,7 +39,13 @@ export const jobBrowserApi = apiSlice.injectEndpoints({
         };
       },
       transformResponse: (response: JobListResponse) => response.data,
-      providesTags: ["Job"],
+      providesTags: (result) =>
+        result?.jobs
+          ? [
+              ...result.jobs.map(({ _id }) => ({ type: "Job" as const, id: _id })),
+              { type: "Job" as const, id: "LIST" },
+            ]
+          : [{ type: "Job" as const, id: "LIST" }],
     }),
 
     getJobById: builder.query<JobBrowserItem, string>({

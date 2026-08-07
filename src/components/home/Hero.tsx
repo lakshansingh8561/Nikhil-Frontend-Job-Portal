@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   FiBriefcase,
   FiMapPin,
@@ -22,6 +23,7 @@ const popularSearches = [
 ];
 
 const Hero = () => {
+  const navigate = useNavigate();
   const [industry, setIndustry] = useState("");
   const [location, setLocation] = useState("");
   const [keyword, setKeyword] = useState("");
@@ -29,14 +31,16 @@ const Hero = () => {
   const hasSearch = Boolean(industry.trim() || location.trim() || keyword.trim());
 
   // Search parameters passed to RTK Query
-  const searchQuery = (keyword || industry) ? `${keyword} ${industry}`.trim() : undefined;
+  const searchQuery = keyword.trim() ? keyword.trim() : undefined;
   const locationQuery = location.trim() ? location.trim() : undefined;
+  const industryQuery = industry.trim() ? industry.trim() : undefined;
 
   const { data, isLoading } = useGetJobsQuery(
     hasSearch
       ? {
           search: searchQuery,
           location: locationQuery,
+          industry: industryQuery,
           limit: 12,
         }
       : undefined,
@@ -49,6 +53,19 @@ const Hero = () => {
     setIndustry("");
     setLocation("");
     setKeyword("");
+  };
+
+  const handleSearchSubmit = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    const params = new URLSearchParams();
+    if (keyword.trim()) params.set("search", keyword.trim());
+    if (location.trim()) params.set("location", location.trim());
+    if (industry.trim()) params.set("industry", industry.trim());
+    navigate(`/jobs?${params.toString()}`);
+  };
+
+  const handlePopularSearch = (term: string) => {
+    navigate(`/jobs?search=${encodeURIComponent(term)}`);
   };
 
   return (
@@ -105,8 +122,9 @@ const Hero = () => {
               single day
             </p>
 
-            {/* Search Bar */}
-            <div
+            {/* Search Bar Form */}
+            <form
+              onSubmit={handleSearchSubmit}
               className="flex flex-col md:flex-row items-center gap-2 w-full max-w-[560px] min-h-[72px]"
               style={{
                 backgroundColor: "#ffffff",
@@ -161,26 +179,15 @@ const Hero = () => {
                 />
               </div>
 
-              {/* Search / Clear Button */}
-              {hasSearch ? (
-                <button
-                  type="button"
-                  onClick={handleClear}
-                  className="w-full md:w-auto h-[52px] px-6 font-semibold flex items-center justify-center gap-2 transition duration-200 whitespace-nowrap shrink-0 cursor-pointer text-red-600 bg-red-50 hover:bg-red-100 border border-red-200 rounded-[12px]"
-                >
-                  <FiX className="text-lg shrink-0" />
-                  <span>Clear</span>
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  className="w-full md:w-auto h-[52px] px-7 font-semibold flex items-center justify-center gap-2.5 transition duration-200 whitespace-nowrap shrink-0 cursor-pointer text-white bg-[#3B5BDB] hover:bg-[#2B47C5] rounded-[12px] shadow-md shadow-blue-500/20 text-sm"
-                >
-                  <FiSearch className="text-lg shrink-0" />
-                  <span>Search</span>
-                </button>
-              )}
-            </div>
+              {/* Search Button */}
+              <button
+                type="submit"
+                className="w-full md:w-auto h-[52px] px-7 font-semibold flex items-center justify-center gap-2.5 transition duration-200 whitespace-nowrap shrink-0 cursor-pointer text-white bg-[#3B5BDB] hover:bg-[#2B47C5] rounded-[12px] shadow-md shadow-blue-500/20 text-sm"
+              >
+                <FiSearch className="text-lg shrink-0" />
+                <span>Search</span>
+              </button>
+            </form>
 
             {/* Popular Searches */}
             <div className="mt-6 flex flex-wrap items-center gap-2 text-xs lg:text-sm text-[#66789C]">
@@ -188,17 +195,12 @@ const Hero = () => {
                 Popular Searches :
               </span>
               {popularSearches.map((item, idx) => {
-                const isSelected = keyword === item;
                 return (
                   <button
                     key={item}
                     type="button"
-                    onClick={() => setKeyword(isSelected ? "" : item)}
-                    className={`cursor-pointer transition-colors whitespace-nowrap ${
-                      isSelected
-                        ? "text-[#3B5BDB] font-bold underline"
-                        : "hover:text-[#3B5BDB] underline underline-offset-2"
-                    }`}
+                    onClick={() => handlePopularSearch(item)}
+                    className="cursor-pointer transition-colors whitespace-nowrap hover:text-[#3B5BDB] underline underline-offset-2"
                   >
                     {item}
                     {idx < popularSearches.length - 1 ? "," : ""}

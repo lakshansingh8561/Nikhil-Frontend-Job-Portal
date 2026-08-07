@@ -88,6 +88,14 @@ export const chatApi = apiSlice.injectEndpoints({
       invalidatesTags: ["Chat"],
     }),
 
+    deleteConversation: builder.mutation<void, string>({
+      query: (conversationId) => ({
+        url: `/chat/conversations/${conversationId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Chat"],
+    }),
+
     markAsRead: builder.mutation<void, string>({
       query: (conversationId) => ({
         url: `/chat/conversations/${conversationId}/read`,
@@ -124,7 +132,9 @@ export const {
   useSendMessageMutation,
   useEditMessageMutation,
   useDeleteMessageMutation,
+  useDeleteConversationMutation,
   useMarkAsReadMutation,
   useGetUnreadCountQuery,
   useLazySearchMessagesQuery,
 } = chatApi;
+
