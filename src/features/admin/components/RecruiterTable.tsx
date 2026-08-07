@@ -22,7 +22,8 @@ export const RecruiterTable: React.FC<RecruiterTableProps> = ({
           <tr className="border-b border-[#F0F4FC] bg-[#F8FAFC] text-[11px] font-bold uppercase tracking-wider text-[#66789C]">
             <th className="py-4 px-6">Recruiter Name</th>
             <th className="py-4 px-6">Email</th>
-            <th className="py-4 px-6">Status</th>
+            <th className="py-4 px-6">Membership Plan</th>
+            <th className="py-4 px-6">Account Status</th>
             <th className="py-4 px-6">Registered Date</th>
             <th className="py-4 px-6 text-right">Actions</th>
           </tr>
@@ -35,6 +36,8 @@ export const RecruiterTable: React.FC<RecruiterTableProps> = ({
                 : rec.email.split("@")[0];
 
             const isBlocked = rec.status === "BLOCKED";
+            const mem = rec.membership;
+            const isSubActive = mem && mem.status === "ACTIVE";
 
             return (
               <tr key={rec._id} className="hover:bg-[#F8FAFC] transition">
@@ -54,6 +57,28 @@ export const RecruiterTable: React.FC<RecruiterTableProps> = ({
                 {/* Email */}
                 <td className="py-4 px-6 font-semibold text-[#05264E]">
                   {rec.email}
+                </td>
+
+                {/* Membership Status & Active Days */}
+                <td className="py-4 px-6">
+                  <div className="flex flex-col gap-0.5">
+                    <span
+                      className={`inline-flex items-center gap-1 w-fit rounded-full px-2.5 py-0.5 text-[11px] font-extrabold ${
+                        isSubActive
+                          ? "bg-emerald-100 text-emerald-800 border border-emerald-200"
+                          : "bg-gray-100 text-gray-600"
+                      }`}
+                    >
+                      {mem?.planName || "Free Tier"} {isSubActive ? "✓" : ""}
+                    </span>
+                    {isSubActive ? (
+                      <span className="text-[11px] font-bold text-[#3C65F5]">
+                        {mem?.remainingDays} Days Active Remaining
+                      </span>
+                    ) : (
+                      <span className="text-[11px] text-gray-400 font-medium">Free Tier</span>
+                    )}
+                  </div>
                 </td>
 
                 {/* Status */}

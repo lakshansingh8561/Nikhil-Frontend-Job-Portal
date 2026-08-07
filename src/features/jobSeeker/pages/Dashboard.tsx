@@ -10,10 +10,12 @@ import {
   FiAward,
   FiFileText,
   FiMessageSquare,
+  FiZap,
 } from "react-icons/fi";
 import { useGetProfileQuery } from "../api/jobSeekerApi";
 import { useGetMyApplicationsQuery } from "../../applications/api/applicationApi";
 import { useGetJobsQuery } from "../../jobBrowser/api/jobBrowserApi";
+import { useGetCurrentSubscriptionQuery } from "../../membership/api/membershipApi";
 import StatusBadge from "../../applications/components/StatusBadge";
 import ResumeViewer from "../../applications/components/ResumeViewer";
 import ApplicationSkeleton from "../../applications/components/ApplicationSkeleton";
@@ -24,6 +26,13 @@ export const Dashboard: React.FC = () => {
   const { data: profile, isLoading: isLoadingProfile } = useGetProfileQuery();
   const { data: applications, isLoading: isLoadingApps } = useGetMyApplicationsQuery();
   const { data: jobsResponse } = useGetJobsQuery({ limit: 5 });
+  const { data: currentSub } = useGetCurrentSubscriptionQuery();
+
+  const sub = currentSub?.subscription;
+  const hasActiveSub = Boolean(currentSub?.hasActiveSubscription && sub?.status === "ACTIVE");
+  const daysRemaining = sub?.endDate
+    ? Math.max(0, Math.ceil((new Date(sub.endDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24)))
+    : 0;
 
   const allApplications = applications || [];
   const totalSubmitted = allApplications.length;
@@ -88,9 +97,9 @@ export const Dashboard: React.FC = () => {
       </div>
 
       {/* Analytics Stats Grid */}
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-5">
         {/* Total Applications */}
-        <div className="flex items-center justify-between rounded-3xl border border-[#EAEFF7] bg-white p-6 shadow-xs">
+        <div className="flex items-center justify-between rounded-3xl border border-[#EAEFF7] bg-white p-5 shadow-xs">
           <div>
             <p className="text-xs font-bold text-[#66789C] uppercase tracking-wider">
               Applications
@@ -106,7 +115,7 @@ export const Dashboard: React.FC = () => {
         </div>
 
         {/* Shortlisted / Interviewing */}
-        <div className="flex items-center justify-between rounded-3xl border border-[#EAEFF7] bg-white p-6 shadow-xs">
+        <div className="flex items-center justify-between rounded-3xl border border-[#EAEFF7] bg-white p-5 shadow-xs">
           <div>
             <p className="text-xs font-bold text-[#66789C] uppercase tracking-wider">
               Shortlisted
@@ -123,8 +132,32 @@ export const Dashboard: React.FC = () => {
           </div>
         </div>
 
+        {/* Active Membership Status & Days */}
+        <div className="flex items-center justify-between rounded-3xl border border-[#EAEFF7] bg-white p-5 shadow-xs">
+          <div>
+            <p className="text-xs font-bold text-[#66789C] uppercase tracking-wider">
+              Membership
+            </p>
+            <h3 className="mt-2 text-lg font-extrabold text-[#05264E]">
+              {currentSub?.subscription?.planName || currentSub?.plan?.name || "Free Tier"}
+            </h3>
+            {hasActiveSub ? (
+              <p className="mt-1 text-[11px] text-emerald-600 font-bold">
+                {daysRemaining} Active Days Left
+              </p>
+            ) : (
+              <Link to="/job-seeker/membership" className="mt-1 text-[11px] text-[#3C65F5] font-bold hover:underline">
+                Upgrade Now →
+              </Link>
+            )}
+          </div>
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-50 text-amber-600 shrink-0">
+            <FiZap className="text-xl fill-yellow-400" />
+          </div>
+        </div>
+
         {/* Profile Completion */}
-        <div className="flex items-center justify-between rounded-3xl border border-[#EAEFF7] bg-white p-6 shadow-xs">
+        <div className="flex items-center justify-between rounded-3xl border border-[#EAEFF7] bg-white p-5 shadow-xs">
           <div>
             <p className="text-xs font-bold text-[#66789C] uppercase tracking-wider">
               Profile Score
@@ -140,7 +173,7 @@ export const Dashboard: React.FC = () => {
         </div>
 
         {/* Matching Jobs */}
-        <div className="flex items-center justify-between rounded-3xl border border-[#EAEFF7] bg-white p-6 shadow-xs">
+        <div className="flex items-center justify-between rounded-3xl border border-[#EAEFF7] bg-white p-5 shadow-xs">
           <div>
             <p className="text-xs font-bold text-[#66789C] uppercase tracking-wider">
               Available Jobs
@@ -150,7 +183,7 @@ export const Dashboard: React.FC = () => {
             </h3>
             <p className="mt-1 text-[11px] text-[#3C65F5] font-bold">Active openings</p>
           </div>
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-50 text-amber-600 shrink-0">
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-[#3C65F5] shrink-0">
             <FiBriefcase className="text-xl" />
           </div>
         </div>

@@ -22,6 +22,7 @@ import { formatSalary, formatEmploymentType, formatExperienceLevel } from "../ut
 import { useAppSelector } from "../../../hooks/useAppSelector";
 
 import ApplyJobModal from "../../applications/components/ApplyJobModal";
+import { useGetMyApplicationsQuery } from "../../applications/api/applicationApi";
 
 const defaultCompanyLogo = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
 
@@ -36,15 +37,31 @@ const JobDetails: React.FC = () => {
     { skip: !id }
   );
 
+  const { data: myApplications } = useGetMyApplicationsQuery(undefined, {
+    skip: !isAuthenticated || user?.role !== "JOB_SEEKER",
+  });
+
+  const isApplied = Boolean(
+    job?._id &&
+      myApplications?.some(
+        (app) => (typeof app.jobId === "object" ? app.jobId._id : app.jobId) === job._id
+      )
+  );
+
   const handleApply = () => {
     if (!isAuthenticated || !user) {
-      toast.error("Please sign in to apply for jobs.");
-      navigate("/login");
+      toast.error("Please sign up or log in to apply for jobs.");
+      navigate("/register");
       return;
     }
 
     if (user.role !== "JOB_SEEKER") {
       toast.error("Only registered Job Seekers can apply for jobs.");
+      return;
+    }
+
+    if (isApplied) {
+      toast.error("You have already applied for this job.");
       return;
     }
 
@@ -116,7 +133,9 @@ const JobDetails: React.FC = () => {
       : null;
 
   const recruiterEmail =
-    typeof job.recruiterId === "object" && job.recruiterId !== null
+    typeof job.userId === "object" && job.userId !== null
+      ? (job.userId as any).email
+      : typeof job.recruiterId === "object" && job.recruiterId !== null
       ? job.recruiterId.email
       : null;
 
@@ -194,12 +213,21 @@ const JobDetails: React.FC = () => {
               >
                 <FiShare2 className="text-lg" />
               </button>
-              <button
-                onClick={handleApply}
-                className="flex-1 md:flex-initial rounded-2xl bg-[#3C65F5] px-8 py-3.5 text-sm font-bold text-white shadow-md transition-all hover:bg-[#254BD6] hover:shadow-lg cursor-pointer"
-              >
-                Apply for this Job
-              </button>
+              {isApplied ? (
+                <button
+                  disabled
+                  className="flex-1 md:flex-initial flex items-center justify-center gap-2 rounded-2xl bg-emerald-100 text-emerald-800 border border-emerald-300 px-8 py-3.5 text-sm font-black cursor-not-allowed shadow-xs"
+                >
+                  <FiCheckCircle className="text-emerald-700 text-lg" /> Applied ✓
+                </button>
+              ) : (
+                <button
+                  onClick={handleApply}
+                  className="flex-1 md:flex-initial rounded-2xl bg-[#3C65F5] px-8 py-3.5 text-sm font-bold text-white shadow-md transition-all hover:bg-[#254BD6] hover:shadow-lg cursor-pointer"
+                >
+                  Apply for this Job
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -327,12 +355,21 @@ const JobDetails: React.FC = () => {
               </div>
 
               {/* Sidebar Apply Button */}
-              <button
-                onClick={handleApply}
-                className="mt-6 flex w-full items-center justify-center rounded-2xl bg-[#3C65F5] py-3 text-sm font-bold text-white shadow-md transition hover:bg-[#254BD6] cursor-pointer"
-              >
-                Apply Now
-              </button>
+              {isApplied ? (
+                <button
+                  disabled
+                  className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl bg-emerald-100 text-emerald-800 border border-emerald-300 py-3 text-sm font-black cursor-not-allowed shadow-xs"
+                >
+                  <FiCheckCircle className="text-emerald-700 text-lg" /> Applied ✓
+                </button>
+              ) : (
+                <button
+                  onClick={handleApply}
+                  className="mt-6 flex w-full items-center justify-center rounded-2xl bg-[#3C65F5] py-3 text-sm font-bold text-white shadow-md transition hover:bg-[#254BD6] cursor-pointer"
+                >
+                  Apply Now
+                </button>
+              )}
             </div>
 
             {/* Recruiter Information Card */}

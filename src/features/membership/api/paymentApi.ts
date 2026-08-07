@@ -1,0 +1,59 @@
+import { apiSlice } from "../../../Redux/api/apiSlice";
+import type {
+  CreateOrderResponse,
+  VerifyPaymentRequest,
+  IPaymentRecord,
+} from "../types/payment.types";
+
+export const paymentApi = apiSlice.injectEndpoints({
+  endpoints: (builder) => ({
+    createPaymentOrder: builder.mutation<CreateOrderResponse, { membershipId: string }>({
+      query: (body) => ({
+        url: "/payments/create-order",
+        method: "POST",
+        body,
+      }),
+      transformResponse: (response: { data: CreateOrderResponse }) => response.data,
+      invalidatesTags: ["Payment"],
+    }),
+
+    verifyPayment: builder.mutation<any, VerifyPaymentRequest>({
+      query: (body) => ({
+        url: "/payments/verify",
+        method: "POST",
+        body,
+      }),
+      transformResponse: (response: { data: any }) => response.data,
+      invalidatesTags: ["Subscription", "Membership", "Payment", "Job"],
+    }),
+
+    getPaymentHistory: builder.query<IPaymentRecord[], void>({
+      query: () => "/payments/my",
+      transformResponse: (response: { data: IPaymentRecord[] }) => response.data,
+      providesTags: ["Payment"],
+    }),
+
+    getAdminPayments: builder.query<any, { page?: number; limit?: number; status?: string }>({
+      query: (params) => ({
+        url: "/admin/payments",
+        params,
+      }),
+      transformResponse: (response: { data: any }) => response.data,
+      providesTags: ["Payment", "Admin"],
+    }),
+
+    getAdminMembershipStats: builder.query<any, void>({
+      query: () => "/admin/membership-stats",
+      transformResponse: (response: { data: any }) => response.data,
+      providesTags: ["Subscription", "Payment", "Admin"],
+    }),
+  }),
+});
+
+export const {
+  useCreatePaymentOrderMutation,
+  useVerifyPaymentMutation,
+  useGetPaymentHistoryQuery,
+  useGetAdminPaymentsQuery,
+  useGetAdminMembershipStatsQuery,
+} = paymentApi;

@@ -6,6 +6,7 @@ export interface CompanyOwner {
 
 export interface Company {
   _id: string;
+  userId?: CompanyOwner | string;
   ownerId?: CompanyOwner | string;
   companyName: string;
   tagline?: string;

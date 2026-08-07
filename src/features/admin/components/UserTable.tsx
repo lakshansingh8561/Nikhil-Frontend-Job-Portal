@@ -22,7 +22,8 @@ export const UserTable: React.FC<UserTableProps> = ({
             <th className="py-4 px-6">User</th>
             <th className="py-4 px-6">Email</th>
             <th className="py-4 px-6">Role</th>
-            <th className="py-4 px-6">Status</th>
+            <th className="py-4 px-6">Membership Plan</th>
+            <th className="py-4 px-6">Account Status</th>
             <th className="py-4 px-6">Joined Date</th>
             <th className="py-4 px-6 text-right">Actions</th>
           </tr>
@@ -35,6 +36,8 @@ export const UserTable: React.FC<UserTableProps> = ({
                 : user.email.split("@")[0];
 
             const isBlocked = user.status === "BLOCKED";
+            const mem = user.membership;
+            const isSubActive = mem && mem.status === "ACTIVE";
 
             return (
               <tr key={user._id} className="hover:bg-[#F8FAFC] transition">
@@ -79,6 +82,28 @@ export const UserTable: React.FC<UserTableProps> = ({
                   >
                     {user.role}
                   </span>
+                </td>
+
+                {/* Membership Status & Active Days */}
+                <td className="py-4 px-6">
+                  <div className="flex flex-col gap-0.5">
+                    <span
+                      className={`inline-flex items-center gap-1 w-fit rounded-full px-2.5 py-0.5 text-[11px] font-extrabold ${
+                        isSubActive
+                          ? "bg-emerald-100 text-emerald-800 border border-emerald-200"
+                          : "bg-gray-100 text-gray-600"
+                      }`}
+                    >
+                      {mem?.planName || "Free"} {isSubActive ? "✓" : ""}
+                    </span>
+                    {isSubActive ? (
+                      <span className="text-[11px] font-bold text-[#3C65F5]">
+                        {mem?.remainingDays} Days Active Remaining
+                      </span>
+                    ) : (
+                      <span className="text-[11px] text-gray-400 font-medium">Free Tier</span>
+                    )}
+                  </div>
                 </td>
 
                 {/* Status Badge */}

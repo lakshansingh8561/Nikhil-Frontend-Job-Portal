@@ -11,6 +11,7 @@ import type {
 } from "../types/job.types";
 
 export const jobsApi = apiSlice.injectEndpoints({
+  overrideExisting: true,
   endpoints: (builder) => ({
     getJobs: builder.query<
       { jobs: Job[]; pagination: JobPagination },
@@ -21,13 +22,25 @@ export const jobsApi = apiSlice.injectEndpoints({
         params: params || {},
       }),
       transformResponse: (response: JobListResponse) => response.data,
-      providesTags: ["Job"],
+      providesTags: (result) =>
+        result?.jobs
+          ? [
+              ...result.jobs.map(({ _id }) => ({ type: "Job" as const, id: _id })),
+              { type: "Job" as const, id: "LIST" },
+            ]
+          : [{ type: "Job" as const, id: "LIST" }],
     }),
 
     getRecruiterJobs: builder.query<Job[], void>({
       query: () => "/jobs/my/jobs",
       transformResponse: (response: MyJobsApiResponse) => response.data,
-      providesTags: ["Job"],
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.map(({ _id }) => ({ type: "Job" as const, id: _id })),
+              { type: "Job" as const, id: "LIST" },
+            ]
+          : [{ type: "Job" as const, id: "LIST" }],
     }),
 
     getJobById: builder.query<Job, string>({
@@ -43,7 +56,7 @@ export const jobsApi = apiSlice.injectEndpoints({
         body,
       }),
       transformResponse: (response: JobApiResponse) => response.data,
-      invalidatesTags: ["Job"],
+      invalidatesTags: [{ type: "Job", id: "LIST" }, "Job"],
     }),
 
     updateJob: builder.mutation<Job, { id: string; body: UpdateJobInput }>({
@@ -53,7 +66,11 @@ export const jobsApi = apiSlice.injectEndpoints({
         body,
       }),
       transformResponse: (response: JobApiResponse) => response.data,
-      invalidatesTags: (_result, _error, { id }) => ["Job", { type: "Job", id }],
+      invalidatesTags: (_result, _error, { id }) => [
+        { type: "Job", id: "LIST" },
+        { type: "Job", id },
+        "Job",
+      ],
     }),
 
     deleteJob: builder.mutation<{ success: boolean; message: string }, string>({
@@ -61,7 +78,7 @@ export const jobsApi = apiSlice.injectEndpoints({
         url: `/jobs/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["Job"],
+      invalidatesTags: [{ type: "Job", id: "LIST" }, "Job"],
     }),
   }),
 });

@@ -13,6 +13,12 @@ export interface AdminUser {
   firstName?: string;
   lastName?: string;
   avatar?: string;
+  membership?: {
+    planName: string;
+    status: string;
+    remainingDays: number;
+    endDate?: string | null;
+  };
 }
 
 export interface AdminRecruiter {
@@ -51,7 +57,13 @@ export interface AdminJob {
         companyName: string;
         logo?: string;
       };
-  recruiterId:
+  userId?:
+    | string
+    | {
+        _id: string;
+        email: string;
+      };
+  recruiterId?:
     | string
     | {
         _id: string;
@@ -93,7 +105,8 @@ export interface AdminApplication {
               logo?: string;
             };
       };
-  applicantId: string | AdminApplicantProfile;
+  userId?: string | AdminApplicantProfile;
+  applicantId?: string | AdminApplicantProfile;
   resume: string;
   coverLetter?: string;
   status: ApplicationStatus;

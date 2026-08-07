@@ -4,6 +4,8 @@ import { FiFilter, FiRotateCcw, FiDollarSign, FiCode, FiMapPin, FiBriefcase, FiA
 interface FilterSidebarProps {
   location: string;
   setLocation: (val: string) => void;
+  industry: string;
+  setIndustry: (val: string) => void;
   employmentType: string;
   setEmploymentType: (val: string) => void;
   experienceLevel: string;
@@ -28,9 +30,21 @@ const popularSkillsList = [
   "AWS",
 ];
 
+const industryList = [
+  { id: "", label: "All Industries" },
+  { id: "Software", label: "Software & Tech" },
+  { id: "Finance", label: "Finance" },
+  { id: "Marketing", label: "Marketing" },
+  { id: "Design", label: "Design" },
+  { id: "Engineering", label: "Engineering" },
+  { id: "Recruiting", label: "Recruiting" },
+];
+
 export const FilterSidebar: React.FC<FilterSidebarProps> = ({
   location,
   setLocation,
+  industry,
+  setIndustry,
   employmentType,
   setEmploymentType,
   experienceLevel,
@@ -78,9 +92,37 @@ export const FilterSidebar: React.FC<FilterSidebarProps> = ({
             type="text"
             value={location}
             onChange={(e) => setLocation(e.target.value)}
-            placeholder="e.g. New York, Remote"
+            placeholder="e.g. New York, Basi, Remote"
             className="w-full rounded-xl border border-[#EAEFF7] bg-[#F8FAFC] px-3.5 py-2 text-xs font-semibold text-[#05264E] outline-none focus:border-[#3C65F5] focus:bg-white transition"
           />
+        </div>
+
+        {/* Industry Filter */}
+        <div>
+          <label className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#05264E]">
+            <FiBriefcase className="text-[#3C65F5]" /> Industry
+          </label>
+          <div className="space-y-1">
+            {industryList.map((ind) => (
+              <label
+                key={ind.id}
+                className={`flex items-center justify-between rounded-xl px-3 py-2 transition cursor-pointer text-xs font-semibold ${
+                  industry === ind.id
+                    ? "bg-[#E8F0FE] text-[#3C65F5]"
+                    : "text-[#05264E] hover:bg-[#F8FAFC]"
+                }`}
+              >
+                <span>{ind.label}</span>
+                <input
+                  type="radio"
+                  name="industry"
+                  checked={industry === ind.id}
+                  onChange={() => setIndustry(ind.id)}
+                  className="h-4 w-4 accent-[#3C65F5] cursor-pointer"
+                />
+              </label>
+            ))}
+          </div>
         </div>
 
         {/* Employment Type */}

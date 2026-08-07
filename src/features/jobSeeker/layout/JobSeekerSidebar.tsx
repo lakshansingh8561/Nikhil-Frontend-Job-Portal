@@ -8,8 +8,8 @@ import {
   FiSettings,
   FiLogOut,
   FiX,
-  FiBriefcase,
   FiMenu,
+  FiZap,
 } from "react-icons/fi";
 import Logo from "../../../assets/logo.svg";
 import { useAppDispatch } from "../../../hooks/useAppDispatch";
@@ -114,7 +114,7 @@ export const JobSeekerSidebar = ({
             } rounded-2xl bg-[#F8FAFC] border border-[#EAEFF7] shadow-2xs`}
             title={displayName}
           >
-            <div className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#3C65F5] font-bold text-white text-xs shadow-xs">
+            <div className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#1D4ED8] font-bold text-white text-xs shadow-xs">
               {displayName.charAt(0).toUpperCase()}
               <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-emerald-500 ring-2 ring-white" />
             </div>
@@ -149,7 +149,7 @@ export const JobSeekerSidebar = ({
                         : "justify-between px-3.5 py-2.5"
                     } gap-3 rounded-xl text-xs font-bold transition-all duration-200 ${
                       isActive
-                        ? "bg-[#3C65F5] text-white shadow-md"
+                        ? "bg-[#1D4ED8] text-white shadow-md"
                         : "text-[#66789C] hover:bg-[#F8FAFC] hover:text-[#05264E]"
                     }`
                   }
@@ -172,18 +172,43 @@ export const JobSeekerSidebar = ({
         </div>
 
         {/* Bottom Actions */}
-        <div className="space-y-2 pt-4 border-t border-[#F0F4FC] shrink-0">
-          <Link
-            to="/job-seeker/jobs"
+        <div className="space-y-3 pt-4 border-t border-[#F0F4FC] shrink-0">
+          {/* SPECIAL MEMBERSHIP BUTTON IN PLACE OF BROWSE JOBS */}
+          <NavLink
+            to="/job-seeker/membership"
             onClick={onCloseMobile}
-            title={isDesktopCollapsed ? "Browse Jobs" : undefined}
-            className={`flex items-center justify-center gap-2 rounded-xl border border-[#EAEFF7] bg-[#F8FAFC] ${
-              isDesktopCollapsed ? "lg:w-11 lg:h-11 lg:p-0 lg:mx-auto" : "py-2.5"
-            } text-xs font-bold text-[#05264E] hover:bg-[#E8F0FE] hover:text-[#3C65F5] transition`}
+            title={isDesktopCollapsed ? "Membership Plans" : undefined}
+            className={({ isActive }) =>
+              `relative group overflow-hidden flex items-center ${
+                isDesktopCollapsed
+                  ? "lg:w-12 lg:h-12 lg:p-0 lg:mx-auto lg:justify-center"
+                  : "justify-between px-4 py-3"
+              } rounded-2xl bg-gradient-to-r from-[#3C65F5] via-[#4F46E5] to-[#7C3AED] text-white shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 border border-white/20 ${
+                isActive ? "ring-2 ring-yellow-400 ring-offset-2" : ""
+              }`
+            }
           >
-            <FiBriefcase className="text-lg shrink-0" />
-            <span className={isDesktopCollapsed ? "lg:hidden" : ""}>Browse Jobs</span>
-          </Link>
+            {/* Shimmer Effect */}
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out" />
+
+            <div className="relative z-10 flex items-center gap-3">
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-yellow-400/20 backdrop-blur-md text-yellow-300 border border-yellow-300/30 shadow-inner">
+                <FiZap className="text-lg fill-yellow-300 text-yellow-300 animate-pulse" />
+              </span>
+              <div className={`flex flex-col ${isDesktopCollapsed ? "lg:hidden" : ""}`}>
+                <span className="text-xs font-black tracking-wide text-white drop-shadow-xs">
+                  Membership Plans
+                </span>
+                <span className="text-[10px] font-bold text-yellow-300/90 tracking-wider uppercase">
+                  Upgrade & Perks ⭐
+                </span>
+              </div>
+            </div>
+
+            <span className={`relative z-10 rounded-full bg-yellow-400 px-2 py-0.5 text-[9px] font-black uppercase text-gray-900 shadow-sm ${isDesktopCollapsed ? "lg:hidden" : ""}`}>
+              PRO
+            </span>
+          </NavLink>
 
           <button
             onClick={handleLogout}

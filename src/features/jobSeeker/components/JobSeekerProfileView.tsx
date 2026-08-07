@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import {
   FiEdit3,
   FiMapPin,
@@ -8,9 +9,13 @@ import {
   FiDollarSign,
   FiAward,
   FiBookOpen,
+  FiZap,
+  FiCheckCircle,
+  FiArrowRight,
 } from "react-icons/fi";
 import type { JobSeekerProfile } from "../types/jobSeeker.types";
 import EditProfileModal from "./EditProfileModal";
+import { useGetCurrentSubscriptionQuery } from "../../membership/api/membershipApi";
 
 interface JobSeekerProfileViewProps {
   profile: JobSeekerProfile;
@@ -18,42 +23,52 @@ interface JobSeekerProfileViewProps {
 
 const JobSeekerProfileView = ({ profile }: JobSeekerProfileViewProps) => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const { data: currentSub } = useGetCurrentSubscriptionQuery();
+
+  const sub = currentSub?.subscription;
+  const plan = currentSub?.plan;
+  const hasActiveSub = Boolean(currentSub?.hasActiveSubscription && sub?.status === "ACTIVE");
+  const daysRemaining = sub?.endDate
+    ? Math.max(0, Math.ceil((new Date(sub.endDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24)))
+    : 0;
 
   return (
     <div className="space-y-8">
       {/* Header Card */}
       <div className="relative overflow-hidden rounded-3xl bg-white p-6 md:p-8 shadow-sm border border-[#EAEFF7]">
         {/* Cover Accent */}
-        <div className="h-32 -mx-8 -mt-8 bg-gradient-to-r from-[#3C65F5] via-[#254BD6] to-[#05264E] mb-4" />
+        <div className="h-36 -mx-8 -mt-8 bg-gradient-to-r from-[#0F172A] via-[#1E3A8A] to-[#1D4ED8] mb-4 relative overflow-hidden">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.15),transparent_60%)]" />
+        </div>
 
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div className="flex flex-col sm:flex-row sm:items-end gap-5">
             {/* Avatar overlapping cover */}
-            <div className="flex h-24 w-24 sm:h-28 sm:w-28 shrink-0 items-center justify-center rounded-2xl bg-[#3C65F5] text-4xl font-extrabold text-white shadow-xl ring-4 ring-white -mt-16 sm:-mt-20">
-              {profile.firstName ? profile.firstName.charAt(0) : "J"}
+            <div className="flex h-24 w-24 sm:h-28 sm:w-28 shrink-0 items-center justify-center rounded-2xl bg-[#1D4ED8] text-4xl font-extrabold text-white shadow-xl ring-4 ring-white -mt-16 sm:-mt-20">
+              {profile.firstName ? profile.firstName.charAt(0).toUpperCase() : "J"}
             </div>
 
-            <div className="mt-2 sm:mt-0">
+            <div className="pt-3 sm:pt-4">
               <h1 className="text-2xl sm:text-3xl font-extrabold text-[#05264E] tracking-tight">
                 {profile.firstName} {profile.lastName}
               </h1>
-              <p className="text-sm sm:text-base font-semibold text-[#3C65F5] mt-0.5">
+              <p className="text-sm sm:text-base font-bold text-[#1D4ED8] mt-0.5">
                 {profile.headline || "Job Seeker"}
               </p>
               <div className="mt-2 flex flex-wrap items-center gap-4 text-xs font-semibold text-[#66789C]">
                 {profile.currentLocation && (
                   <span className="flex items-center gap-1.5">
-                    <FiMapPin className="text-[#3C65F5]" />
+                    <FiMapPin className="text-[#1D4ED8]" />
                     {profile.currentLocation}
                   </span>
                 )}
                 <span className="flex items-center gap-1.5">
-                  <FiMail className="text-[#3C65F5]" />
+                  <FiMail className="text-[#1D4ED8]" />
                   {profile.userId?.email}
                 </span>
                 {profile.phone && (
                   <span className="flex items-center gap-1.5">
-                    <FiPhone className="text-[#3C65F5]" />
+                    <FiPhone className="text-[#1D4ED8]" />
                     {profile.phone}
                   </span>
                 )}
@@ -63,7 +78,7 @@ const JobSeekerProfileView = ({ profile }: JobSeekerProfileViewProps) => {
 
           <button
             onClick={() => setIsEditModalOpen(true)}
-            className="flex items-center gap-2 rounded-xl bg-[#3C65F5] px-6 py-3 font-semibold text-white transition hover:bg-[#254BD6] shadow-md cursor-pointer self-start md:self-auto"
+            className="flex items-center gap-2 rounded-xl bg-[#1D4ED8] px-6 py-3 font-semibold text-white transition hover:bg-[#1E40AF] shadow-md cursor-pointer self-start md:self-auto"
           >
             <FiEdit3 className="text-lg" />
             <span>Edit Profile</span>
@@ -83,10 +98,51 @@ const JobSeekerProfileView = ({ profile }: JobSeekerProfileViewProps) => {
         )}
       </div>
 
+      {/* Membership Plan Banner */}
+      <div className="rounded-3xl border border-[#EAEFF7] bg-white p-6 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex items-center gap-4">
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-50 text-amber-600 shrink-0 border border-amber-100 shadow-2xs">
+            <FiZap className="text-2xl fill-yellow-400 text-amber-500" />
+          </div>
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#66789C]">
+                Membership Subscription
+              </span>
+              {hasActiveSub && (
+                <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2.5 py-0.5 text-[10px] font-extrabold text-emerald-800">
+                  <FiCheckCircle className="text-xs" /> ACTIVE
+                </span>
+              )}
+            </div>
+            <h3 className="text-xl font-black text-[#05264E]">
+              {sub?.planName || plan?.name || "Free Tier Plan"}
+            </h3>
+            {hasActiveSub && sub?.endDate ? (
+              <p className="text-xs font-bold text-emerald-600">
+                {daysRemaining} Active Days Remaining (Expiring on {new Date(sub.endDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })})
+              </p>
+            ) : (
+              <p className="text-xs font-medium text-gray-500">
+                Free plan — Upgrade to Pro or Premium for AI resume perks & priority recruiter search placement.
+              </p>
+            )}
+          </div>
+        </div>
+
+        <Link
+          to="/job-seeker/membership"
+          className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#3C65F5] px-6 py-3 text-xs font-extrabold text-white hover:bg-[#254BD6] transition-all shadow-sm shrink-0 cursor-pointer self-start sm:self-auto"
+        >
+          <span>{hasActiveSub ? "Manage Subscription" : "Upgrade Plan"}</span>
+          <FiArrowRight />
+        </Link>
+      </div>
+
       {/* Metrics Row */}
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
         <div className="rounded-2xl border border-[#EAEFF7] bg-white p-6 shadow-sm flex items-center gap-4">
-          <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-[#EBF2FF] text-[#3C65F5]">
+          <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-[#EBF2FF] text-[#3C65F5] shrink-0">
             <FiBriefcase className="text-2xl" />
           </div>
           <div>
@@ -98,7 +154,7 @@ const JobSeekerProfileView = ({ profile }: JobSeekerProfileViewProps) => {
         </div>
 
         <div className="rounded-2xl border border-[#EAEFF7] bg-white p-6 shadow-sm flex items-center gap-4">
-          <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-[#E6F9F0] text-[#00BA63]">
+          <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-[#E6F9F0] text-[#00BA63] shrink-0">
             <FiDollarSign className="text-2xl" />
           </div>
           <div>
@@ -109,8 +165,8 @@ const JobSeekerProfileView = ({ profile }: JobSeekerProfileViewProps) => {
           </div>
         </div>
 
-        <div className="rounded-2xl border border-[#EAEFF7] bg-white p-6 shadow-sm flex items-center gap-4 sm:col-span-2 lg:col-span-1">
-          <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-purple-50 text-purple-600">
+        <div className="rounded-2xl border border-[#EAEFF7] bg-white p-6 shadow-sm flex items-center gap-4">
+          <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-purple-50 text-purple-600 shrink-0">
             <FiAward className="text-2xl" />
           </div>
           <div>

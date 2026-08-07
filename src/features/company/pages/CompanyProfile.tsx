@@ -74,7 +74,7 @@ export const CompanyProfile = () => {
               onClick={() => setActiveTab("edit")}
               className={`rounded-xl px-5 py-2.5 text-xs font-bold transition cursor-pointer ${
                 activeTab === "edit"
-                  ? "bg-[#3C65F5] text-white shadow-md"
+                  ? "bg-[#1D4ED8] text-white shadow-md"
                   : "bg-white text-[#66789C] hover:bg-gray-100 border border-[#EAEFF7]"
               }`}
             >
@@ -86,7 +86,7 @@ export const CompanyProfile = () => {
               onClick={() => setActiveTab("preview")}
               className={`rounded-xl px-5 py-2.5 text-xs font-bold transition cursor-pointer ${
                 activeTab === "preview"
-                  ? "bg-[#3C65F5] text-white shadow-md"
+                  ? "bg-[#1D4ED8] text-white shadow-md"
                   : "bg-white text-[#66789C] hover:bg-gray-100 border border-[#EAEFF7]"
               }`}
             >

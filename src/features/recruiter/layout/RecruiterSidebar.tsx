@@ -11,6 +11,7 @@ import {
   FiUser,
   FiMessageSquare,
   FiMenu,
+  FiZap,
 } from "react-icons/fi";
 import Logo from "../../../assets/logo.svg";
 import { useAppDispatch } from "../../../hooks/useAppDispatch";
@@ -29,6 +30,7 @@ interface RecruiterSidebarProps {
 const navItems = [
   { name: "Dashboard", path: "/recruiter/dashboard", icon: FiGrid },
   { name: "Company Profile", path: "/recruiter/company", icon: FiLayers },
+  { name: "Membership", path: "/recruiter/membership", icon: FiZap },
   { name: "Post a Job", path: "/recruiter/post-job", icon: FiPlusSquare },
   { name: "My Jobs", path: "/recruiter/my-jobs", icon: FiBriefcase },
   { name: "Applications", path: "/recruiter/applications", icon: FiFileText },
@@ -111,7 +113,7 @@ export const RecruiterSidebar = ({
             } rounded-2xl bg-[#F8FAFC] border border-[#EAEFF7] shadow-2xs`}
             title={user?.email || "Recruiter"}
           >
-            <div className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#3C65F5] font-bold text-white text-xs shadow-xs">
+            <div className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#1D4ED8] font-bold text-white text-xs shadow-xs">
               {user?.email ? user.email.charAt(0).toUpperCase() : "R"}
               <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-emerald-500 ring-2 ring-white" />
             </div>
@@ -146,7 +148,7 @@ export const RecruiterSidebar = ({
                         : "justify-between px-3.5 py-2.5"
                     } gap-3 rounded-xl text-xs font-bold transition-all duration-200 ${
                       isActive
-                        ? "bg-[#3C65F5] text-white shadow-md"
+                        ? "bg-[#1D4ED8] text-white shadow-md"
                         : "text-[#66789C] hover:bg-[#F8FAFC] hover:text-[#05264E]"
                     }`
                   }

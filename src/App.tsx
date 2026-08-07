@@ -21,6 +21,10 @@ import JobSeekerLayout from "./features/jobSeeker/layout/JobSeekerLayout";
 import JobSeekerDashboard from "./features/jobSeeker/pages/Dashboard";
 import JobSeekerProfilePage from "./features/jobSeeker/pages/JobSeekerProfilePage";
 import JobSeekerSettings from "./features/jobSeeker/pages/Settings";
+import { Membership } from "./features/membership/pages/Membership";
+import { Pricing } from "./features/membership/pages/Pricing";
+import { RecruiterMembership } from "./features/membership/pages/RecruiterMembership";
+import PaymentHistoryPage from "./features/membership/pages/PaymentHistoryPage";
 
 // Recruiter Feature Layout & Pages
 import RecruiterLayout from "./features/recruiter/layout/RecruiterLayout";
@@ -69,6 +73,8 @@ function App() {
         <Route path="/jobs/:id" element={<JobSeekerJobDetails />} />
         <Route path="/candidates" element={<CandidatesPage />} />
         <Route path="/recruiters" element={<RecruitersDirectory />} />
+        <Route path="/membership" element={<Pricing />} />
+        <Route path="/pricing" element={<Pricing />} />
       </Route>
 
       {/* Protected Job Seeker Dashboard Routes */}
@@ -78,6 +84,8 @@ function App() {
           <Route path="dashboard" element={<JobSeekerDashboard />} />
           <Route path="profile" element={<JobSeekerProfilePage />} />
           <Route path="applications" element={<MyApplications />} />
+          <Route path="membership" element={<Membership />} />
+          <Route path="billing" element={<PaymentHistoryPage />} />
           <Route path="messages" element={<ChatPage />} />
           <Route path="jobs" element={<BrowseJobs />} />
           <Route path="jobs/:id" element={<JobSeekerJobDetails />} />
@@ -91,13 +99,15 @@ function App() {
           <Route index element={<Navigate to="dashboard" replace />} />
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="company" element={<Company />} />
+          <Route path="membership" element={<RecruiterMembership />} />
+          <Route path="billing" element={<PaymentHistoryPage />} />
           <Route path="post-job" element={<PostJob />} />
           <Route path="my-jobs" element={<MyJobs />} />
           <Route path="jobs" element={<MyJobs />} />
           <Route path="jobs/create" element={<CreateJob />} />
-          <Route path="jobs/:id" element={<RecruiterJobDetails />} />
-          <Route path="jobs/:jobId/applications" element={<RecruiterApplications />} />
           <Route path="jobs/edit/:id" element={<EditJob />} />
+          <Route path="jobs/:jobId/applications" element={<RecruiterApplications />} />
+          <Route path="jobs/:id" element={<RecruiterJobDetails />} />
           <Route path="applications" element={<RecruiterApplications />} />
           <Route path="messages" element={<ChatPage />} />
           <Route path="settings" element={<Settings />} />
@@ -114,6 +124,7 @@ function App() {
           <Route path="recruiters" element={<AdminRecruiters />} />
           <Route path="jobs" element={<AdminJobs />} />
           <Route path="applications" element={<AdminApplications />} />
+          <Route path="payments" element={<PaymentHistoryPage />} />
           <Route path="settings" element={<AdminSettings />} />
         </Route>
       </Route>

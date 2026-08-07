@@ -8,11 +8,13 @@ import {
   FiUsers,
   FiZap,
   FiExternalLink,
+  FiCheckCircle,
 } from "react-icons/fi";
 import toast from "react-hot-toast";
 import type { JobBrowserItem } from "../types/jobBrowser.types";
 import { formatSalary, formatEmploymentType, formatExperienceLevel } from "../utils/salaryFormatter";
 import { useAppSelector } from "../../../hooks/useAppSelector";
+import { useGetMyApplicationsQuery } from "../../applications/api/applicationApi";
 
 import companyLogo1 from "../../../assets/images/company-logo1.png";
 import companyLogo2 from "../../../assets/images/company-logo2.png";
@@ -36,6 +38,16 @@ interface JobCardProps {
 const JobCard: React.FC<JobCardProps> = ({ job, layout = "grid" }) => {
   const navigate = useNavigate();
   const { user, isAuthenticated } = useAppSelector((state) => state.auth);
+
+  const { data: myApplications } = useGetMyApplicationsQuery(undefined, {
+    skip: !isAuthenticated || user?.role !== "JOB_SEEKER",
+  });
+
+  const isApplied = Boolean(
+    myApplications?.some(
+      (app) => (typeof app.jobId === "object" ? app.jobId._id : app.jobId) === job._id
+    )
+  );
 
   const companyName =
     typeof job.companyId === "object" && job.companyId !== null
@@ -66,8 +78,8 @@ const JobCard: React.FC<JobCardProps> = ({ job, layout = "grid" }) => {
     e.stopPropagation();
     e.preventDefault();
     if (!isAuthenticated || !user) {
-      toast.error("Please sign in to apply for jobs.");
-      navigate("/login");
+      toast.error("Please sign up or log in to apply for jobs.");
+      navigate("/register");
       return;
     }
     if (user.role !== "JOB_SEEKER") {
@@ -181,12 +193,22 @@ const JobCard: React.FC<JobCardProps> = ({ job, layout = "grid" }) => {
             >
               <FiExternalLink /> View Details
             </button>
-            <button
-              onClick={handleApplyClick}
-              className="rounded-xl bg-[#3C65F5] px-4 py-2 text-xs font-semibold text-white transition hover:bg-[#254BD6] shadow-sm cursor-pointer"
-            >
-              Apply Now
-            </button>
+            {isApplied ? (
+              <button
+                disabled
+                onClick={(e) => e.stopPropagation()}
+                className="flex items-center gap-1.5 rounded-xl bg-emerald-100 text-emerald-800 border border-emerald-200 px-4 py-2 text-xs font-extrabold cursor-not-allowed shadow-2xs"
+              >
+                <FiCheckCircle className="text-emerald-700" /> Applied ✓
+              </button>
+            ) : (
+              <button
+                onClick={handleApplyClick}
+                className="rounded-xl bg-[#3C65F5] px-4 py-2 text-xs font-semibold text-white transition hover:bg-[#254BD6] shadow-sm cursor-pointer"
+              >
+                Apply Now
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -298,12 +320,22 @@ const JobCard: React.FC<JobCardProps> = ({ job, layout = "grid" }) => {
           >
             <FiExternalLink /> Details
           </button>
-          <button
-            onClick={handleApplyClick}
-            className="rounded-lg bg-[#3C65F5] py-1.5 text-xs font-semibold text-white transition hover:bg-[#254BD6] shadow-2xs cursor-pointer"
-          >
-            Apply Now
-          </button>
+          {isApplied ? (
+            <button
+              disabled
+              onClick={(e) => e.stopPropagation()}
+              className="flex items-center justify-center gap-1.5 rounded-lg bg-emerald-100 text-emerald-800 border border-emerald-200 py-1.5 text-xs font-extrabold cursor-not-allowed shadow-2xs"
+            >
+              <FiCheckCircle className="text-emerald-700" /> Applied ✓
+            </button>
+          ) : (
+            <button
+              onClick={handleApplyClick}
+              className="rounded-lg bg-[#3C65F5] py-1.5 text-xs font-semibold text-white transition hover:bg-[#254BD6] shadow-2xs cursor-pointer"
+            >
+              Apply Now
+            </button>
+          )}
         </div>
       </div>
     </div>

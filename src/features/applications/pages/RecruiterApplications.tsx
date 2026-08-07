@@ -108,13 +108,13 @@ export const RecruiterApplications: React.FC = () => {
         {/* Job Selector Dropdown */}
         <div className="flex items-center gap-3">
           <label className="text-xs font-bold text-[#05264E] whitespace-nowrap flex items-center gap-1.5">
-            <FiBriefcase className="text-[#3C65F5]" /> Select Job:
+            <FiBriefcase className="text-[#1D4ED8]" /> Select Job:
           </label>
           <select
             value={selectedJobId}
             onChange={handleJobSelectChange}
             disabled={isLoadingJobs}
-            className="rounded-2xl border border-[#EAEFF7] bg-white px-4 py-2.5 text-xs font-bold text-[#05264E] shadow-sm outline-none focus:border-[#3C65F5] cursor-pointer max-w-xs truncate"
+            className="rounded-2xl border border-[#EAEFF7] bg-white px-4 py-2.5 text-xs font-bold text-[#05264E] shadow-sm outline-none focus:border-[#1D4ED8] cursor-pointer max-w-xs truncate"
           >
             {jobsList.length === 0 ? (
               <option value="">No Posted Jobs Found</option>
@@ -178,8 +178,8 @@ export const RecruiterApplications: React.FC = () => {
                 onClick={() => setStatusFilter(tab.id as ApplicationStatus | "ALL")}
                 className={`rounded-xl px-3 py-1.5 text-xs font-bold transition cursor-pointer whitespace-nowrap ${
                   isActive
-                    ? "bg-[#3C65F5] text-white shadow-sm"
-                    : "bg-[#F8FAFC] text-[#66789C] hover:bg-[#E8F0FE] hover:text-[#3C65F5]"
+                    ? "bg-[#1D4ED8] text-white shadow-sm"
+                    : "bg-[#F8FAFC] text-[#66789C] hover:bg-[#E8F0FE] hover:text-[#1D4ED8]"
                 }`}
               >
                 {tab.label}

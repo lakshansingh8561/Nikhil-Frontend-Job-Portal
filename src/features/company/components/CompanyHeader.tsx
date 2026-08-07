@@ -34,17 +34,19 @@ export const CompanyHeader = ({
             className="h-full w-full object-cover"
           />
         ) : (
-          <div className="h-full w-full bg-gradient-to-r from-[#3C65F5] via-[#254BD6] to-[#05264E] opacity-95" />
+          <div className="h-full w-full bg-gradient-to-r from-[#05264E] via-[#1D4ED8] to-[#1E40AF] opacity-95 relative">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.15),transparent_60%)]" />
+          </div>
         )}
       </div>
 
       {/* Info Section - Logo overlaps banner, text sits cleanly on white background */}
       <div className="p-6 sm:p-8 pt-0">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 -mt-12">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
           {/* Logo Avatar + Company Info */}
           <div className="flex flex-col sm:flex-row sm:items-end gap-6">
-            {/* Logo Avatar */}
-            <div className="relative flex h-24 w-24 shrink-0 items-center justify-center rounded-2xl bg-white p-2 shadow-xl ring-4 ring-white border border-[#EAEFF7] overflow-hidden">
+            {/* Logo Avatar with isolated negative top margin */}
+            <div className="relative flex h-24 w-24 shrink-0 items-center justify-center rounded-2xl bg-white p-2 shadow-xl ring-4 ring-white border border-[#EAEFF7] overflow-hidden -mt-12">
               {logo ? (
                 <img
                   src={logo}
@@ -52,20 +54,20 @@ export const CompanyHeader = ({
                   className="h-full w-full object-contain rounded-xl"
                 />
               ) : (
-                <div className="flex h-full w-full items-center justify-center rounded-xl bg-[#3C65F5] font-extrabold text-white text-3xl">
-                  {companyName ? companyName.charAt(0) : "C"}
+                <div className="flex h-full w-full items-center justify-center rounded-xl bg-[#1D4ED8] font-extrabold text-white text-3xl shadow-inner">
+                  {companyName ? companyName.charAt(0).toUpperCase() : "C"}
                 </div>
               )}
             </div>
 
-            {/* Text details sitting cleanly on white background */}
-            <div className="sm:pt-2">
+            {/* Text details sitting cleanly with top spacing below banner */}
+            <div className="pt-3 sm:pt-4">
               <div className="flex items-center gap-2">
                 <h2 className="text-2xl font-extrabold text-[#05264E]">
                   {companyName || "Your Company Name"}
                 </h2>
                 {isVerified && (
-                  <FiCheckCircle className="text-[#3C65F5] text-lg shrink-0" title="Verified Employer" />
+                  <FiCheckCircle className="text-[#1D4ED8] text-lg shrink-0" title="Verified Employer" />
                 )}
               </div>
 
@@ -74,13 +76,13 @@ export const CompanyHeader = ({
               </p>
 
               <div className="mt-3 flex flex-wrap items-center gap-3 text-xs font-semibold text-[#66789C]">
-                <span className="flex items-center gap-1.5 rounded-lg bg-[#F8FAFC] px-3 py-1.5 border border-[#EAEFF7]">
-                  <FiUsers className="text-[#3C65F5]" />
-                  {companySize || "50-100 Employees"}
+                <span className="flex items-center gap-1.5 rounded-xl bg-[#F8FAFC] px-3 py-1.5 border border-[#EAEFF7]">
+                  <FiUsers className="text-[#1D4ED8]" />
+                  {companySize || "1-10 Employees"}
                 </span>
 
-                <span className="flex items-center gap-1.5 rounded-lg bg-[#F8FAFC] px-3 py-1.5 border border-[#EAEFF7]">
-                  <FiMapPin className="text-[#3C65F5]" />
+                <span className="flex items-center gap-1.5 rounded-xl bg-[#F8FAFC] px-3 py-1.5 border border-[#EAEFF7]">
+                  <FiMapPin className="text-[#1D4ED8]" />
                   {location || "New York, US"}
                 </span>
 
@@ -89,7 +91,7 @@ export const CompanyHeader = ({
                     href={website.startsWith("http") ? website : `https://${website}`}
                     target="_blank"
                     rel="noreferrer"
-                    className="flex items-center gap-1.5 rounded-lg bg-[#EBF2FF] px-3 py-1.5 text-[#3C65F5] hover:underline"
+                    className="flex items-center gap-1.5 rounded-xl bg-[#EBF2FF] px-3 py-1.5 text-[#1D4ED8] hover:underline"
                   >
                     <FiGlobe />
                     Visit Website
@@ -99,11 +101,13 @@ export const CompanyHeader = ({
             </div>
           </div>
 
-          <span className="self-start sm:self-auto rounded-full bg-blue-50 px-4 py-1.5 text-xs font-bold text-[#3C65F5] border border-blue-200">
-            {industry || "Technology"}
+          <span className="self-start sm:self-auto rounded-full bg-blue-50 px-4 py-1.5 text-xs font-extrabold text-[#1D4ED8] border border-blue-200">
+            {industry || "Information Technology"}
           </span>
         </div>
       </div>
     </div>
   );
 };
+
+export default CompanyHeader;

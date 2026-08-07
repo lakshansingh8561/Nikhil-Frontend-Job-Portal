@@ -47,7 +47,7 @@ export const RecruiterHeader = ({ onToggleSidebar }: RecruiterHeaderProps) => {
           <input
             type="text"
             placeholder="Search candidates, jobs, applications..."
-            className="w-full rounded-2xl border border-[#EAEFF7] bg-white py-2.5 pl-10 pr-4 text-xs font-medium text-[#05264E] placeholder-gray-400 outline-none transition focus:border-[#3C65F5] shadow-xs"
+            className="w-full rounded-2xl border border-[#EAEFF7] bg-white py-2.5 pl-10 pr-4 text-xs font-medium text-[#05264E] placeholder-gray-400 outline-none transition focus:border-[#1D4ED8] shadow-xs"
           />
         </div>
       </div>
@@ -61,9 +61,9 @@ export const RecruiterHeader = ({ onToggleSidebar }: RecruiterHeaderProps) => {
         <div className="relative ml-2">
           <button
             onClick={() => setDropdownOpen(!dropdownOpen)}
-            className="flex items-center gap-2.5 rounded-2xl bg-white p-1.5 pr-3 border border-[#EAEFF7] hover:border-[#3C65F5] transition cursor-pointer shadow-xs"
+            className="flex items-center gap-2.5 rounded-2xl bg-white p-1.5 pr-3 border border-[#EAEFF7] hover:border-[#1D4ED8] transition cursor-pointer shadow-xs"
           >
-            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#3C65F5] font-bold text-white text-xs">
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#1D4ED8] font-bold text-white text-xs">
               {user?.email ? user.email.charAt(0).toUpperCase() : "R"}
             </div>
             <span className="hidden sm:inline text-xs font-bold text-[#05264E] max-w-[100px] truncate">
@@ -77,7 +77,7 @@ export const RecruiterHeader = ({ onToggleSidebar }: RecruiterHeaderProps) => {
               <Link
                 to="/recruiter/profile"
                 onClick={() => setDropdownOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-xs font-semibold text-gray-700 hover:bg-blue-50 hover:text-[#3C65F5]"
+                className="flex items-center gap-2.5 px-4 py-2.5 text-xs font-semibold text-gray-700 hover:bg-blue-50 hover:text-[#1D4ED8]"
               >
                 <FiUser /> My Profile
               </Link>
@@ -85,7 +85,7 @@ export const RecruiterHeader = ({ onToggleSidebar }: RecruiterHeaderProps) => {
               <Link
                 to="/recruiter/settings"
                 onClick={() => setDropdownOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-xs font-semibold text-gray-700 hover:bg-blue-50 hover:text-[#3C65F5]"
+                className="flex items-center gap-2.5 px-4 py-2.5 text-xs font-semibold text-gray-700 hover:bg-blue-50 hover:text-[#1D4ED8]"
               >
                 <FiSettings /> Settings
               </Link>
@@ -105,3 +105,5 @@ export const RecruiterHeader = ({ onToggleSidebar }: RecruiterHeaderProps) => {
     </header>
   );
 };
+
+export default RecruiterHeader;
