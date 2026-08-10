@@ -30,7 +30,7 @@ const SocialLogin: React.FC<SocialLoginProps> = ({
           theme="outline"
           shape="rectangular"
           size="large"
-          width="100%"
+          width="350"
         />
       </div>
     </div>

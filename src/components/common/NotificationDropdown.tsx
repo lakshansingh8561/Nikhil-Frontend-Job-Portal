@@ -138,11 +138,10 @@ export const NotificationDropdown: React.FC = () => {
                 <div
                   key={notif._id}
                   onClick={() => handleNotificationClick(notif)}
-                  className={`group relative flex items-start gap-3 rounded-2xl p-3 transition cursor-pointer border ${
-                    notif.isRead
+                  className={`group relative flex items-start gap-3 rounded-2xl p-3 transition cursor-pointer border ${notif.isRead
                       ? "bg-white border-[#F0F4FC] hover:bg-[#F8FAFC]"
                       : "bg-[#F4F7FF] border-[#D9E4FF] hover:bg-[#EBF2FF]"
-                  }`}
+                    }`}
                 >
                   <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white shadow-2xs border border-[#EAEFF7] mt-0.5">
                     {getIcon(notif.type)}

@@ -1,4 +1,14 @@
-import { FiCheckCircle, FiGlobe, FiMapPin, FiUsers } from "react-icons/fi";
+import React from "react";
+import {
+  FiCheckCircle,
+  FiGlobe,
+  FiMapPin,
+  FiUsers,
+  FiAward,
+  FiBriefcase,
+  FiLayers,
+  FiShield,
+} from "react-icons/fi";
 
 interface CompanyHeaderProps {
   companyName?: string;
@@ -12,7 +22,7 @@ interface CompanyHeaderProps {
   isVerified?: boolean;
 }
 
-export const CompanyHeader = ({
+export const CompanyHeader: React.FC<CompanyHeaderProps> = ({
   companyName,
   tagline,
   industry,
@@ -22,66 +32,111 @@ export const CompanyHeader = ({
   coverImage,
   website,
   isVerified = true,
-}: CompanyHeaderProps) => {
+}) => {
+  const displayTitle = companyName || "Your Company Name";
+  const displayTagline =
+    tagline || "Leading the future of technology, software innovation & digital growth";
+
   return (
-    <div className="relative overflow-hidden rounded-3xl bg-white shadow-sm border border-[#EAEFF7]">
-      {/* Cover Image Banner */}
-      <div className="h-44 w-full bg-[#1E293B] relative overflow-hidden">
+    <div className="relative overflow-hidden rounded-3xl bg-white shadow-md border border-[#EAEFF7]">
+      {/* Cover Image & Rich Gradient Banner Container */}
+      <div className="h-56 w-full relative overflow-hidden bg-gradient-to-r from-[#05264E] via-[#1E40AF] to-[#1D4ED8]">
         {coverImage ? (
-          <img
-            src={coverImage}
-            alt="Company Cover"
-            className="h-full w-full object-cover"
-          />
+          <div className="relative h-full w-full">
+            <img
+              src={coverImage}
+              alt="Company Cover"
+              className="h-full w-full object-cover"
+            />
+            {/* Dark gradient overlay for text readability over image */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20" />
+          </div>
         ) : (
-          <div className="h-full w-full bg-gradient-to-r from-[#05264E] via-[#1D4ED8] to-[#1E40AF] opacity-95 relative">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.15),transparent_60%)]" />
+          <div className="relative h-full w-full p-6 sm:p-8 flex flex-col justify-between overflow-hidden">
+            {/* Ambient Decorative Spotlight & Radial Pattern */}
+            <div className="absolute -right-16 -top-16 h-72 w-72 rounded-full bg-blue-400/20 blur-3xl" />
+            <div className="absolute -left-16 -bottom-16 h-72 w-72 rounded-full bg-indigo-500/20 blur-3xl" />
+            <div className="absolute inset-0 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:24px_24px] opacity-10" />
+
+            {/* Top Row: Floating Glassmorphism Badges */}
+            <div className="relative z-10 flex flex-wrap items-center justify-between gap-3">
+              <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-xs font-bold text-blue-100 backdrop-blur-md border border-white/15 shadow-sm">
+                <FiAward className="text-yellow-400" /> Employer Branding & Corporate Hub
+              </span>
+
+              <div className="hidden sm:flex items-center gap-2">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/20 px-3 py-1 text-[11px] font-bold text-emerald-200 backdrop-blur-md border border-emerald-400/30">
+                  <FiShield /> Verified Employer
+                </span>
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-[11px] font-bold text-blue-200 backdrop-blur-md border border-white/15">
+                  <FiLayers /> Active Hiring Portal
+                </span>
+              </div>
+            </div>
+
+            {/* Banner Center Text Content */}
+            <div className="relative z-10 max-w-2xl mb-4 sm:mb-6">
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight text-white drop-shadow-sm">
+                {displayTitle}
+              </h1>
+              <p className="mt-1.5 text-xs sm:text-sm font-medium text-blue-100/90 line-clamp-2 leading-relaxed max-w-xl">
+                {displayTagline}
+              </p>
+            </div>
           </div>
         )}
       </div>
 
-      {/* Info Section - Logo overlaps banner, text sits cleanly on white background */}
+      {/* Info Section Below Cover - Avatar Logo Overlaps Banner edge cleanly */}
       <div className="p-6 sm:p-8 pt-0">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
-          {/* Logo Avatar + Company Info */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+          {/* Logo Avatar + Main Title & Tags */}
           <div className="flex flex-col sm:flex-row sm:items-end gap-6">
-            {/* Logo Avatar with isolated negative top margin */}
-            <div className="relative flex h-24 w-24 shrink-0 items-center justify-center rounded-2xl bg-white p-2 shadow-xl ring-4 ring-white border border-[#EAEFF7] overflow-hidden -mt-12">
+            {/* Logo Avatar with negative top margin overlapping banner */}
+            <div className="relative flex h-24 w-24 sm:h-28 sm:w-28 shrink-0 items-center justify-center rounded-2xl bg-white p-2.5 shadow-xl ring-4 ring-white border border-[#EAEFF7] overflow-hidden -mt-12 sm:-mt-14 transition-transform hover:scale-105">
               {logo ? (
                 <img
                   src={logo}
-                  alt={companyName || "Logo"}
+                  alt={displayTitle}
                   className="h-full w-full object-contain rounded-xl"
                 />
               ) : (
-                <div className="flex h-full w-full items-center justify-center rounded-xl bg-[#1D4ED8] font-extrabold text-white text-3xl shadow-inner">
-                  {companyName ? companyName.charAt(0).toUpperCase() : "C"}
+                <div className="flex h-full w-full items-center justify-center rounded-xl bg-gradient-to-br from-[#1D4ED8] to-[#05264E] font-black text-white text-3xl sm:text-4xl shadow-inner">
+                  {displayTitle.charAt(0).toUpperCase()}
                 </div>
               )}
             </div>
 
-            {/* Text details sitting cleanly with top spacing below banner */}
-            <div className="pt-3 sm:pt-4">
-              <div className="flex items-center gap-2">
-                <h2 className="text-2xl font-extrabold text-[#05264E]">
-                  {companyName || "Your Company Name"}
+            {/* Text details sitting cleanly below banner */}
+            <div className="pt-2 sm:pt-4">
+              <div className="flex items-center gap-2.5 flex-wrap">
+                <h2 className="text-2xl sm:text-3xl font-black text-[#05264E] tracking-tight">
+                  {displayTitle}
                 </h2>
                 {isVerified && (
-                  <FiCheckCircle className="text-[#1D4ED8] text-lg shrink-0" title="Verified Employer" />
+                  <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2.5 py-1 text-xs font-bold text-[#1D4ED8] border border-blue-200">
+                    <FiCheckCircle className="text-sm" /> Verified Company
+                  </span>
                 )}
               </div>
 
-              <p className="text-sm font-semibold text-[#66789C] mt-0.5">
-                {tagline || "Leading the future of technology & innovation"}
+              <p className="text-xs sm:text-sm font-semibold text-[#66789C] mt-1 max-w-2xl">
+                {displayTagline}
               </p>
 
-              <div className="mt-3 flex flex-wrap items-center gap-3 text-xs font-semibold text-[#66789C]">
-                <span className="flex items-center gap-1.5 rounded-xl bg-[#F8FAFC] px-3 py-1.5 border border-[#EAEFF7]">
+              {/* Quick Info Badges */}
+              <div className="mt-4 flex flex-wrap items-center gap-2.5 text-xs font-bold text-[#05264E]">
+                <span className="flex items-center gap-1.5 rounded-xl bg-[#F8FAFC] px-3.5 py-2 border border-[#EAEFF7] shadow-2xs">
+                  <FiBriefcase className="text-[#1D4ED8]" />
+                  {industry || "Information Technology"}
+                </span>
+
+                <span className="flex items-center gap-1.5 rounded-xl bg-[#F8FAFC] px-3.5 py-2 border border-[#EAEFF7] shadow-2xs">
                   <FiUsers className="text-[#1D4ED8]" />
                   {companySize || "1-10 Employees"}
                 </span>
 
-                <span className="flex items-center gap-1.5 rounded-xl bg-[#F8FAFC] px-3 py-1.5 border border-[#EAEFF7]">
+                <span className="flex items-center gap-1.5 rounded-xl bg-[#F8FAFC] px-3.5 py-2 border border-[#EAEFF7] shadow-2xs">
                   <FiMapPin className="text-[#1D4ED8]" />
                   {location || "New York, US"}
                 </span>
@@ -91,19 +146,22 @@ export const CompanyHeader = ({
                     href={website.startsWith("http") ? website : `https://${website}`}
                     target="_blank"
                     rel="noreferrer"
-                    className="flex items-center gap-1.5 rounded-xl bg-[#EBF2FF] px-3 py-1.5 text-[#1D4ED8] hover:underline"
+                    className="flex items-center gap-1.5 rounded-xl bg-[#EBF2FF] px-4 py-2 text-xs font-bold text-[#1D4ED8] hover:bg-blue-100 transition border border-blue-200/60 shadow-2xs"
                   >
-                    <FiGlobe />
-                    Visit Website
+                    <FiGlobe className="text-sm" />
+                    <span>Visit Website</span>
                   </a>
                 )}
               </div>
             </div>
           </div>
 
-          <span className="self-start sm:self-auto rounded-full bg-blue-50 px-4 py-1.5 text-xs font-extrabold text-[#1D4ED8] border border-blue-200">
-            {industry || "Information Technology"}
-          </span>
+          {/* Industry Category Pill */}
+          <div className="self-start md:self-auto shrink-0">
+            <span className="inline-flex items-center gap-1.5 rounded-2xl bg-gradient-to-r from-blue-50 to-indigo-50 px-5 py-2.5 text-xs font-black text-[#1D4ED8] border border-blue-200/80 shadow-2xs">
+              <FiBriefcase /> {industry || "Information Technology"}
+            </span>
+          </div>
         </div>
       </div>
     </div>

@@ -30,7 +30,6 @@ interface RecruiterSidebarProps {
 const navItems = [
   { name: "Dashboard", path: "/recruiter/dashboard", icon: FiGrid },
   { name: "Company Profile", path: "/recruiter/company", icon: FiLayers },
-  { name: "Membership", path: "/recruiter/membership", icon: FiZap },
   { name: "Post a Job", path: "/recruiter/post-job", icon: FiPlusSquare },
   { name: "My Jobs", path: "/recruiter/my-jobs", icon: FiBriefcase },
   { name: "Applications", path: "/recruiter/applications", icon: FiFileText },
@@ -170,8 +169,45 @@ export const RecruiterSidebar = ({
           </nav>
         </div>
 
-        {/* Logout Button */}
-        <div className="pt-4 border-t border-[#F0F4FC] shrink-0">
+        {/* Bottom Actions */}
+        <div className="space-y-3 pt-4 border-t border-[#F0F4FC] shrink-0">
+          {/* SPECIAL MEMBERSHIP BUTTON AT BOTTOM */}
+          <NavLink
+            to="/recruiter/membership"
+            onClick={onCloseMobile}
+            title={isDesktopCollapsed ? "Membership Plans" : undefined}
+            className={({ isActive }) =>
+              `relative group overflow-hidden flex items-center ${
+                isDesktopCollapsed
+                  ? "lg:w-12 lg:h-12 lg:p-0 lg:mx-auto lg:justify-center"
+                  : "justify-between px-4 py-3"
+              } rounded-2xl bg-gradient-to-r from-[#3C65F5] via-[#4F46E5] to-[#7C3AED] text-white shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 border border-white/20 ${
+                isActive ? "ring-2 ring-yellow-400 ring-offset-2" : ""
+              }`
+            }
+          >
+            {/* Shimmer Effect */}
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out" />
+
+            <div className="relative z-10 flex items-center gap-3">
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-yellow-400/20 backdrop-blur-md text-yellow-300 border border-yellow-300/30 shadow-inner">
+                <FiZap className="text-lg fill-yellow-300 text-yellow-300 animate-pulse" />
+              </span>
+              <div className={`flex flex-col ${isDesktopCollapsed ? "lg:hidden" : ""}`}>
+                <span className="text-xs font-black tracking-wide text-white drop-shadow-xs">
+                  Membership Plans
+                </span>
+                <span className="text-[10px] font-bold text-yellow-300/90 tracking-wider uppercase">
+                  Upgrade & Perks ⭐
+                </span>
+              </div>
+            </div>
+
+            <span className={`relative z-10 rounded-full bg-yellow-400 px-2 py-0.5 text-[9px] font-black uppercase text-gray-900 shadow-sm ${isDesktopCollapsed ? "lg:hidden" : ""}`}>
+              PRO
+            </span>
+          </NavLink>
+
           <button
             onClick={handleLogout}
             title={isDesktopCollapsed ? "Sign Out" : undefined}

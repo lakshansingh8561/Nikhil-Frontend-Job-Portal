@@ -1,6 +1,7 @@
 export * from "./types/chat.types";
 export * from "./api/chatApi";
 export * from "./context/SocketContext";
+export * from "./context/CallContext";
 export * from "./components/ConversationList";
 export * from "./components/ChatWindow";
 export * from "./components/MessageBubble";
