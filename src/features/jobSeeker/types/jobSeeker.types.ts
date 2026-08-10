@@ -39,6 +39,7 @@ export interface JobSeekerProfile {
   education: Education[];
   experience: Experience[];
   resume?: string;
+  profilePicture?: string;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -55,6 +56,8 @@ export interface CreateJobSeekerProfileInput {
   skills: string[];
   education?: Education[];
   experience?: Experience[];
+  resume?: string;
+  profilePicture?: string;
 }
 
 export type UpdateJobSeekerProfileInput = Partial<CreateJobSeekerProfileInput>;

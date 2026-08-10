@@ -6,8 +6,14 @@ import {
   FiX,
   FiMoreVertical,
   FiTrash2,
+  FiPhone,
+  FiVideo,
+  FiMic,
+  FiMicOff,
+  FiVideoOff,
+  FiPhoneOff,
 } from "react-icons/fi";
-import type { IConversation, IMessage } from "../types/chat.types";
+import type { IConversation, IMessage, IAttachment, MessageType } from "../types/chat.types";
 import {
   useGetMessagesQuery,
   useSendMessageMutation,
@@ -18,6 +24,7 @@ import {
   useLazySearchMessagesQuery,
 } from "../api/chatApi";
 import { useSocket } from "../context/SocketContext";
+import { useCall } from "../context/CallContext";
 import { useAppSelector } from "../../../hooks/useAppSelector";
 import { MessageBubble } from "./MessageBubble";
 import { MessageInput } from "./MessageInput";
@@ -70,6 +77,8 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
     emitMarkRead,
   } = useSocket();
 
+  const { startCall } = useCall();
+
   const [replyingTo, setReplyingTo] = useState<IMessage | null>(null);
   const [editingMessage, setEditingMessage] = useState<IMessage | null>(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -77,6 +86,11 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
   const [searchResults, setSearchResults] = useState<IMessage[] | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
+
+  // Active Calling State (Audio or Video)
+  const [activeCall, setActiveCall] = useState<"audio" | "video" | null>(null);
+  const [isMuted, setIsMuted] = useState(false);
+  const [isVideoOff, setIsVideoOff] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -101,7 +115,6 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
       console.error("Failed to delete conversation:", err);
     }
   };
-
 
   // Socket join/leave & Mark Read on Mount
   useEffect(() => {
@@ -138,33 +151,54 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
     }
   }, [conversationId, messagesData?.messages, currentUserId, isConnected, markAsRead, emitMarkRead]);
 
-  // Smart auto-scroll: Scroll to bottom on load/send, but respect user scrolling up (Requirement 13)
+  const scrollToBottom = (behavior: ScrollBehavior = "auto") => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollTop = scrollContainerRef.current.scrollHeight;
+    }
+    messagesEndRef.current?.scrollIntoView({ behavior });
+  };
+
+  // Force scroll to bottom when opening or switching conversations (WhatsApp behavior)
   useEffect(() => {
-    const container = scrollContainerRef.current;
-    if (!container) {
-      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-      return;
+    if (conversationId) {
+      scrollToBottom("auto");
+      const timer = setTimeout(() => {
+        scrollToBottom("auto");
+      }, 80);
+      return () => clearTimeout(timer);
     }
-    const isNearBottom =
-      container.scrollHeight - container.scrollTop - container.clientHeight < 150;
-    if (isNearBottom || (messagesData?.messages?.length && messagesData.messages.length <= 1)) {
-      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [conversationId]);
+
+  // Auto-scroll to bottom on new messages load or search
+  useEffect(() => {
+    if (messagesData?.messages?.length) {
+      scrollToBottom("smooth");
     }
-  }, [messagesData?.messages, searchResults]);
+  }, [messagesData?.messages?.length, searchResults]);
 
   const isOnline = onlineUserIds.has(conversation.recipient?.userId);
   const typingUsers = typingUsersMap[conversationId];
-  const isRecipientTyping =
-    typingUsers && typingUsers.has(conversation.recipient?.userId);
+  const recipientIdStr = conversation.recipient?.userId;
+  const isRecipientTyping = Boolean(
+    typingUsers &&
+      ((recipientIdStr && typingUsers.has(recipientIdStr)) || typingUsers.size > 0)
+  );
 
   const messagesToDisplay = searchResults || messagesData?.messages || [];
 
-  const handleSend = async (text: string, replyToId?: string) => {
+  const handleSend = async (
+    text: string,
+    replyToId?: string,
+    attachments?: IAttachment[],
+    messageType?: MessageType
+  ) => {
     try {
       await sendMessage({
         conversationId,
         message: text,
         replyTo: replyToId,
+        attachments,
+        messageType,
       }).unwrap();
       setReplyingTo(null);
       // Force scroll to bottom when user sends a message
@@ -275,7 +309,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
         </div>
 
         {/* Header Action Buttons */}
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="flex items-center gap-1.5 shrink-0">
           {isSearchOpen ? (
             <form onSubmit={handleSearchSubmit} className="flex items-center gap-1.5">
               <input
@@ -301,29 +335,75 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
             </form>
           ) : (
             <>
+              {/* Voice Calling Button */}
               <button
+                type="button"
+                onClick={() => {
+                  const targetId = conversation.recipient?.userId;
+                  if (targetId) {
+                    startCall(
+                      targetId,
+                      conversationId,
+                      "audio",
+                      conversation.recipient?.name || "User",
+                      conversation.recipient?.profilePicture
+                    );
+                  }
+                }}
+                className="p-2 text-gray-600 hover:text-[#4F46E5] hover:bg-blue-50 rounded-xl transition-all duration-200 cursor-pointer"
+                title="Voice Call"
+              >
+                <FiPhone className="text-lg" />
+              </button>
+
+              {/* Video Calling Button */}
+              <button
+                type="button"
+                onClick={() => {
+                  const targetId = conversation.recipient?.userId;
+                  if (targetId) {
+                    startCall(
+                      targetId,
+                      conversationId,
+                      "video",
+                      conversation.recipient?.name || "User",
+                      conversation.recipient?.profilePicture
+                    );
+                  }
+                }}
+                className="p-2 text-gray-600 hover:text-[#4F46E5] hover:bg-blue-50 rounded-xl transition-all duration-200 cursor-pointer"
+                title="Video Call"
+              >
+                <FiVideo className="text-lg" />
+              </button>
+
+              {/* Search Messages */}
+              <button
+                type="button"
                 onClick={() => setIsSearchOpen(true)}
                 aria-label="Search messages in conversation"
-                className="p-2 text-gray-500 hover:text-[#4F46E5] hover:bg-[#F3F4F6] rounded-xl transition-all duration-200 cursor-pointer"
+                className="p-2 text-gray-600 hover:text-[#4F46E5] hover:bg-[#F3F4F6] rounded-xl transition-all duration-200 cursor-pointer"
                 title="Search conversation"
               >
-                <FiSearch className="text-xl" />
+                <FiSearch className="text-lg" />
               </button>
 
               {/* More Menu Dropdown */}
               <div className="relative">
                 <button
+                  type="button"
                   onClick={() => setIsMenuOpen(!isMenuOpen)}
                   aria-label="More options"
-                  className="p-2 text-gray-500 hover:text-[#4F46E5] hover:bg-[#F3F4F6] rounded-xl transition-all duration-200 cursor-pointer"
+                  className="p-2 text-gray-600 hover:text-[#4F46E5] hover:bg-[#F3F4F6] rounded-xl transition-all duration-200 cursor-pointer"
                   title="More options"
                 >
-                  <FiMoreVertical className="text-xl" />
+                  <FiMoreVertical className="text-lg" />
                 </button>
 
                 {isMenuOpen && (
                   <div className="absolute right-0 top-11 z-50 w-52 rounded-xl border border-gray-200 bg-white p-1.5 shadow-xl animate-bubble">
                     <button
+                      type="button"
                       onClick={() => {
                         setIsMenuOpen(false);
                         setIsConfirmDeleteOpen(true);
@@ -340,7 +420,6 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
           )}
         </div>
       </div>
-
 
       {/* Messages Scroll Area */}
       <div
@@ -370,13 +449,11 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
                 : msg.sender;
             const isOwn = senderId === currentUserId;
 
-            // Date divider calculation
             const currentDateStr = msg.createdAt ? new Date(msg.createdAt).toDateString() : "";
             const prevMsg = index > 0 ? messagesToDisplay[index - 1] : null;
             const prevDateStr = prevMsg?.createdAt ? new Date(prevMsg.createdAt).toDateString() : "";
             const showDateDivider = index === 0 || currentDateStr !== prevDateStr;
 
-            // Same sender in close succession calculation (Requirement 9)
             const prevSenderId = prevMsg
               ? typeof prevMsg.sender === "object"
                 ? (prevMsg.sender as any)._id
@@ -386,7 +463,6 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
 
             return (
               <React.Fragment key={msg.id || msg._id}>
-                {/* Centered Date Divider (Requirement 9) */}
                 {showDateDivider && currentDateStr && (
                   <div className="flex items-center justify-center my-4">
                     <span className="bg-[#E2E8F0]/70 text-slate-600 text-xs font-semibold px-3.5 py-1 rounded-full shadow-2xs border border-slate-200/60">
@@ -395,7 +471,6 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
                   </div>
                 )}
 
-                {/* Message Bubble */}
                 <MessageBubble
                   message={msg}
                   isOwn={isOwn}
@@ -409,7 +484,6 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
           })
         )}
 
-        {/* Typing Indicator */}
         {isRecipientTyping && (
           <TypingIndicator userName={conversation.recipient?.name} />
         )}
@@ -417,7 +491,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input */}
+      {/* Input Bar */}
       <MessageInput
         onSend={handleSend}
         onEditSubmit={handleEditSubmit}
@@ -425,9 +499,74 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
         editingMessage={editingMessage}
         onCancelReply={() => setReplyingTo(null)}
         onCancelEdit={() => setEditingMessage(null)}
-        onTyping={() => emitTyping(conversationId)}
-        onStopTyping={() => emitStopTyping(conversationId)}
+        onTyping={() => emitTyping(conversationId, conversation.recipient?.userId)}
+        onStopTyping={() => emitStopTyping(conversationId, conversation.recipient?.userId)}
       />
+
+      {/* Interactive Audio & Video Calling Modal Overlay */}
+      {activeCall && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-4 animate-bubble">
+          <div className="relative w-full max-w-sm sm:max-w-md rounded-3xl bg-[#0F172A] p-6 text-white shadow-2xl border border-slate-700 flex flex-col items-center justify-between min-h-[380px]">
+            <div className="text-center mt-4">
+              <span className="inline-block rounded-full bg-indigo-500/20 px-3.5 py-1 text-[11px] font-bold text-indigo-300 border border-indigo-400/30 uppercase tracking-wider mb-5">
+                {activeCall === "video" ? "📹 HD Video Call" : "📞 Voice Call"}
+              </span>
+              <div className="relative mx-auto h-24 w-24 mb-4">
+                {conversation.recipient?.profilePicture ? (
+                  <img
+                    src={conversation.recipient.profilePicture}
+                    alt={conversation.recipient.name}
+                    className="h-full w-full rounded-full object-cover border-4 border-indigo-500 shadow-xl"
+                  />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 font-extrabold text-white text-3xl shadow-xl border-4 border-indigo-400">
+                    {conversation.recipient?.name?.charAt(0).toUpperCase() || "U"}
+                  </div>
+                )}
+                <span className="absolute bottom-0 right-0 h-4 w-4 rounded-full bg-emerald-500 ring-4 ring-[#0F172A] animate-pulse" />
+              </div>
+
+              <h3 className="text-xl font-black text-white">{conversation.recipient?.name}</h3>
+              <p className="text-xs text-indigo-200 mt-1 font-semibold">Calling {conversation.recipient?.role || "User"}...</p>
+            </div>
+
+            <div className="flex items-center gap-5 my-6">
+              <button
+                type="button"
+                onClick={() => setIsMuted(!isMuted)}
+                className={`flex h-12 w-12 items-center justify-center rounded-2xl transition-all cursor-pointer ${
+                  isMuted ? "bg-red-500/20 text-red-400 border border-red-500/40" : "bg-slate-800 text-white hover:bg-slate-700"
+                }`}
+                title={isMuted ? "Unmute" : "Mute"}
+              >
+                {isMuted ? <FiMicOff className="text-xl" /> : <FiMic className="text-xl" />}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setActiveCall(null)}
+                className="flex h-14 w-14 items-center justify-center rounded-full bg-red-600 text-white hover:bg-red-700 shadow-lg transition-transform hover:scale-105 active:scale-95 cursor-pointer"
+                title="End Call"
+              >
+                <FiPhoneOff className="text-2xl" />
+              </button>
+
+              {activeCall === "video" && (
+                <button
+                  type="button"
+                  onClick={() => setIsVideoOff(!isVideoOff)}
+                  className={`flex h-12 w-12 items-center justify-center rounded-2xl transition-all cursor-pointer ${
+                    isVideoOff ? "bg-red-500/20 text-red-400 border border-red-500/40" : "bg-slate-800 text-white hover:bg-slate-700"
+                  }`}
+                  title={isVideoOff ? "Turn Camera On" : "Turn Camera Off"}
+                >
+                  {isVideoOff ? <FiVideoOff className="text-xl" /> : <FiVideo className="text-xl" />}
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Confirmation Modal for Deleting Conversation from Header Menu */}
       {isConfirmDeleteOpen && (
@@ -473,4 +612,4 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
   );
 };
 
-
+export default ChatWindow;

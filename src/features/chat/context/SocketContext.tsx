@@ -24,8 +24,8 @@ interface SocketContextType {
     attachments?: any[];
     replyTo?: string;
   }) => void;
-  emitTyping: (conversationId: string) => void;
-  emitStopTyping: (conversationId: string) => void;
+  emitTyping: (conversationId: string, receiverId?: string) => void;
+  emitStopTyping: (conversationId: string, receiverId?: string) => void;
   emitMarkRead: (conversationId: string) => void;
 }
 
@@ -162,6 +162,10 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
       dispatch(chatApi.util.invalidateTags(["Chat"]));
     });
 
+    newSocket.on("receive-message", (_message: any) => {
+      dispatch(chatApi.util.invalidateTags(["Chat"]));
+    });
+
     newSocket.on("message_read", () => {
       dispatch(chatApi.util.invalidateTags(["Chat"]));
     });
@@ -189,6 +193,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
     (conversationId: string) => {
       if (socket && isConnected) {
         socket.emit("join_conversation", { conversationId });
+        socket.emit("join-conversation", { conversationId });
       }
     },
     [socket, isConnected]
@@ -198,6 +203,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
     (conversationId: string) => {
       if (socket && isConnected) {
         socket.emit("leave_conversation", { conversationId });
+        socket.emit("leave-conversation", { conversationId });
       }
     },
     [socket, isConnected]
@@ -213,24 +219,26 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
     }) => {
       if (socket && isConnected) {
         socket.emit("send_message", data);
+        socket.emit("send-message", data);
       }
     },
     [socket, isConnected]
   );
 
   const emitTyping = useCallback(
-    (conversationId: string) => {
+    (conversationId: string, receiverId?: string) => {
       if (socket && isConnected) {
-        socket.emit("typing", { conversationId });
+        socket.emit("typing", { conversationId, receiverId });
       }
     },
     [socket, isConnected]
   );
 
   const emitStopTyping = useCallback(
-    (conversationId: string) => {
+    (conversationId: string, receiverId?: string) => {
       if (socket && isConnected) {
-        socket.emit("stop_typing", { conversationId });
+        socket.emit("stop_typing", { conversationId, receiverId });
+        socket.emit("stop-typing", { conversationId, receiverId });
       }
     },
     [socket, isConnected]
@@ -240,6 +248,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
     (conversationId: string) => {
       if (socket && isConnected) {
         socket.emit("message_read", { conversationId });
+        socket.emit("message-seen", { conversationId });
       }
     },
     [socket, isConnected]

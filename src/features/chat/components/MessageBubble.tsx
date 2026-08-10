@@ -93,18 +93,18 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
               {/* Read / Delivered Checkmarks */}
               {isOwn && (
                 <span className="flex items-center ml-0.5" aria-label={`Status: ${message.status || 'sent'}`}>
-                  {message.status === "seen" || message.read ? (
-                    <span title="Seen" className="text-cyan-300 font-black flex items-center">
+                  {message.status === "seen" || message.read || (message as any).reads?.some((r: any) => r.userId && r.userId !== (typeof message.sender === "object" ? (message.sender as any)._id : message.sender)) ? (
+                    <span title="Read / Seen (2 Blue Ticks)" className="text-cyan-300 font-black flex items-center">
                       <FiCheck className="-mr-1.5 stroke-[2.5]" />
                       <FiCheck className="stroke-[2.5]" />
                     </span>
                   ) : message.status === "delivered" || message.delivered ? (
-                    <span title="Delivered" className="text-white/90 flex items-center">
+                    <span title="Delivered (2 Gray Ticks)" className="text-white/80 flex items-center">
                       <FiCheck className="-mr-1.5 stroke-[2]" />
                       <FiCheck className="stroke-[2]" />
                     </span>
                   ) : (
-                    <span title="Sent" className="text-white/60">
+                    <span title="Sent (1 Gray Tick)" className="text-white/60">
                       <FiCheck className="stroke-[2]" />
                     </span>
                   )}
@@ -114,22 +114,48 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
           </div>
         )}
 
-        {/* Attachments */}
+        {/* Attachments & Images */}
         {!message.isDeleted && message.attachments && message.attachments.length > 0 && (
-          <div className="mt-1.5 space-y-1">
-            {message.attachments.map((att, idx) => (
-              <a
-                key={idx}
-                href={att.url}
-                target="_blank"
-                rel="noreferrer"
-                className={`block rounded-md px-2 py-1 text-xs font-semibold underline truncate transition-colors ${
-                  isOwn ? "bg-white/10 text-indigo-100 hover:text-white" : "bg-gray-50 text-[#4F46E5] hover:bg-gray-100"
-                }`}
-              >
-                📎 {att.fileName || "Attachment"}
-              </a>
-            ))}
+          <div className="mt-2 space-y-1.5">
+            {message.attachments.map((att, idx) => {
+              const isImage =
+                message.messageType === "image" ||
+                att.fileType?.startsWith("image") ||
+                /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(att.url) ||
+                att.url.startsWith("data:image");
+
+              if (isImage) {
+                return (
+                  <a
+                    key={idx}
+                    href={att.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="block overflow-hidden rounded-xl border border-black/10 shadow-sm transition-transform hover:scale-[1.01]"
+                  >
+                    <img
+                      src={att.url}
+                      alt={att.fileName || "Uploaded attachment"}
+                      className="max-h-60 w-full object-cover rounded-xl"
+                    />
+                  </a>
+                );
+              }
+
+              return (
+                <a
+                  key={idx}
+                  href={att.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className={`block rounded-lg px-2.5 py-1.5 text-xs font-bold underline truncate transition-colors ${
+                    isOwn ? "bg-white/15 text-indigo-100 hover:text-white" : "bg-gray-100 text-[#4F46E5] hover:bg-gray-200"
+                  }`}
+                >
+                  📎 {att.fileName || "Download Attachment"}
+                </a>
+              );
+            })}
           </div>
         )}
 

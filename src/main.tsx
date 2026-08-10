@@ -10,6 +10,7 @@ import "./index.css";
 import { store } from "./app/store";
 
 import { SocketProvider } from "./features/chat/context/SocketContext";
+import { CallProvider } from "./features/chat/context/CallContext";
 import { LocationProvider } from "./context/LocationContext";
 
 const googleClientId =
@@ -22,10 +23,12 @@ createRoot(document.getElementById("root")!).render(
       <Provider store={store}>
         <BrowserRouter>
           <SocketProvider>
-            <LocationProvider>
-              <Toaster position="top-right" />
-              <App />
-            </LocationProvider>
+            <CallProvider>
+              <LocationProvider>
+                <Toaster position="top-right" />
+                <App />
+              </LocationProvider>
+            </CallProvider>
           </SocketProvider>
         </BrowserRouter>
       </Provider>
