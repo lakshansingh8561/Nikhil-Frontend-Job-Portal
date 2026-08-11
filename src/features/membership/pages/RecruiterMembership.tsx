@@ -6,6 +6,7 @@ import {
   useCancelRecruiterMembershipMutation,
   useGetRecruiterHistoryQuery,
 } from "../api/membershipApi";
+import { useCreatePolarCheckoutMutation } from "../api/paymentApi";
 import type { IMembership } from "../types/membership.types";
 import { MembershipCard } from "../components/MembershipCard";
 import { UpgradeModal } from "../components/UpgradeModal";
@@ -28,6 +29,7 @@ export const RecruiterMembership: React.FC = () => {
   const { data: history = [], isLoading: isLoadingHistory } = useGetRecruiterHistoryQuery();
 
   const [cancelRecruiterMembership, { isLoading: isCancelling }] = useCancelRecruiterMembershipMutation();
+  const [createPolarCheckout] = useCreatePolarCheckoutMutation();
 
   const { startCheckout, modalStatus, errorMessage, currentPlan, closeModal } = useRazorpayCheckout();
 
@@ -57,10 +59,26 @@ export const RecruiterMembership: React.FC = () => {
     setIsUpgradeModalOpen(true);
   };
 
-  const handleConfirmSubscribe = async (_planId: string) => {
+  const handleConfirmSubscribe = async (planId: string, gateway: "razorpay" | "polar" = "polar") => {
     if (!selectedPlan) return;
     setIsUpgradeModalOpen(false);
-    startCheckout(selectedPlan);
+
+    if (selectedPlan.price === 0 || gateway === "razorpay") {
+      startCheckout(selectedPlan);
+    } else {
+      const toastId = toast.loading("Creating Polar Sandbox Checkout...");
+      try {
+        const res = await createPolarCheckout({ membershipId: planId }).unwrap();
+        toast.success("Redirecting to Polar Sandbox...", { id: toastId });
+        if (res.checkoutUrl) {
+          window.location.href = res.checkoutUrl;
+        } else {
+          toast.error("Polar Checkout URL not received.", { id: toastId });
+        }
+      } catch (err: any) {
+        toast.error(err?.data?.message || "Failed to create Polar checkout.", { id: toastId });
+      }
+    }
   };
 
   const handleCancelSubscription = async () => {
@@ -250,13 +268,12 @@ export const RecruiterMembership: React.FC = () => {
                     </td>
                     <td className="py-4">
                       <span
-                        className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-bold ${
-                          hSub.status === "ACTIVE"
+                        className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-bold ${hSub.status === "ACTIVE"
                             ? "bg-emerald-100 text-emerald-700"
                             : hSub.status === "CANCELLED"
-                            ? "bg-amber-100 text-amber-700"
-                            : "bg-gray-100 text-gray-600"
-                        }`}
+                              ? "bg-amber-100 text-amber-700"
+                              : "bg-gray-100 text-gray-600"
+                          }`}
                       >
                         <FiCheckCircle className="text-xs" /> {hSub.status}
                       </span>

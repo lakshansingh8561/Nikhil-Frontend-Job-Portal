@@ -54,6 +54,7 @@ const RecruiterProfile = () => {
     handleSubmit,
     reset,
     watch,
+    setValue,
     formState: { errors },
   } = useForm<CreateRecruiterProfileInput>({
     resolver: zodResolver(schema),
@@ -79,6 +80,18 @@ const RecruiterProfile = () => {
   const watchDesignation = watch("designation");
   const watchCurrentCompany = watch("currentCompany");
   const watchProfilePicture = watch("profilePicture");
+
+  const handlePictureChange = async (url: string) => {
+    setValue("profilePicture", url, { shouldValidate: true, shouldDirty: true });
+    if (profile) {
+      try {
+        await updateProfile({ profilePicture: url }).unwrap();
+        toast.success("Profile photo saved automatically!");
+      } catch (err) {
+        console.error("Failed to auto-save profile picture:", err);
+      }
+    }
+  };
 
   useEffect(() => {
     if (profile) {
@@ -125,6 +138,7 @@ const RecruiterProfile = () => {
         designation={watchDesignation || profile?.designation}
         currentCompany={watchCurrentCompany || profile?.currentCompany}
         profilePicture={watchProfilePicture || profile?.profilePicture}
+        onPictureChange={handlePictureChange}
       />
 
       {/* Recruiter Membership Status & Active Days Widget */}
@@ -171,6 +185,8 @@ const RecruiterProfile = () => {
             register={register}
             errors={errors}
             previewUrl={watchProfilePicture || profile?.profilePicture}
+            setValue={setValue}
+            onPictureChange={handlePictureChange}
           />
 
           {/* Personal & Work Information */}

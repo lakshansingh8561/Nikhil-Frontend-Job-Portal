@@ -1,12 +1,12 @@
-import React from "react";
-import { FiX, FiCheckCircle, FiZap, FiShield } from "react-icons/fi";
+import React, { useState } from "react";
+import { FiX, FiCheckCircle, FiZap, FiCreditCard, FiGlobe } from "react-icons/fi";
 import type { IMembership } from "../types/membership.types";
 
 interface UpgradeModalProps {
   isOpen: boolean;
   onClose: () => void;
   plan: IMembership | null;
-  onConfirm: (planId: string) => void;
+  onConfirm: (planId: string, gateway?: "razorpay" | "polar") => void;
   isLoading?: boolean;
 }
 
@@ -17,7 +17,11 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
   onConfirm,
   isLoading = false,
 }) => {
+  const [gateway, setGateway] = useState<"razorpay" | "polar">("polar");
+
   if (!isOpen || !plan) return null;
+
+  const isFree = plan.price === 0;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 overflow-y-auto">
@@ -46,7 +50,7 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
         </div>
 
         {/* Summary Card */}
-        <div className="rounded-2xl border border-gray-100 bg-[#F8FAFC] p-5 mb-6 space-y-3">
+        <div className="rounded-2xl border border-gray-100 bg-[#F8FAFC] p-5 mb-5 space-y-3">
           <div className="flex items-center justify-between text-sm">
             <span className="font-semibold text-gray-600">Selected Plan</span>
             <span className="font-bold text-[#05264E]">{plan.name}</span>
@@ -60,18 +64,48 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
           <div className="flex items-center justify-between border-t border-gray-200/60 pt-3 text-base">
             <span className="font-extrabold text-[#05264E]">Total Amount</span>
             <span className="text-xl font-black text-[#3C65F5]">
-              {plan.price === 0 ? "Free" : `₹${plan.price}`}
+              {isFree ? "Free" : `₹${plan.price}`}
             </span>
           </div>
         </div>
 
-        {/* Payment Simulation Note (Future Ready for Stripe / Razorpay) */}
-        <div className="rounded-xl bg-emerald-50 border border-emerald-100 p-3.5 mb-6 flex items-start gap-2.5">
-          <FiShield className="text-emerald-600 text-lg shrink-0 mt-0.5" />
-          <p className="text-xs text-emerald-800 font-medium leading-relaxed">
-            Payment simulation active. Confirming will instantly activate your <strong>{plan.name}</strong> subscription without charge.
-          </p>
-        </div>
+        {/* Gateway Selection for Paid Plans */}
+        {!isFree && (
+          <div className="mb-6">
+            <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
+              Select Payment Gateway
+            </label>
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => setGateway("polar")}
+                className={`flex flex-col items-center justify-center p-3.5 rounded-2xl border transition cursor-pointer ${
+                  gateway === "polar"
+                    ? "border-[#3C65F5] bg-blue-50/60 text-[#3C65F5] shadow-xs"
+                    : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"
+                }`}
+              >
+                <FiGlobe className="text-2xl mb-1 text-[#3C65F5]" />
+                <span className="text-xs font-extrabold">Polar Sandbox</span>
+                <span className="text-[10px] text-gray-500 font-medium">Global Dummy Test</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setGateway("razorpay")}
+                className={`flex flex-col items-center justify-center p-3.5 rounded-2xl border transition cursor-pointer ${
+                  gateway === "razorpay"
+                    ? "border-[#3C65F5] bg-blue-50/60 text-[#3C65F5] shadow-xs"
+                    : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"
+                }`}
+              >
+                <FiCreditCard className="text-2xl mb-1 text-indigo-600" />
+                <span className="text-xs font-extrabold">Razorpay</span>
+                <span className="text-[10px] text-gray-500 font-medium">India / UPI / Cards</span>
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Action Buttons */}
         <div className="flex items-center justify-end gap-3">
@@ -84,7 +118,7 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
           </button>
           <button
             type="button"
-            onClick={() => onConfirm(plan._id || plan.id || "")}
+            onClick={() => onConfirm(plan._id || plan.id || "", gateway)}
             disabled={isLoading}
             className="w-1/2 rounded-xl bg-[#3C65F5] py-3.5 text-xs sm:text-sm font-extrabold text-white hover:bg-[#254BD6] shadow-md hover:shadow-lg transition cursor-pointer disabled:opacity-50 inline-flex items-center justify-center gap-2"
           >
@@ -93,7 +127,7 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
             ) : (
               <FiCheckCircle className="text-lg" />
             )}
-            {isLoading ? "Activating..." : "Confirm & Subscribe"}
+            {isLoading ? "Redirecting..." : gateway === "polar" && !isFree ? "Pay with Polar" : "Confirm & Subscribe"}
           </button>
         </div>
       </div>

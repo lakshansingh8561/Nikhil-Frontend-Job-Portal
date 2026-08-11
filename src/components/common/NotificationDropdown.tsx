@@ -7,11 +7,14 @@ import {
   FiFileText,
   FiClock,
   FiCheck,
+  FiTrash2,
 } from "react-icons/fi";
 import {
   useGetNotificationsQuery,
   useMarkAsReadMutation,
   useMarkAllAsReadMutation,
+  useClearAllNotificationsMutation,
+  useDeleteNotificationMutation,
   type NotificationItem,
 } from "../../features/notifications/api/notificationApi";
 
@@ -27,9 +30,22 @@ export const NotificationDropdown: React.FC = () => {
 
   const [markAsRead] = useMarkAsReadMutation();
   const [markAllAsRead] = useMarkAllAsReadMutation();
+  const [clearAllNotifications, { isLoading: isClearingAll }] = useClearAllNotificationsMutation();
+  const [deleteNotification] = useDeleteNotificationMutation();
 
   const notifications = data?.notifications || [];
   const unreadCount = data?.unreadCount || 0;
+
+  // Toggle notification dropdown & auto mark all as read on open
+  const handleToggleOpen = () => {
+    const nextState = !isOpen;
+    setIsOpen(nextState);
+
+    // Auto mark all as read when opening dropdown if there are unread notifications
+    if (nextState && unreadCount > 0) {
+      markAllAsRead().unwrap().catch(() => null);
+    }
+  };
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -52,8 +68,19 @@ export const NotificationDropdown: React.FC = () => {
     }
   };
 
-  const handleMarkAllRead = async () => {
+  const handleMarkAllRead = async (e: React.MouseEvent) => {
+    e.stopPropagation();
     await markAllAsRead().unwrap().catch(() => null);
+  };
+
+  const handleClearAll = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    await clearAllNotifications().unwrap().catch(() => null);
+  };
+
+  const handleDeleteSingle = async (notifId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    await deleteNotification(notifId).unwrap().catch(() => null);
   };
 
   const getIcon = (type: string) => {
@@ -87,7 +114,7 @@ export const NotificationDropdown: React.FC = () => {
     <div className="relative inline-block" ref={dropdownRef}>
       {/* Bell Button */}
       <button
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={handleToggleOpen}
         className="relative flex h-10 w-10 items-center justify-center rounded-xl border border-[#EAEFF7] bg-white text-gray-600 shadow-2xs transition hover:bg-[#E8F0FE] hover:text-[#3C65F5] cursor-pointer"
         title="Notifications"
       >
@@ -113,18 +140,31 @@ export const NotificationDropdown: React.FC = () => {
               )}
             </div>
 
-            {unreadCount > 0 && (
-              <button
-                onClick={handleMarkAllRead}
-                className="flex items-center gap-1 text-[11px] font-bold text-[#3C65F5] hover:underline cursor-pointer"
-              >
-                <FiCheck className="text-xs" /> Mark all read
-              </button>
-            )}
+            <div className="flex items-center gap-2.5">
+              {unreadCount > 0 && (
+                <button
+                  onClick={handleMarkAllRead}
+                  className="flex items-center gap-1 text-[11px] font-bold text-[#3C65F5] hover:underline cursor-pointer"
+                >
+                  <FiCheck className="text-xs" /> Mark all read
+                </button>
+              )}
+
+              {notifications.length > 0 && (
+                <button
+                  onClick={handleClearAll}
+                  disabled={isClearingAll}
+                  className="flex items-center gap-1 text-[11px] font-bold text-gray-500 hover:text-red-600 transition cursor-pointer disabled:opacity-50"
+                  title="Clear all notifications"
+                >
+                  <FiTrash2 className="text-xs" /> Clear All
+                </button>
+              )}
+            </div>
           </div>
 
           {/* Notifications List */}
-          <div className="max-h-80 overflow-y-auto space-y-2 pr-1 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:bg-gray-200 [&::-webkit-scrollbar-thumb]:rounded-full">
+          <div className="max-h-80 overflow-y-auto space-y-2 pr-1 custom-scrollbar">
             {notifications.length === 0 ? (
               <div className="py-8 text-center">
                 <FiBell className="mx-auto text-2xl text-gray-300 mb-2" />
@@ -138,16 +178,17 @@ export const NotificationDropdown: React.FC = () => {
                 <div
                   key={notif._id}
                   onClick={() => handleNotificationClick(notif)}
-                  className={`group relative flex items-start gap-3 rounded-2xl p-3 transition cursor-pointer border ${notif.isRead
+                  className={`group relative flex items-start gap-3 rounded-2xl p-3 transition cursor-pointer border ${
+                    notif.isRead
                       ? "bg-white border-[#F0F4FC] hover:bg-[#F8FAFC]"
                       : "bg-[#F4F7FF] border-[#D9E4FF] hover:bg-[#EBF2FF]"
-                    }`}
+                  }`}
                 >
                   <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white shadow-2xs border border-[#EAEFF7] mt-0.5">
                     {getIcon(notif.type)}
                   </div>
 
-                  <div className="min-w-0 flex-1">
+                  <div className="min-w-0 flex-1 pr-6">
                     <div className="flex items-center justify-between gap-2">
                       <h4 className="text-xs font-bold text-[#05264E] line-clamp-1">
                         {notif.title}
@@ -161,6 +202,15 @@ export const NotificationDropdown: React.FC = () => {
                       {notif.message}
                     </p>
                   </div>
+
+                  {/* Single Item Trash Button */}
+                  <button
+                    onClick={(e) => handleDeleteSingle(notif._id, e)}
+                    className="absolute right-2.5 top-2.5 hidden group-hover:flex items-center justify-center h-6 w-6 rounded-lg bg-white border border-gray-200 text-gray-400 hover:text-red-600 hover:border-red-200 transition cursor-pointer shadow-xs"
+                    title="Delete notification"
+                  >
+                    <FiTrash2 className="text-[11px]" />
+                  </button>
 
                   {!notif.isRead && (
                     <span className="h-2 w-2 shrink-0 rounded-full bg-[#3C65F5] mt-1.5" />

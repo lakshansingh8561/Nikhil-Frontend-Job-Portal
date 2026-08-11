@@ -1,5 +1,5 @@
 import React from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams, useNavigate, Link, useLocation } from "react-router-dom";
 import {
   FiMapPin,
   FiBriefcase,
@@ -29,8 +29,12 @@ const defaultCompanyLogo = "https://cdn-icons-png.flaticon.com/512/3135/3135715.
 const JobDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
   const { user, isAuthenticated } = useAppSelector((state) => state.auth);
   const [isApplyModalOpen, setIsApplyModalOpen] = React.useState(false);
+
+  const isDashboardMode =
+    location.pathname.startsWith("/job-seeker") || location.pathname.startsWith("/recruiter");
 
   const { data: job, isLoading, isError, error, refetch } = useGetJobByIdQuery(
     id || "",
@@ -75,45 +79,52 @@ const JobDetails: React.FC = () => {
     }
   };
 
+  const PageWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    if (isDashboardMode) {
+      return <div className="w-full pb-8">{children}</div>;
+    }
+    return (
+      <div className="min-h-screen bg-[#F5F7FC] pt-24 pb-16">
+        <Container>{children}</Container>
+      </div>
+    );
+  };
+
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#F5F7FC] pt-28 pb-16">
-        <Container>
-          <DetailSkeleton />
-        </Container>
-      </div>
+      <PageWrapper>
+        <DetailSkeleton />
+      </PageWrapper>
     );
   }
 
   if (isError || !job) {
     return (
-      <div className="min-h-screen bg-[#F5F7FC] pt-28 pb-16">
-        <Container>
-          <div className="flex flex-col items-center justify-center rounded-3xl border border-red-200 bg-red-50/50 p-12 text-center shadow-sm">
-            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-red-100 text-red-600 mb-4">
-              <FiAlertTriangle className="text-3xl" />
-            </div>
-            <h3 className="text-xl font-bold text-gray-900">Job Not Found</h3>
-            <p className="mt-2 text-xs font-medium text-gray-600 max-w-md">
-              {(error as any)?.data?.message || "The requested job listing could not be found or may have expired."}
-            </p>
-            <div className="mt-6 flex items-center gap-3">
-              <button
-                onClick={() => refetch()}
-                className="flex items-center gap-2 rounded-2xl bg-white border border-gray-200 px-5 py-2.5 text-xs font-bold text-gray-700 shadow-sm transition hover:bg-gray-50 cursor-pointer"
-              >
-                <FiRefreshCw /> Retry
-              </button>
-              <Link
-                to={user?.role === "JOB_SEEKER" ? "/job-seeker/jobs" : "/jobs"}
-                className="flex items-center gap-2 rounded-2xl bg-[#3C65F5] px-6 py-2.5 text-xs font-bold text-white shadow-md transition hover:bg-[#254BD6]"
-              >
-                <FiArrowLeft /> Back to Jobs
-              </Link>
-            </div>
+      <PageWrapper>
+        <div className="flex flex-col items-center justify-center rounded-3xl border border-red-200 bg-red-50/50 p-12 text-center shadow-sm">
+          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-red-100 text-red-600 mb-4">
+            <FiAlertTriangle className="text-3xl" />
           </div>
-        </Container>
-      </div>
+          <h3 className="text-xl font-bold text-gray-900">Job Not Found</h3>
+          <p className="mt-2 text-xs font-medium text-gray-600 max-w-md">
+            {(error as any)?.data?.message || "The requested job listing could not be found or may have expired."}
+          </p>
+          <div className="mt-6 flex items-center gap-3">
+            <button
+              onClick={() => refetch()}
+              className="flex items-center gap-2 rounded-2xl bg-white border border-gray-200 px-5 py-2.5 text-xs font-bold text-gray-700 shadow-sm transition hover:bg-gray-50 cursor-pointer"
+            >
+              <FiRefreshCw /> Retry
+            </button>
+            <Link
+              to={user?.role === "JOB_SEEKER" ? "/job-seeker/jobs" : "/jobs"}
+              className="flex items-center gap-2 rounded-2xl bg-[#3C65F5] px-6 py-2.5 text-xs font-bold text-white shadow-md transition hover:bg-[#254BD6]"
+            >
+              <FiArrowLeft /> Back to Jobs
+            </Link>
+          </div>
+        </div>
+      </PageWrapper>
     );
   }
 
@@ -152,15 +163,14 @@ const JobDetails: React.FC = () => {
   const backJobsUrl = user?.role === "JOB_SEEKER" ? "/job-seeker/jobs" : "/jobs";
 
   return (
-    <div className="min-h-screen bg-[#F5F7FC] pt-28 pb-16">
-      <Container>
-        {/* Back Link */}
-        <Link
-          to={backJobsUrl}
-          className="inline-flex items-center gap-2 text-xs font-bold text-[#66789C] transition hover:text-[#3C65F5] mb-6"
-        >
-          <FiArrowLeft /> Back to All Jobs
-        </Link>
+    <PageWrapper>
+      {/* Back Link */}
+      <Link
+        to={backJobsUrl}
+        className="inline-flex items-center gap-2 text-xs font-bold text-[#66789C] transition hover:text-[#3C65F5] mb-5"
+      >
+        <FiArrowLeft /> Back to All Jobs
+      </Link>
 
         {/* Hero Header Card */}
         <div className="rounded-3xl border border-[#EAEFF7] bg-white p-6 sm:p-8 shadow-sm mb-8">
@@ -393,7 +403,6 @@ const JobDetails: React.FC = () => {
             </div>
           </div>
         </div>
-      </Container>
 
       {/* Apply Job Modal */}
       {job && (
@@ -405,7 +414,7 @@ const JobDetails: React.FC = () => {
           companyName={companyName}
         />
       )}
-    </div>
+    </PageWrapper>
   );
 };
 

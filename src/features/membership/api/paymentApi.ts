@@ -3,6 +3,8 @@ import type {
   CreateOrderResponse,
   VerifyPaymentRequest,
   IPaymentRecord,
+  CreatePolarCheckoutResponse,
+  PolarStatusResponse,
 } from "../types/payment.types";
 
 export const paymentApi = apiSlice.injectEndpoints({
@@ -25,6 +27,22 @@ export const paymentApi = apiSlice.injectEndpoints({
       }),
       transformResponse: (response: { data: any }) => response.data,
       invalidatesTags: ["Subscription", "Membership", "Payment", "Job"],
+    }),
+
+    createPolarCheckout: builder.mutation<CreatePolarCheckoutResponse, { membershipId: string; productId?: string }>({
+      query: (body) => ({
+        url: "/payments/polar/create-checkout",
+        method: "POST",
+        body,
+      }),
+      transformResponse: (response: { data: CreatePolarCheckoutResponse }) => response.data,
+      invalidatesTags: ["Payment"],
+    }),
+
+    getPolarStatus: builder.query<PolarStatusResponse, string>({
+      query: (checkoutId) => `/payments/polar/status/${checkoutId}`,
+      transformResponse: (response: { data: PolarStatusResponse }) => response.data,
+      providesTags: ["Subscription", "Payment"],
     }),
 
     getPaymentHistory: builder.query<IPaymentRecord[], void>({
@@ -53,6 +71,8 @@ export const paymentApi = apiSlice.injectEndpoints({
 export const {
   useCreatePaymentOrderMutation,
   useVerifyPaymentMutation,
+  useCreatePolarCheckoutMutation,
+  useGetPolarStatusQuery,
   useGetPaymentHistoryQuery,
   useGetAdminPaymentsQuery,
   useGetAdminMembershipStatsQuery,

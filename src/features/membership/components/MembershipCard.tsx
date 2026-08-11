@@ -28,23 +28,23 @@ export const MembershipCard: React.FC<MembershipCardProps> = ({
   return (
     <div
       onClick={handleCardClick}
-      className={`relative flex flex-col justify-between rounded-3xl bg-white p-8 transition-all duration-300 ${
+      className={`relative flex flex-col justify-between rounded-2xl p-5 sm:p-6 transition-all duration-300 ${
         isCurrentPlan
-          ? "border-2 border-gray-200 shadow-sm bg-gray-50/50 cursor-default"
+          ? "bg-slate-900/90 border-2 border-emerald-500/50 shadow-lg shadow-emerald-500/10 cursor-default"
           : isPopular || isRecommended
-          ? "border-2 border-[#3C65F5] shadow-xl scale-[1.02] bg-gradient-to-b from-blue-50/20 via-white to-white cursor-pointer hover:shadow-2xl hover:border-blue-600"
-          : "border border-gray-200 shadow-sm hover:shadow-md hover:border-gray-300 cursor-pointer"
+          ? "bg-gradient-to-b from-[#1E1B4B] via-[#0F172A] to-[#0F172A] border-2 border-[#6366F1] shadow-xl shadow-indigo-500/25 cursor-pointer hover:-translate-y-1 hover:shadow-2xl hover:border-indigo-400"
+          : "bg-[#0F172A] border border-slate-800/80 shadow-md hover:border-slate-700 cursor-pointer hover:-translate-y-1"
       }`}
     >
       {/* Badges */}
-      <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 flex items-center gap-2">
+      <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 flex items-center gap-2 z-10">
         {isPopular && (
-          <span className="inline-flex items-center gap-1 rounded-full bg-[#3C65F5] px-4 py-1 text-xs font-extrabold uppercase tracking-wider text-white shadow-md">
-            <FiZap className="text-yellow-300 fill-yellow-300" /> Most Popular
+          <span className="inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 px-3.5 py-1 text-[10px] sm:text-xs font-black uppercase tracking-wider text-white shadow-lg shadow-indigo-500/30">
+            <FiZap className="text-yellow-300 fill-yellow-300 text-xs" /> Most Popular
           </span>
         )}
         {isRecommended && !isPopular && (
-          <span className="inline-flex items-center gap-1 rounded-full bg-emerald-600 px-4 py-1 text-xs font-extrabold uppercase tracking-wider text-white shadow-md">
+          <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500 px-3.5 py-1 text-[10px] sm:text-xs font-black uppercase tracking-wider text-white shadow-lg shadow-emerald-500/30">
             ⭐ Recommended
           </span>
         )}
@@ -52,37 +52,37 @@ export const MembershipCard: React.FC<MembershipCardProps> = ({
 
       <div>
         {/* Header */}
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="text-2xl font-black text-[#05264E]">{plan.name}</h3>
+        <div className="flex items-center justify-between mb-1.5">
+          <h3 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight">{plan.name}</h3>
           {isCurrentPlan && (
-            <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-3 py-1 text-xs font-bold text-[#3C65F5]">
-              <FiCheckCircle /> Current Plan
+            <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/20 px-2.5 py-0.5 text-[11px] font-bold text-emerald-400 border border-emerald-500/30">
+              <FiCheckCircle className="text-xs" /> Active
             </span>
           )}
         </div>
 
-        <p className="text-xs font-medium text-gray-500 mb-6 min-h-[36px] leading-relaxed">
+        <p className="text-xs font-medium text-slate-400 mb-4 line-clamp-2 leading-relaxed min-h-[32px]">
           {plan.description}
         </p>
 
         {/* Pricing */}
-        <div className="mb-8 flex items-baseline gap-1.5 border-b border-gray-100 pb-6">
-          <span className="text-4xl sm:text-5xl font-black tracking-tight text-[#05264E]">
+        <div className="mb-4 flex items-baseline gap-1.5 border-b border-slate-800 pb-4">
+          <span className="text-3xl sm:text-4xl font-black tracking-tight text-white">
             {plan.price === 0 ? "Free" : `₹${plan.price}`}
           </span>
           {plan.price > 0 && (
-            <span className="text-sm font-semibold text-gray-500">
+            <span className="text-xs font-medium text-slate-400">
               /{plan.durationInDays} days
             </span>
           )}
         </div>
 
         {/* Feature List */}
-        <div className="space-y-3 mb-8">
-          <h4 className="text-xs font-extrabold uppercase tracking-wider text-[#05264E]/70 mb-4">
+        <div className="space-y-2 mb-6">
+          <h4 className="text-[10px] font-extrabold uppercase tracking-widest text-slate-400 mb-2">
             Included Features
           </h4>
-          <ul className="space-y-2">
+          <ul className="space-y-1.5">
             {plan.features.map((feature, idx) => (
               <MembershipFeature key={idx} feature={feature} />
             ))}
@@ -97,15 +97,15 @@ export const MembershipCard: React.FC<MembershipCardProps> = ({
           handleCardClick();
         }}
         disabled={isCurrentPlan || isLoading}
-        className={`w-full rounded-2xl py-4 text-sm font-extrabold transition-all duration-200 shadow-md cursor-pointer ${
+        className={`w-full rounded-xl py-2.5 sm:py-3 text-xs sm:text-sm font-bold transition-all duration-200 shadow-md cursor-pointer ${
           isCurrentPlan
-            ? "bg-gray-100 text-gray-400 cursor-not-allowed shadow-none border border-gray-200"
+            ? "bg-slate-800 text-slate-400 cursor-not-allowed shadow-none border border-slate-700"
             : isPopular || isRecommended
-            ? "bg-[#3C65F5] text-white hover:bg-[#254BD6] hover:shadow-lg shadow-blue-500/20 active:scale-[0.99]"
-            : "bg-[#05264E] text-white hover:bg-[#031936] hover:shadow-lg active:scale-[0.99]"
+            ? "bg-gradient-to-r from-indigo-500 via-indigo-600 to-purple-600 text-white hover:from-indigo-600 hover:to-purple-700 shadow-indigo-500/25 hover:shadow-lg active:scale-[0.99]"
+            : "bg-white text-slate-900 hover:bg-slate-100 hover:shadow-lg active:scale-[0.99]"
         }`}
       >
-        {isCurrentPlan ? "Active Subscription" : plan.price === 0 ? "Get Free Plan" : "Upgrade Plan"}
+        {isCurrentPlan ? "Active Subscription" : plan.price === 0 ? "Get Free Plan" : "Subscribe Now"}
       </button>
     </div>
   );

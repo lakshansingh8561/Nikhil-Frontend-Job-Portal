@@ -18,6 +18,7 @@ export const ChatPage: React.FC = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [hasNavigatedBack, setHasNavigatedBack] = useState(false);
+  const [selectedConvId, setSelectedConvId] = useState<string | null>(targetConvId || null);
 
   const { onlineUserIds } = useSocket();
   const { data: conversations = [], isLoading } = useGetUserConversationsQuery();
@@ -32,6 +33,8 @@ export const ChatPage: React.FC = () => {
   }) => {
     try {
       const conv = await createOrGetConversation(payload).unwrap();
+      const convId = conv.id || conv._id;
+      setSelectedConvId(convId);
       setActiveConversation(conv);
       setHasNavigatedBack(false);
     } catch (err) {
@@ -48,9 +51,10 @@ export const ChatPage: React.FC = () => {
       })
         .unwrap()
         .then((conv) => {
+          const convId = conv.id || conv._id;
+          setSelectedConvId(convId);
           setActiveConversation(conv);
           setHasNavigatedBack(false);
-          // Clean up URL query params
           setSearchParams({}, { replace: true });
         })
         .catch((err) => {
@@ -59,42 +63,43 @@ export const ChatPage: React.FC = () => {
     }
   }, [targetJobId, targetApplicantId, createOrGetConversation, setSearchParams]);
 
-  // Sync active conversation when conversations list updates or URL has conversationId
+  // Sync active conversation when conversations list updates
   useEffect(() => {
-    if (targetConvId && conversations.length > 0) {
-      const match = conversations.find(
-        (c) => (c.id || c._id) === targetConvId
-      );
-      if (match) {
-        setActiveConversation(match);
-        setHasNavigatedBack(false);
-      }
-    } else if (
-      !activeConversation &&
-      !hasNavigatedBack &&
-      conversations.length > 0 &&
-      !targetJobId
-    ) {
-      // Auto-select 1st conversation on desktop ONLY on initial load if user hasn't explicitly navigated back
-      if (window.innerWidth >= 1024) {
-        setActiveConversation(conversations[0]);
+    if (conversations.length > 0) {
+      if (selectedConvId) {
+        const match = conversations.find((c) => (c.id || c._id) === selectedConvId);
+        if (match) {
+          setActiveConversation(match);
+        }
+      } else if (!activeConversation && !hasNavigatedBack && !targetJobId) {
+        if (window.innerWidth >= 1024) {
+          const first = conversations[0];
+          const firstId = first?.id || first?._id;
+          if (firstId) {
+            setSelectedConvId(firstId);
+            setActiveConversation(first);
+          }
+        }
       }
     }
-  }, [targetConvId, conversations, activeConversation, targetJobId, hasNavigatedBack]);
+  }, [conversations, selectedConvId, activeConversation, hasNavigatedBack, targetJobId]);
 
   const handleSelectConversation = (conv: IConversation) => {
+    const convId = conv.id || conv._id;
+    setSelectedConvId(convId);
     setActiveConversation(conv);
     setHasNavigatedBack(false);
   };
 
   const handleBack = () => {
+    setSelectedConvId(null);
     setActiveConversation(null);
     setHasNavigatedBack(true);
   };
 
   return (
     <div className="flex h-[calc(100vh-130px)] min-h-[500px] w-full overflow-hidden rounded-2xl border border-[#E5E7EB] bg-white shadow-xs">
-      {/* Requirement 1: Conversation List Width (Desktop 28-30%, Laptop 32%, Mobile full drawer/toggle) */}
+      {/* Conversation List Sidebar */}
       <div
         className={`w-full lg:w-[32%] xl:w-[28%] shrink-0 h-full ${
           activeConversation ? "hidden lg:block" : "block"
@@ -102,7 +107,7 @@ export const ChatPage: React.FC = () => {
       >
         <ConversationList
           conversations={conversations}
-          activeConversationId={activeConversation?.id || activeConversation?._id}
+          activeConversationId={selectedConvId || activeConversation?.id || activeConversation?._id}
           onSelectConversation={handleSelectConversation}
           onDeleteActiveConversation={handleBack}
           onlineUserIds={onlineUserIds}
@@ -111,7 +116,7 @@ export const ChatPage: React.FC = () => {
         />
       </div>
 
-      {/* Requirement 1 & 12: Chat Window (Desktop 70-72%, Laptop 68%, Mobile full) & Empty State */}
+      {/* Main Chat Window */}
       <div
         className={`flex-1 h-full min-w-0 lg:w-[68%] xl:w-[72%] ${
           !activeConversation ? "hidden lg:flex" : "flex"
@@ -123,7 +128,6 @@ export const ChatPage: React.FC = () => {
             onBack={handleBack}
           />
         ) : (
-          /* Requirement 12: Better Empty State */
           <div className="flex h-full w-full flex-col items-center justify-center bg-[#F8FAFC] p-8 text-center">
             <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-indigo-50 text-[#4F46E5] font-bold text-4xl mb-4 shadow-2xs border border-indigo-100/60 animate-bounce" style={{ animationDuration: '3s' }}>
               💬
@@ -153,3 +157,4 @@ export const ChatPage: React.FC = () => {
   );
 };
 
+export default ChatPage;

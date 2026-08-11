@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   FiMenu,
@@ -21,10 +21,22 @@ interface JobSeekerHeaderProps {
 
 export const JobSeekerHeader = ({ onToggleSidebar }: JobSeekerHeaderProps) => {
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const { user } = useAppSelector((state) => state.auth);
   const { data: profile } = useGetProfileQuery();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setProfileDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const handleLogout = () => {
     dispatch(logout());
@@ -67,7 +79,7 @@ export const JobSeekerHeader = ({ onToggleSidebar }: JobSeekerHeaderProps) => {
         <NotificationDropdown />
 
         {/* Profile Dropdown */}
-        <div className="relative">
+        <div className="relative" ref={dropdownRef}>
           <button
             onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
             className="flex items-center gap-2.5 rounded-full bg-[#F8FAFC] p-1.5 pr-3 border border-[#EAEFF7] text-xs font-bold text-[#05264E] hover:bg-blue-50 transition cursor-pointer"

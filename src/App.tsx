@@ -25,6 +25,8 @@ import { Membership } from "./features/membership/pages/Membership";
 import { Pricing } from "./features/membership/pages/Pricing";
 import { RecruiterMembership } from "./features/membership/pages/RecruiterMembership";
 import PaymentHistoryPage from "./features/membership/pages/PaymentHistoryPage";
+import { PolarSuccessPage } from "./features/membership/pages/PolarSuccessPage";
+import { PolarCancelPage } from "./features/membership/pages/PolarCancelPage";
 
 // Recruiter Feature Layout & Pages
 import RecruiterLayout from "./features/recruiter/layout/RecruiterLayout";
@@ -76,6 +78,10 @@ function App() {
         <Route path="/membership" element={<Pricing />} />
         <Route path="/pricing" element={<Pricing />} />
       </Route>
+
+      {/* Standalone Payment Result Routes (accessible when logged in) */}
+      <Route path="/payment/polar/success" element={<PolarSuccessPage />} />
+      <Route path="/payment/polar/cancel" element={<PolarCancelPage />} />
 
       {/* Protected Job Seeker Dashboard Routes */}
       <Route element={<ProtectedRoute allowedRoles={["JOB_SEEKER"]} />}>
