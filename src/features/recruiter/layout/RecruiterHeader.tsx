@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   FiSearch,
@@ -20,9 +20,21 @@ interface RecruiterHeaderProps {
 
 export const RecruiterHeader = ({ onToggleSidebar }: RecruiterHeaderProps) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const { user } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const handleLogout = () => {
     dispatch(logout());
@@ -58,7 +70,7 @@ export const RecruiterHeader = ({ onToggleSidebar }: RecruiterHeaderProps) => {
         <NotificationDropdown />
 
         {/* User Dropdown */}
-        <div className="relative ml-2">
+        <div className="relative ml-2" ref={dropdownRef}>
           <button
             onClick={() => setDropdownOpen(!dropdownOpen)}
             className="flex items-center gap-2.5 rounded-2xl bg-white p-1.5 pr-3 border border-[#EAEFF7] hover:border-[#1D4ED8] transition cursor-pointer shadow-xs"

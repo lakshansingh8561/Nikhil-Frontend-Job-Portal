@@ -36,7 +36,11 @@ export const NewChatModal: React.FC<NewChatModalProps> = ({
 
   const filteredRecruiterApps = recruiterApps.filter((app: any) => {
     const q = searchTerm.toLowerCase();
-    const name = `${app.applicantProfile?.firstName || ""} ${app.applicantProfile?.lastName || ""}`.toLowerCase();
+    const candidateFirstName =
+      app.applicantProfile?.firstName ||
+      (typeof app.userId === "object" ? app.userId?.email?.split("@")[0] : "Applicant");
+    const candidateLastName = app.applicantProfile?.lastName || "";
+    const name = `${candidateFirstName} ${candidateLastName}`.toLowerCase();
     const jobTitle = (app.jobId as any)?.title?.toLowerCase() || "";
     return name.includes(q) || jobTitle.includes(q);
   });
@@ -120,7 +124,11 @@ export const NewChatModal: React.FC<NewChatModalProps> = ({
                     ? app.jobId._id
                     : app.jobId;
 
-                const candidateName = `${app.applicantProfile?.firstName || "Candidate"} ${app.applicantProfile?.lastName || ""}`.trim();
+                const candidateFirstName =
+                  app.applicantProfile?.firstName ||
+                  (typeof app.userId === "object" ? app.userId?.email?.split("@")[0] : "Applicant");
+                const candidateLastName = app.applicantProfile?.lastName || "";
+                const candidateName = `${candidateFirstName} ${candidateLastName}`.trim();
 
                 return (
                   <button
@@ -169,11 +177,19 @@ export const NewChatModal: React.FC<NewChatModalProps> = ({
                 (app.jobId as any)?.companyId?.companyName ||
                 "Hiring Company";
 
+              const recruiterUserId =
+                (app.jobId as any)?.userId?._id ||
+                (app.jobId as any)?.userId ||
+                (app.jobId as any)?.recruiterId?._id ||
+                (app.jobId as any)?.recruiterId ||
+                (app.recruiterId as any)?._id ||
+                app.recruiterId;
+
               return (
                 <button
                   key={app._id}
                   onClick={() => {
-                    onSelect({ jobId });
+                    onSelect({ jobId, applicantId: recruiterUserId });
                     onClose();
                   }}
                   className="flex w-full items-center justify-between p-3.5 text-left rounded-xl hover:bg-indigo-50/70 transition-all duration-200 cursor-pointer border border-transparent hover:border-indigo-100"

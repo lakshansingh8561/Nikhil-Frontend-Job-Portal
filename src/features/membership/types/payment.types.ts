@@ -43,3 +43,22 @@ export interface IPaymentRecord {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface CreatePolarCheckoutResponse {
+  checkoutId: string;
+  checkoutUrl: string;
+  plan: {
+    id: string;
+    name: string;
+    price: number;
+    currency: string;
+    durationInDays: number;
+  };
+}
+
+export interface PolarStatusResponse {
+  status: string;
+  isActivated: boolean;
+  subscription?: any;
+  payment?: any;
+}

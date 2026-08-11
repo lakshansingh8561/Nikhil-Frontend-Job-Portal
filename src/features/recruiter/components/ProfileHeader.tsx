@@ -1,4 +1,6 @@
-import { FiCamera, FiCheckCircle } from "react-icons/fi";
+import React, { useState } from "react";
+import { FiCamera, FiCheckCircle, FiLoader } from "react-icons/fi";
+import toast from "react-hot-toast";
 
 interface ProfileHeaderProps {
   firstName?: string;
@@ -15,7 +17,46 @@ const ProfileHeader = ({
   designation,
   currentCompany,
   profilePicture,
+  onPictureChange,
 }: ProfileHeaderProps) => {
+  const [isUploading, setIsUploading] = useState(false);
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setIsUploading(true);
+      const token = localStorage.getItem("jobbox_accessToken");
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const baseUrl = import.meta.env.VITE_BASE_URL || "http://localhost:5000";
+      const res = await fetch(`${baseUrl}/api/v1/upload/profile-image`, {
+        method: "POST",
+        headers: {
+          Authorization: token ? `Bearer ${token}` : "",
+        },
+        body: formData,
+      });
+
+      const json = await res.json();
+      if (json.success && json.data?.url) {
+        if (onPictureChange) {
+          onPictureChange(json.data.url);
+        }
+        toast.success("Recruiter profile photo uploaded to Cloudinary! 🎉");
+      } else {
+        toast.error(json.message || "Failed to upload photo");
+      }
+    } catch (err: any) {
+      toast.error(err?.message || "Photo upload failed");
+    } finally {
+      setIsUploading(false);
+      e.target.value = "";
+    }
+  };
+
   return (
     <div className="relative overflow-hidden rounded-3xl bg-white shadow-sm border border-[#EAEFF7]">
       {/* Premium Dark Navy Cover Banner */}
@@ -23,11 +64,11 @@ const ProfileHeader = ({
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.15),transparent_60%)]" />
       </div>
 
-      {/* Info Section - Generous top spacing so text never touches the cover banner */}
+      {/* Info Section */}
       <div className="p-6 sm:p-8 pt-0">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div className="flex flex-col sm:flex-row sm:items-end gap-5">
-            {/* Avatar Container with isolated negative top margin */}
+            {/* Avatar Container with Cloudinary Upload */}
             <div className="relative group flex h-24 w-24 shrink-0 items-center justify-center rounded-2xl bg-[#1D4ED8] font-black text-white text-3xl shadow-xl ring-4 ring-white overflow-hidden -mt-12">
               {profilePicture ? (
                 <img
@@ -38,12 +79,33 @@ const ProfileHeader = ({
               ) : (
                 <span>{firstName ? firstName.charAt(0).toUpperCase() : "R"}</span>
               )}
-              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition cursor-pointer">
-                <FiCamera className="text-white text-xl" />
-              </div>
+
+              {/* Upload Overlay */}
+              <label
+                htmlFor="recruiter-avatar-header-upload"
+                className="absolute inset-0 bg-black/55 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center transition cursor-pointer z-10"
+                title="Upload photo to Cloudinary (Job-portal/Profile-Images)"
+              >
+                {isUploading ? (
+                  <FiLoader className="text-white text-2xl animate-spin" />
+                ) : (
+                  <>
+                    <FiCamera className="text-white text-xl" />
+                    <span className="text-[10px] font-bold text-white mt-0.5">Upload</span>
+                  </>
+                )}
+              </label>
+              <input
+                id="recruiter-avatar-header-upload"
+                type="file"
+                accept="image/*"
+                onChange={handleImageUpload}
+                disabled={isUploading}
+                className="hidden"
+              />
             </div>
 
-            {/* Recruiter Name & Designation with generous top padding below banner */}
+            {/* Recruiter Name & Designation */}
             <div className="pt-3 sm:pt-4">
               <div className="flex items-center gap-2">
                 <h2 className="text-2xl font-extrabold text-[#05264E]">
@@ -57,10 +119,6 @@ const ProfileHeader = ({
               </p>
             </div>
           </div>
-
-          <span className="self-start sm:self-center mt-2 sm:mt-0 flex items-center gap-1.5 rounded-full bg-emerald-50 px-4 py-1.5 text-xs font-extrabold text-emerald-700 border border-emerald-200 shadow-2xs">
-            <FiCheckCircle className="text-xs" /> Verified Recruiter
-          </span>
         </div>
       </div>
     </div>
