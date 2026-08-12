@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
 import {
   useGetMembershipsQuery,
@@ -13,7 +14,13 @@ import { MembershipCard } from "../components/MembershipCard";
 import { UpgradeModal } from "../components/UpgradeModal";
 import { PaymentStatusModal } from "../components/PaymentStatusModal";
 import { useRazorpayCheckout } from "../hooks/useRazorpayCheckout";
-import { FiClock, FiCheckCircle, FiShield, FiAlertTriangle } from "react-icons/fi";
+import { FiClock, FiShield, FiAlertTriangle, FiRefreshCw, FiXCircle } from "react-icons/fi";
+
+const JOB_SEEKER_PLAN_LEVELS: Record<string, number> = {
+  Free: 1,
+  Pro: 2,
+  Premium: 3,
+};
 
 export const Membership: React.FC = () => {
   const { data: plans = [], isLoading: isLoadingPlans } = useGetMembershipsQuery();
@@ -28,17 +35,43 @@ export const Membership: React.FC = () => {
   const [selectedPlan, setSelectedPlan] = useState<IMembership | null>(null);
   const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
 
-  const activePlanId = String(
-    (currentSub?.subscription?.membershipId as any)?._id ||
-    currentSub?.subscription?.membershipId ||
-    (currentSub?.plan as any)?._id ||
-    currentSub?.plan ||
-    ""
-  );
+  const hasActiveSub = currentSub?.hasActiveSubscription;
+  const sub = currentSub?.subscription;
+  const currentPlanObj = currentSub?.plan;
+  const currentPlanName = (sub?.planName || (currentPlanObj as any)?.name || "Free");
+  const currentLevel = JOB_SEEKER_PLAN_LEVELS[currentPlanName] || 1;
+
+  // ── Detect last expired subscription ──────────────────────────────────────
+  const lastExpiredSub = !hasActiveSub
+    ? history.find((h) => h.status === "EXPIRED")
+    : null;
+
+  const lastExpiredPlanName = lastExpiredSub?.planName;
+  const lastExpiredDate = lastExpiredSub?.endDate
+    ? new Date(lastExpiredSub.endDate).toLocaleDateString("en-IN", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      })
+    : null;
+
+  // Find the plan object matching the expired plan so user can re-subscribe directly
+  const expiredPlanObject = lastExpiredPlanName
+    ? plans.find((p) => p.name === lastExpiredPlanName) ?? null
+    : null;
 
   const handleSelectPlan = (plan: IMembership) => {
     setSelectedPlan(plan);
     setIsUpgradeModalOpen(true);
+  };
+
+  const handleRenewExpiredPlan = () => {
+    if (expiredPlanObject) {
+      handleSelectPlan(expiredPlanObject);
+    } else {
+      const paidPlan = plans.find((p) => p.price > 0);
+      if (paidPlan) handleSelectPlan(paidPlan);
+    }
   };
 
   const handleConfirmSubscribe = async (planId: string, gateway: "razorpay" | "polar" = "polar") => {
@@ -73,8 +106,43 @@ export const Membership: React.FC = () => {
     }
   };
 
+  const getUpgradePreview = (targetPlan: IMembership | null) => {
+    if (!targetPlan || !hasActiveSub || !sub || targetPlan.price === 0) return null;
+    const targetLevel = JOB_SEEKER_PLAN_LEVELS[targetPlan.name] || 1;
+    if (targetLevel <= currentLevel) return null;
+
+    const now = new Date();
+    const endDate = sub.endDate ? new Date(sub.endDate) : null;
+    if (!endDate || endDate <= now) return null;
+
+    const remainingMs = endDate.getTime() - now.getTime();
+    const remainingDays = Math.max(0, Math.ceil(remainingMs / (1000 * 60 * 60 * 24)));
+    const oldDailyPrice = (sub.amount || (currentPlanObj as any)?.price || 0) / 30;
+    const unusedCredit = Math.round(oldDailyPrice * remainingDays);
+    const finalUpgradePrice = Math.max(0, Math.round(targetPlan.price - unusedCredit));
+
+    return {
+      isUpgrade: true,
+      unusedCredit,
+      finalUpgradePrice,
+      currency: targetPlan.currency || "INR",
+    };
+  };
+
+  const statusColors: Record<string, string> = {
+    ACTIVE: "bg-emerald-100 text-emerald-700",
+    CANCELLED: "bg-amber-100 text-amber-700",
+    EXPIRED: "bg-red-100 text-red-700",
+    PENDING: "bg-blue-100 text-blue-700",
+  };
+
   return (
-    <div className="space-y-10 pb-12">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.4 }}
+      className="space-y-10 pb-12"
+    >
       {/* Top Banner & Current Plan Status */}
       {isLoadingSub ? (
         <div className="h-56 rounded-3xl bg-gray-200 animate-pulse w-full" />
@@ -82,13 +150,59 @@ export const Membership: React.FC = () => {
         <CurrentPlanCard
           currentSubscription={currentSub}
           onUpgrade={() => {
-            const firstPaidPlan = plans.find((p) => p.price > 0) || plans[0];
-            if (firstPaidPlan) handleSelectPlan(firstPaidPlan);
+            const higherPlan = plans.find((p) => (JOB_SEEKER_PLAN_LEVELS[p.name] || 1) > currentLevel);
+            if (higherPlan) handleSelectPlan(higherPlan);
           }}
           onCancel={handleCancelSubscription}
           isCancelling={isCancelling}
         />
       )}
+
+      {/* ── Expired Membership Banner ──────────────────────────────────── */}
+      <AnimatePresence>
+        {!isLoadingSub && !hasActiveSub && lastExpiredSub && (
+          <motion.div
+            key="expired-banner"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.35 }}
+            className="relative overflow-hidden rounded-3xl border border-red-200 bg-gradient-to-r from-red-50 via-rose-50 to-orange-50 p-6 sm:p-8 shadow-sm"
+          >
+            <div className="pointer-events-none absolute -top-10 -right-10 h-40 w-40 rounded-full bg-red-200/40 blur-2xl" />
+            <div className="pointer-events-none absolute -bottom-10 -left-10 h-40 w-40 rounded-full bg-orange-200/30 blur-2xl" />
+
+            <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+              <div className="flex items-start gap-4">
+                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-red-100 text-red-600 shadow-inner">
+                  <FiXCircle className="text-2xl" />
+                </span>
+                <div>
+                  <p className="text-xs font-extrabold uppercase tracking-widest text-red-500 mb-1">
+                    Membership Expired
+                  </p>
+                  <h3 className="text-xl font-black text-red-800">
+                    Your <span className="text-red-600">{lastExpiredPlanName}</span> plan has ended
+                  </h3>
+                  {lastExpiredDate && (
+                    <p className="mt-1 text-sm font-medium text-red-700/80">
+                      Expired on <strong>{lastExpiredDate}</strong>. Renew now to restore all premium features.
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              <button
+                onClick={handleRenewExpiredPlan}
+                className="inline-flex shrink-0 items-center gap-2 rounded-2xl bg-red-600 px-7 py-3.5 text-sm font-extrabold text-white shadow-md hover:bg-red-700 active:scale-[0.98] transition-all duration-200 cursor-pointer"
+              >
+                <FiRefreshCw className="text-base" />
+                Renew Now
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Available Plans Section */}
       <div>
@@ -114,14 +228,19 @@ export const Membership: React.FC = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-            {plans.map((plan) => {
-              const planIdStr = String(plan._id || plan.id || "");
-              const isCurrent = Boolean(currentSub?.hasActiveSubscription) && planIdStr === activePlanId;
+            {plans.map((planItem) => {
+              const planLevel = JOB_SEEKER_PLAN_LEVELS[planItem.name] || 1;
+              const isCurrent = Boolean(hasActiveSub && currentPlanName === planItem.name);
+              const isHigherPlanActive = Boolean(hasActiveSub && currentLevel > planLevel);
+              const isUpgrade = Boolean(hasActiveSub && planLevel > currentLevel);
+
               return (
                 <MembershipCard
-                  key={planIdStr}
-                  plan={plan}
+                  key={planItem._id || planItem.name}
+                  plan={planItem}
                   isCurrentPlan={isCurrent}
+                  isHigherPlanActive={isHigherPlanActive}
+                  isUpgrade={isUpgrade}
                   onSelect={handleSelectPlan}
                   isLoading={modalStatus !== "IDLE"}
                 />
@@ -132,7 +251,12 @@ export const Membership: React.FC = () => {
       </div>
 
       {/* Subscription History Section */}
-      <div className="rounded-3xl border border-[#EAEFF7] bg-white p-6 sm:p-8 shadow-xs">
+      <motion.div
+        initial={{ opacity: 0, y: 15 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 0.2 }}
+        className="rounded-3xl border border-[#EAEFF7] bg-white p-6 sm:p-8 shadow-xs"
+      >
         <div className="flex items-center justify-between border-b border-gray-100 pb-5 mb-6">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-blue-50 text-[#3C65F5]">
@@ -174,28 +298,25 @@ export const Membership: React.FC = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {history.map((sub) => (
-                  <tr key={sub._id || sub.id} className="hover:bg-gray-50/50 transition">
-                    <td className="py-4 font-bold text-[#05264E]">{sub.planName}</td>
+                {history.map((hSub) => (
+                  <tr key={hSub._id || hSub.id} className="hover:bg-gray-50/50 transition">
+                    <td className="py-4 font-bold text-[#05264E]">{hSub.planName}</td>
                     <td className="py-4 font-extrabold text-[#3C65F5]">
-                      {sub.amount === 0 ? "Free" : `₹${sub.amount} ${sub.currency}`}
+                      {hSub.amount === 0 ? "Free" : `₹${hSub.amount} ${hSub.currency}`}
                     </td>
                     <td className="py-4 text-xs font-medium text-gray-600">
-                      {new Date(sub.startDate).toLocaleDateString("en-IN")}
+                      {new Date(hSub.startDate).toLocaleDateString("en-IN")}
                     </td>
                     <td className="py-4 text-xs font-medium text-gray-600">
-                      {new Date(sub.endDate).toLocaleDateString("en-IN")}
+                      {new Date(hSub.endDate).toLocaleDateString("en-IN")}
                     </td>
                     <td className="py-4">
                       <span
-                        className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-bold ${sub.status === "ACTIVE"
-                            ? "bg-emerald-100 text-emerald-700"
-                            : sub.status === "CANCELLED"
-                              ? "bg-amber-100 text-amber-700"
-                              : "bg-gray-100 text-gray-600"
-                          }`}
+                        className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-bold ${
+                          statusColors[hSub.status] ?? "bg-gray-100 text-gray-600"
+                        }`}
                       >
-                        <FiCheckCircle className="text-xs" /> {sub.status}
+                        {hSub.status}
                       </span>
                     </td>
                   </tr>
@@ -204,28 +325,32 @@ export const Membership: React.FC = () => {
             </table>
           </div>
         )}
-      </div>
+      </motion.div>
 
-      {/* Upgrade Confirmation Modal */}
+      {/* Upgrade Modal */}
       <UpgradeModal
         isOpen={isUpgradeModalOpen}
         onClose={() => setIsUpgradeModalOpen(false)}
         plan={selectedPlan}
+        currentPlanName={currentPlanName}
+        upgradePreview={getUpgradePreview(selectedPlan)}
         onConfirm={handleConfirmSubscribe}
         isLoading={modalStatus !== "IDLE"}
       />
 
-      {/* Razorpay Payment Status Modal */}
+      {/* Razorpay Payment Status Modal with Confetti Celebration */}
       <PaymentStatusModal
         isOpen={modalStatus !== "IDLE"}
         status={modalStatus}
         errorMessage={errorMessage}
         planName={currentPlan?.name}
+        amount={currentPlan?.price}
+        currency={currentPlan?.currency || "INR"}
         onClose={closeModal}
         onRetry={() => {
           if (currentPlan) startCheckout(currentPlan);
         }}
       />
-    </div>
+    </motion.div>
   );
 };

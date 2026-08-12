@@ -9,6 +9,7 @@ export interface Company {
   userId?: CompanyOwner | string;
   ownerId?: CompanyOwner | string;
   companyName: string;
+  name?: string;
   tagline?: string;
   description?: string;
   mission?: string;

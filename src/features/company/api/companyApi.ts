@@ -6,8 +6,30 @@ import type {
   CompanyApiResponse,
 } from "../types/company.types";
 
+export interface TopCompanyItem {
+  _id: string;
+  name: string;
+  slug?: string;
+  logo?: string;
+  industry?: string;
+  location?: string;
+  openJobsCount: number;
+  rating?: number;
+  reviewsCount?: number;
+  brandColor?: string;
+}
+
 export const companyApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
+    getTopCompanies: builder.query<TopCompanyItem[], { limit?: number } | void>({
+      query: (params) => ({
+        url: "/company/top",
+        params: params || { limit: 10 },
+      }),
+      transformResponse: (response: { success: boolean; data: TopCompanyItem[] }) => response.data,
+      providesTags: ["Company"],
+    }),
+
     getMyCompany: builder.query<Company, void>({
       query: () => "/company",
       transformResponse: (response: CompanyApiResponse) => response.data,
@@ -37,7 +59,9 @@ export const companyApi = apiSlice.injectEndpoints({
 });
 
 export const {
+  useGetTopCompaniesQuery,
   useGetMyCompanyQuery,
   useCreateCompanyMutation,
   useUpdateCompanyMutation,
 } = companyApi;
+

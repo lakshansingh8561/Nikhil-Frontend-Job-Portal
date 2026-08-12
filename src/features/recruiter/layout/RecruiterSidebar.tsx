@@ -1,3 +1,4 @@
+import React from "react";
 import { NavLink, Link, useNavigate } from "react-router-dom";
 import {
   FiGrid,
@@ -12,13 +13,13 @@ import {
   FiMessageSquare,
   FiMenu,
   FiZap,
+  FiChevronRight,
 } from "react-icons/fi";
-import Logo from "../../../assets/logo.svg";
 import { useAppDispatch } from "../../../hooks/useAppDispatch";
-import { useAppSelector } from "../../../hooks/useAppSelector";
 import { logout } from "../../auth/authSlice";
 import { useGetUnreadCountQuery } from "../../chat/api/chatApi";
 import { UnreadBadge } from "../../chat/components/UnreadBadge";
+import { useGetCurrentRecruiterPlanQuery } from "../../membership/api/membershipApi";
 
 interface RecruiterSidebarProps {
   isMobileOpen?: boolean;
@@ -38,16 +39,20 @@ const navItems = [
   { name: "Settings", path: "/recruiter/settings", icon: FiSettings },
 ];
 
-export const RecruiterSidebar = ({
+export const RecruiterSidebar: React.FC<RecruiterSidebarProps> = ({
   isMobileOpen = false,
   onCloseMobile,
   isDesktopCollapsed = false,
   onToggleSidebar,
-}: RecruiterSidebarProps) => {
-  const { user } = useAppSelector((state) => state.auth);
+}) => {
   const { data: unreadData } = useGetUnreadCountQuery();
+  const { data: recSub } = useGetCurrentRecruiterPlanQuery();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+
+  const activeJobsCount = recSub?.activeJobsCount || 0;
+  const maxActiveJobs = recSub?.maxActiveJobs || 3;
+  const planName = recSub?.subscription?.planName || recSub?.plan?.name || "Free Tier";
 
   const handleLogout = () => {
     dispatch(logout());
@@ -61,33 +66,43 @@ export const RecruiterSidebar = ({
       {isMobileOpen && (
         <div
           onClick={onCloseMobile}
-          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-xs lg:hidden"
+          className="fixed inset-0 z-40 bg-slate-950/70 backdrop-blur-md lg:hidden transition-opacity"
         />
       )}
 
       <aside
-        className={`fixed top-0 bottom-0 left-0 z-50 flex flex-col justify-between bg-white border-r border-[#EAEFF7] transition-all duration-300 w-72 ${
-          isDesktopCollapsed ? "lg:w-20 p-3" : "lg:w-72 p-6"
-        } p-6 ${
+        className={`fixed top-0 bottom-0 left-0 z-50 flex flex-col justify-between bg-white text-[#05264E] border-r border-[#EAEFF7] transition-all duration-300 w-72 ${
+          isDesktopCollapsed ? "lg:w-20 p-3" : "lg:w-72 p-5"
+        } p-5 ${
           isMobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         }`}
       >
-        <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar">
-          {/* Header Logo + Sidebar Toggle Button */}
-          <div className={`flex items-center ${isDesktopCollapsed ? "lg:justify-center flex-col gap-2.5" : "justify-between"} pb-5 border-b border-[#F0F4FC]`}>
-            <Link to="/" className="flex items-center shrink-0">
-              <img
-                src={Logo}
-                alt="JobBox Recruiter"
-                className={`h-8 w-auto transition-all ${isDesktopCollapsed ? "lg:w-8 lg:h-8 lg:object-cover lg:object-left" : ""}`}
-              />
+        <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar space-y-6">
+          {/* Header Logo + Sidebar Toggle */}
+          <div
+            className={`flex items-center ${
+              isDesktopCollapsed ? "lg:justify-center flex-col gap-3" : "justify-between"
+            } pb-4 border-b border-[#F0F4FC]`}
+          >
+            <Link to="/" className="flex items-center gap-2.5 group">
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#3C65F5] shadow-md shadow-blue-500/20 group-hover:scale-105 transition-transform">
+                <FiZap className="text-white text-lg fill-white" />
+              </div>
+              <div className={`${isDesktopCollapsed ? "lg:hidden" : "flex flex-col"}`}>
+                <span className="text-xl font-black tracking-tight text-[#05264E] flex items-center gap-1">
+                  Job<span className="text-[#3C65F5]">Box</span>
+                </span>
+                <span className="text-[10px] font-extrabold tracking-widest text-[#66789C] uppercase">
+                  Recruiter Suite
+                </span>
+              </div>
             </Link>
 
             <div className="flex items-center gap-1">
               {onToggleSidebar && (
                 <button
                   onClick={onToggleSidebar}
-                  className="p-1.5 rounded-xl border border-[#EAEFF7] bg-[#F8FAFC] text-[#05264E] hover:bg-[#E8F0FE] hover:text-[#3C65F5] transition cursor-pointer"
+                  className="p-2 rounded-xl border border-[#EAEFF7] bg-[#F8FAFC] text-[#05264E] hover:bg-[#E8F0FE] transition cursor-pointer"
                   title="Toggle Sidebar"
                 >
                   <FiMenu className="text-base" />
@@ -97,7 +112,7 @@ export const RecruiterSidebar = ({
               {onCloseMobile && (
                 <button
                   onClick={onCloseMobile}
-                  className="lg:hidden p-1.5 text-gray-400 hover:text-gray-700 cursor-pointer"
+                  className="lg:hidden p-2 text-[#66789C] hover:text-[#05264E] cursor-pointer"
                 >
                   <FiX className="text-xl" />
                 </button>
@@ -105,33 +120,8 @@ export const RecruiterSidebar = ({
             </div>
           </div>
 
-          {/* Recruiter Profile Summary */}
-          <div
-            className={`mt-5 flex items-center ${
-              isDesktopCollapsed ? "lg:justify-center lg:p-2" : "gap-3 p-3"
-            } rounded-2xl bg-[#F8FAFC] border border-[#EAEFF7] shadow-2xs`}
-            title={user?.email || "Recruiter"}
-          >
-            <div className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#1D4ED8] font-bold text-white text-xs shadow-xs">
-              {user?.email ? user.email.charAt(0).toUpperCase() : "R"}
-              <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-emerald-500 ring-2 ring-white" />
-            </div>
-
-            <div className={`min-w-0 flex-1 ${isDesktopCollapsed ? "lg:hidden" : ""}`}>
-              <h4 className="text-xs font-bold text-[#05264E] truncate">
-                {user?.email?.split("@")[0] || "Recruiter"}
-              </h4>
-              <p
-                className="text-[11px] font-medium text-[#66789C] truncate"
-                title={user?.email || "recruiter@jobbox.com"}
-              >
-                {user?.email || "recruiter@jobbox.com"}
-              </p>
-            </div>
-          </div>
-
-          {/* Navigation Links */}
-          <nav className="mt-6 space-y-1.5">
+          {/* Nav Items List */}
+          <nav className="space-y-2 pt-2">
             {navItems.map((item) => {
               const Icon = item.icon;
               return (
@@ -141,27 +131,30 @@ export const RecruiterSidebar = ({
                   onClick={onCloseMobile}
                   title={isDesktopCollapsed ? item.name : undefined}
                   className={({ isActive }) =>
-                    `flex items-center ${
+                    `relative flex items-center ${
                       isDesktopCollapsed
-                        ? "lg:justify-center lg:w-11 lg:h-11 lg:mx-auto lg:p-0"
-                        : "justify-between px-3.5 py-2.5"
-                    } gap-3 rounded-xl text-xs font-bold transition-all duration-200 ${
+                        ? "lg:justify-center lg:w-12 lg:h-12 lg:mx-auto lg:p-0"
+                        : "justify-between px-4 py-3.5"
+                    } gap-3.5 rounded-2xl text-xs font-bold transition-all duration-200 group ${
                       isActive
-                        ? "bg-[#1D4ED8] text-white shadow-md"
-                        : "text-[#66789C] hover:bg-[#F8FAFC] hover:text-[#05264E]"
+                        ? "bg-[#3C65F5] text-white shadow-md shadow-blue-500/20"
+                        : "text-[#66789C] hover:text-[#05264E] hover:bg-[#F8FAFC]"
                     }`
                   }
                 >
-                  <div className="flex items-center gap-3 min-w-0 justify-center">
-                    <Icon className="text-lg shrink-0" />
-                    <span className={`truncate ${isDesktopCollapsed ? "lg:hidden" : ""}`}>
-                      {item.name}
-                    </span>
-                  </div>
-                  {item.hasBadge && unreadData && unreadData.unreadCount > 0 && (
-                    <div className={isDesktopCollapsed ? "lg:hidden" : ""}>
-                      <UnreadBadge count={unreadData.unreadCount} />
-                    </div>
+                  {({ isActive }) => (
+                    <>
+                      <div className="flex items-center gap-3.5">
+                        <Icon className={`text-lg transition-transform group-hover:scale-110 ${isActive ? "text-white" : "text-[#66789C] group-hover:text-[#3C65F5]"}`} />
+                        <span className={`${isDesktopCollapsed ? "lg:hidden" : ""}`}>{item.name}</span>
+                      </div>
+
+                      {item.hasBadge && (
+                        <div className={`${isDesktopCollapsed ? "lg:hidden" : ""}`}>
+                          <UnreadBadge count={unreadData?.unreadCount || 0} />
+                        </div>
+                      )}
+                    </>
                   )}
                 </NavLink>
               );
@@ -169,56 +162,41 @@ export const RecruiterSidebar = ({
           </nav>
         </div>
 
-        {/* Bottom Actions */}
-        <div className="space-y-3 pt-4 border-t border-[#F0F4FC] shrink-0">
-          {/* SPECIAL MEMBERSHIP BUTTON AT BOTTOM */}
-          <NavLink
-            to="/recruiter/membership"
-            onClick={onCloseMobile}
-            title={isDesktopCollapsed ? "Membership Plans" : undefined}
-            className={({ isActive }) =>
-              `relative group overflow-hidden flex items-center ${
-                isDesktopCollapsed
-                  ? "lg:w-12 lg:h-12 lg:p-0 lg:mx-auto lg:justify-center"
-                  : "justify-between px-4 py-3"
-              } rounded-2xl bg-gradient-to-r from-[#3C65F5] via-[#4F46E5] to-[#7C3AED] text-white shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 border border-white/20 ${
-                isActive ? "ring-2 ring-yellow-400 ring-offset-2" : ""
-              }`
-            }
-          >
-            {/* Shimmer Effect */}
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out" />
-
-            <div className="relative z-10 flex items-center gap-3">
-              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-yellow-400/20 backdrop-blur-md text-yellow-300 border border-yellow-300/30 shadow-inner">
-                <FiZap className="text-lg fill-yellow-300 text-yellow-300 animate-pulse" />
-              </span>
-              <div className={`flex flex-col ${isDesktopCollapsed ? "lg:hidden" : ""}`}>
-                <span className="text-xs font-black tracking-wide text-white drop-shadow-xs">
-                  Membership Plans
+        {/* Footer: Membership Upgrade Widget & Logout */}
+        <div className="pt-4 border-t border-[#F0F4FC] space-y-3">
+          {!isDesktopCollapsed && (
+            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 p-4 text-white shadow-lg">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[10px] font-black uppercase tracking-wider text-yellow-300 flex items-center gap-1">
+                  <FiZap className="text-yellow-300 fill-yellow-300" /> {planName}
                 </span>
-                <span className="text-[10px] font-bold text-yellow-300/90 tracking-wider uppercase">
-                  Upgrade & Perks ⭐
+                <span className="text-[10px] font-bold text-white bg-white/20 px-2 py-0.5 rounded-full border border-white/30">
+                  {activeJobsCount}/{maxActiveJobs} Jobs
                 </span>
               </div>
+              <p className="text-[11px] text-blue-100 font-medium leading-tight mb-3">
+                Upgrade plan to unlock unlimited job postings & candidate search!
+              </p>
+              <Link
+                to="/recruiter/membership"
+                onClick={onCloseMobile}
+                className="w-full flex items-center justify-center gap-1.5 rounded-xl bg-white py-2 text-[11px] font-black text-[#05264E] hover:bg-blue-50 transition cursor-pointer shadow-sm"
+              >
+                <span>Upgrade Plan</span>
+                <FiChevronRight className="text-xs" />
+              </Link>
             </div>
-
-            <span className={`relative z-10 rounded-full bg-yellow-400 px-2 py-0.5 text-[9px] font-black uppercase text-gray-900 shadow-sm ${isDesktopCollapsed ? "lg:hidden" : ""}`}>
-              PRO
-            </span>
-          </NavLink>
+          )}
 
           <button
             onClick={handleLogout}
-            title={isDesktopCollapsed ? "Sign Out" : undefined}
-            className={`flex w-full items-center ${
-              isDesktopCollapsed
-                ? "lg:justify-center lg:w-11 lg:h-11 lg:p-0 lg:mx-auto"
-                : "gap-3 px-3.5 py-2.5"
-            } rounded-xl text-xs font-bold text-red-600 hover:bg-red-50 transition cursor-pointer`}
+            className={`w-full flex items-center ${
+              isDesktopCollapsed ? "lg:justify-center lg:p-2.5" : "px-3.5 py-2.5"
+            } gap-3 rounded-xl text-xs font-bold text-red-600 hover:bg-red-50 transition cursor-pointer`}
+            title="Sign Out"
           >
-            <FiLogOut className="text-lg shrink-0" />
-            <span className={isDesktopCollapsed ? "lg:hidden" : ""}>Sign Out</span>
+            <FiLogOut className="text-base" />
+            <span className={`${isDesktopCollapsed ? "lg:hidden" : ""}`}>Sign Out</span>
           </button>
         </div>
       </aside>

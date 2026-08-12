@@ -45,7 +45,7 @@ const SocketContext = createContext<SocketContextType>({
 export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const { accessToken } = useAppSelector((state) => state.auth);
+  const { accessToken, user } = useAppSelector((state) => state.auth);
   const token = accessToken || localStorage.getItem("jobbox_accessToken");
 
   const dispatch = useAppDispatch();
@@ -57,6 +57,11 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
   >({});
 
   useEffect(() => {
+    // Admins are not allowed to participate in chat; skip socket connection
+    if (user?.role === "ADMIN") {
+      return;
+    }
+
     if (!token) {
       if (socket) {
         socket.disconnect();
@@ -187,7 +192,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
     return () => {
       newSocket.disconnect();
     };
-  }, [token, dispatch]);
+  }, [token, user, dispatch]);
 
   const joinConversation = useCallback(
     (conversationId: string) => {

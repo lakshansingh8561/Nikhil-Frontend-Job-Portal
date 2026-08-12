@@ -47,7 +47,7 @@ export const CompanyProfile = () => {
     <div className="space-y-6 w-full">
       {/* Header Banner */}
       <CompanyHeader
-        companyName={watchCompanyName || company?.companyName}
+        companyName={watchCompanyName || company?.companyName || company?.name}
         tagline={watchTagline || company?.tagline}
         industry={watchIndustry || company?.industry}
         location={displayLocation}

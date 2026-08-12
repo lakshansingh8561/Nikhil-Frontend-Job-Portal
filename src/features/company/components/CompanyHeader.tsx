@@ -33,9 +33,9 @@ export const CompanyHeader: React.FC<CompanyHeaderProps> = ({
   website,
   isVerified = true,
 }) => {
-  const displayTitle = companyName || "Your Company Name";
+  const displayTitle = companyName || "Create Your Company Profile";
   const displayTagline =
-    tagline || "Leading the future of technology, software innovation & digital growth";
+    tagline || "Fill out the form below to set up your corporate branding and start posting jobs.";
 
   return (
     <div className="relative overflow-hidden rounded-3xl bg-white shadow-md border border-[#EAEFF7]">
@@ -128,17 +128,17 @@ export const CompanyHeader: React.FC<CompanyHeaderProps> = ({
               <div className="mt-4 flex flex-wrap items-center gap-2.5 text-xs font-bold text-[#05264E]">
                 <span className="flex items-center gap-1.5 rounded-xl bg-[#F8FAFC] px-3.5 py-2 border border-[#EAEFF7] shadow-2xs">
                   <FiBriefcase className="text-[#1D4ED8]" />
-                  {industry || "Information Technology"}
+                  {industry || "Not Specified"}
                 </span>
 
                 <span className="flex items-center gap-1.5 rounded-xl bg-[#F8FAFC] px-3.5 py-2 border border-[#EAEFF7] shadow-2xs">
                   <FiUsers className="text-[#1D4ED8]" />
-                  {companySize || "1-10 Employees"}
+                  {companySize || "Not Specified"}
                 </span>
 
                 <span className="flex items-center gap-1.5 rounded-xl bg-[#F8FAFC] px-3.5 py-2 border border-[#EAEFF7] shadow-2xs">
                   <FiMapPin className="text-[#1D4ED8]" />
-                  {location || "New York, US"}
+                  {location || "Not Specified"}
                 </span>
 
                 {website && (
@@ -159,7 +159,7 @@ export const CompanyHeader: React.FC<CompanyHeaderProps> = ({
           {/* Industry Category Pill */}
           <div className="self-start md:self-auto shrink-0">
             <span className="inline-flex items-center gap-1.5 rounded-2xl bg-gradient-to-r from-blue-50 to-indigo-50 px-5 py-2.5 text-xs font-black text-[#1D4ED8] border border-blue-200/80 shadow-2xs">
-              <FiBriefcase /> {industry || "Information Technology"}
+              <FiBriefcase /> {industry || "Not Specified"}
             </span>
           </div>
         </div>

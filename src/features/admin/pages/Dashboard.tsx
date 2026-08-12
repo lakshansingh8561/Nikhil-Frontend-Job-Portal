@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { motion } from "framer-motion";
 import toast from "react-hot-toast";
 import DashboardOverview from "../dashboard/DashboardOverview";
 import ConfirmDeleteModal from "../components/ConfirmDeleteModal";
@@ -63,7 +64,12 @@ export const Dashboard: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.4 }}
+      className="space-y-6 pb-10"
+    >
       {/* Page Header */}
       <div>
         <h1 className="text-2xl sm:text-3xl font-extrabold text-[#05264E]">
@@ -97,7 +103,7 @@ export const Dashboard: React.FC = () => {
         itemTitle={selectedJob?.title}
         isLoading={isDeletingJob}
       />
-    </div>
+    </motion.div>
   );
 };
 

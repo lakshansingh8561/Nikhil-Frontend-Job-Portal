@@ -28,9 +28,9 @@ export const JobTable: React.FC<JobTableProps> = ({ jobs, onDeleteRequest }) => 
         <tbody className="divide-y divide-[#F0F4FC] text-xs font-medium">
           {jobs.map((job) => {
             const companyName =
-              typeof job.companyId === "object" && job.companyId !== null
+              (typeof job.companyId === "object" && job.companyId !== null
                 ? job.companyId.companyName
-                : "Company";
+                : undefined) || "Company";
 
             const companyLogo =
               typeof job.companyId === "object" && job.companyId?.logo

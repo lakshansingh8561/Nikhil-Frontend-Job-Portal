@@ -6,15 +6,18 @@ import { PageHeader } from "../../recruiter/components/PageHeader";
 import { JobForm } from "../components/JobForm";
 import { jobSchema, type JobFormData } from "../validation/job.schema";
 import { useCreateJobMutation } from "../api/jobsApi";
+import { useGetMyCompanyQuery } from "../../company/api/companyApi";
 import { useGetCurrentRecruiterPlanQuery } from "../../membership/api/membershipApi";
-import { FiZap, FiAlertTriangle, FiArrowRight } from "react-icons/fi";
+import { FiZap, FiAlertTriangle, FiArrowRight, FiBriefcase } from "react-icons/fi";
 
 export const CreateJob = () => {
   const navigate = useNavigate();
   const [createJob, { isLoading }] = useCreateJobMutation();
+  const { data: company, isError: noCompany } = useGetMyCompanyQuery();
   const { data: recSub, isLoading: isLoadingSub } = useGetCurrentRecruiterPlanQuery();
 
-  const canPostJob = recSub?.canPostJob !== false;
+  const hasCompany = Boolean(company && !noCompany);
+  const canPostJob = recSub?.canPostJob !== false && hasCompany;
   const activeJobsCount = recSub?.activeJobsCount || 0;
   const maxActiveJobs = recSub?.maxActiveJobs || 3;
 
@@ -42,6 +45,12 @@ export const CreateJob = () => {
   });
 
   const onSubmit = async (data: JobFormData) => {
+    if (!hasCompany) {
+      toast.error("Please create your company profile before posting a job!");
+      navigate("/recruiter/company");
+      return;
+    }
+
     if (!canPostJob) {
       toast.error("Job posting limit reached. Please upgrade your membership to post more jobs.");
       return;
@@ -70,6 +79,31 @@ export const CreateJob = () => {
         title="Post a New Job Opening"
         description="Publish a new job listing powered directly by live backend API endpoints."
       />
+
+      {/* Company Profile Required Alert */}
+      {!hasCompany && (
+        <div className="rounded-3xl bg-blue-50 border border-blue-200 p-6 text-blue-950 shadow-sm flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="flex items-center gap-4">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-blue-100 text-[#3C65F5] font-bold text-xl">
+              <FiBriefcase />
+            </div>
+            <div>
+              <h4 className="text-base font-black text-[#05264E]">
+                Company Profile Required
+              </h4>
+              <p className="text-xs text-[#66789C] font-medium mt-0.5">
+                You must set up your company profile before publishing job postings.
+              </p>
+            </div>
+          </div>
+          <Link
+            to="/recruiter/company"
+            className="inline-flex items-center gap-2 rounded-2xl bg-[#3C65F5] px-6 py-3 text-xs font-black text-white hover:bg-[#254BD6] shadow-md transition shrink-0 cursor-pointer"
+          >
+            Create Company Profile <FiArrowRight />
+          </Link>
+        </div>
+      )}
 
       {/* Membership Limit Lock Alert */}
       {!isLoadingSub && !canPostJob && (
