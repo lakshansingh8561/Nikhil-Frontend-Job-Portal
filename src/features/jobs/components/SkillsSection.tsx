@@ -46,10 +46,16 @@ export const SkillsSection = ({
   };
 
   return (
-    <div className="rounded-2xl border border-[#EAEFF7] bg-white p-6 shadow-sm">
-      <h3 className="text-base font-bold text-[#05264E] mb-6 flex items-center gap-2 border-b border-[#F0F4FC] pb-3">
-        <FiCode className="text-[#3C65F5]" /> Required Technical Skills
-      </h3>
+    <div className="rounded-3xl border border-slate-200/90 bg-white p-6 sm:p-8 shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.05)] transition-all">
+      <div className="flex items-center gap-3 border-b border-slate-100 pb-5 mb-6">
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-purple-50 text-purple-600 border border-purple-100/80 shadow-xs">
+          <FiCode className="text-lg" />
+        </div>
+        <div>
+          <h3 className="text-lg font-black text-slate-900 tracking-tight">Required Technical Skills</h3>
+          <p className="text-xs text-slate-400 font-medium">Add key technologies, frameworks, and tools candidates need.</p>
+        </div>
+      </div>
 
       {/* Input box */}
       <div className="flex items-center gap-3 mb-4">
@@ -64,61 +70,68 @@ export const SkillsSection = ({
             }
           }}
           placeholder="Type a skill (e.g. React) and press Enter..."
-          className="w-full rounded-xl border border-[#EAEFF7] bg-[#F8FAFC] p-3 text-sm font-medium text-[#05264E] placeholder-gray-400 outline-none transition focus:border-[#3C65F5] focus:bg-white"
+          className="w-full rounded-2xl border border-slate-200 bg-slate-50/60 p-3.5 text-xs sm:text-sm font-semibold text-slate-900 placeholder-slate-400 outline-none transition focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 shadow-xs"
         />
 
         <button
           type="button"
           onClick={() => handleAddSkill(skillInput)}
-          className="flex items-center gap-1.5 rounded-xl bg-[#3C65F5] px-5 py-3 text-xs font-semibold text-white shadow-xs transition hover:bg-[#254BD6] shrink-0 cursor-pointer"
+          className="inline-flex items-center gap-1.5 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-3.5 text-xs font-black text-white hover:brightness-110 shadow-md transition shrink-0 cursor-pointer"
         >
           <FiPlus className="text-base" /> Add Skill
         </button>
       </div>
 
       {errors.skills && (
-        <p className="mt-1 text-xs text-red-500 mb-3">{errors.skills.message}</p>
+        <p className="mb-4 text-xs font-bold text-rose-500">{errors.skills.message}</p>
       )}
 
-      {/* Selected Tags */}
+      {/* Selected Skill Tags */}
       {selectedSkills.length > 0 && (
-        <div className="flex flex-wrap gap-2 mb-4">
+        <div className="mb-5 flex flex-wrap gap-2 pt-1">
           {selectedSkills.map((skill) => (
             <span
               key={skill}
-              className="inline-flex items-center gap-1.5 rounded-lg bg-[#EBF2FF] px-3 py-1.5 text-xs font-bold text-[#3C65F5] border border-blue-100"
+              className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-indigo-50 to-blue-50 px-3.5 py-1.5 text-xs font-extrabold text-indigo-700 border border-indigo-200/80 shadow-xs"
             >
               <span>{skill}</span>
               <button
                 type="button"
                 onClick={() => handleRemoveSkill(skill)}
-                className="rounded-full p-0.5 hover:bg-blue-200 transition cursor-pointer"
+                className="text-indigo-400 hover:text-rose-600 transition cursor-pointer"
+                title="Remove skill"
               >
-                <FiX className="text-xs" />
+                <FiX />
               </button>
             </span>
           ))}
         </div>
       )}
 
-      {/* Quick Suggestions */}
+      {/* Suggested Quick Add Skills */}
       <div>
-        <p className="text-xs font-semibold text-[#66789C] mb-2">
-          Popular Suggested Skills:
+        <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">
+          Suggested Popular Skills:
         </p>
-        <div className="flex flex-wrap gap-1.5">
-          {suggestedSkills
-            .filter((s) => !selectedSkills.includes(s))
-            .map((s) => (
+        <div className="flex flex-wrap gap-2">
+          {suggestedSkills.map((skill) => {
+            const isSelected = selectedSkills.includes(skill);
+            return (
               <button
-                key={s}
+                key={skill}
                 type="button"
-                onClick={() => handleAddSkill(s)}
-                className="rounded-lg bg-gray-100 px-2.5 py-1 text-[11px] font-semibold text-gray-600 hover:bg-blue-50 hover:text-[#3C65F5] transition cursor-pointer"
+                onClick={() => handleAddSkill(skill)}
+                disabled={isSelected}
+                className={`rounded-xl px-3 py-1 text-xs font-bold transition cursor-pointer ${
+                  isSelected
+                    ? "bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-200"
+                    : "bg-slate-50 text-slate-700 border border-slate-200 hover:border-indigo-500 hover:text-indigo-600 hover:bg-white shadow-2xs"
+                }`}
               >
-                + {s}
+                + {skill}
               </button>
-            ))}
+            );
+          })}
         </div>
       </div>
     </div>

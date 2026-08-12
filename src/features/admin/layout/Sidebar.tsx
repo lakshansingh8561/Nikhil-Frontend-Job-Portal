@@ -10,6 +10,7 @@ import {
   FiX,
   FiGlobe,
   FiMenu,
+  FiZap,
 } from "react-icons/fi";
 
 interface SidebarProps {
@@ -40,95 +41,114 @@ export const Sidebar: React.FC<SidebarProps> = ({
       {isOpen && (
         <div
           onClick={onClose}
-          className="fixed inset-0 z-40 bg-black/40 backdrop-blur-xs lg:hidden"
+          className="fixed inset-0 z-40 bg-slate-950/70 backdrop-blur-md lg:hidden transition-opacity"
         />
       )}
 
       <aside
-        className={`fixed top-0 bottom-0 left-0 z-50 flex flex-col border-r border-[#EAEFF7] bg-white transition-all duration-300 ease-in-out lg:static lg:h-screen lg:shrink-0 lg:translate-x-0 ${
-          isDesktopCollapsed ? "lg:w-20" : "lg:w-64"
-        } w-64 ${isOpen ? "translate-x-0" : "-translate-x-full"}`}
+        className={`fixed top-0 bottom-0 left-0 z-50 flex flex-col justify-between bg-white text-[#05264E] border-r border-[#EAEFF7] transition-all duration-300 w-64 ${
+          isDesktopCollapsed ? "lg:w-20 p-3" : "lg:w-64 p-5"
+        } p-5 ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}
       >
-        {/* Top Logo Section */}
-        <div className={`flex h-20 items-center ${isDesktopCollapsed ? "lg:justify-center flex-col gap-2" : "justify-between px-5"} border-b border-[#EAEFF7] shrink-0`}>
-          <Link to="/admin/dashboard" className="flex items-center gap-2.5">
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#3C65F5] font-extrabold text-white text-xl shadow-md shrink-0">
-              J
-            </div>
-            <div className={`flex flex-col ${isDesktopCollapsed ? "lg:hidden" : ""}`}>
-              <span className="text-lg font-extrabold text-[#05264E] leading-tight">
-                JobBox
-              </span>
-              <span className="text-[10px] font-bold text-[#3C65F5] tracking-wider uppercase">
-                Admin Portal
-              </span>
-            </div>
-          </Link>
+        <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar space-y-6">
+          {/* Top Logo Section */}
+          <div
+            className={`flex items-center ${
+              isDesktopCollapsed ? "lg:justify-center flex-col gap-3" : "justify-between"
+            } pb-4 border-b border-[#F0F4FC]`}
+          >
+            <Link to="/admin/dashboard" className="flex items-center gap-2.5 group">
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#3C65F5] shadow-md shadow-blue-500/20 group-hover:scale-105 transition-transform">
+                <FiZap className="text-white text-lg fill-white" />
+              </div>
+              <div className={`${isDesktopCollapsed ? "lg:hidden" : "flex flex-col"}`}>
+                <span className="text-xl font-black tracking-tight text-[#05264E] flex items-center gap-1">
+                  Job<span className="text-[#3C65F5]">Box</span>
+                </span>
+                <span className="text-[10px] font-extrabold tracking-widest text-[#66789C] uppercase">
+                  Super Admin
+                </span>
+              </div>
+            </Link>
 
-          <div className="flex items-center gap-1">
-            {onToggleSidebar && (
+            <div className="flex items-center gap-1">
+              {onToggleSidebar && (
+                <button
+                  onClick={onToggleSidebar}
+                  className="p-2 rounded-xl border border-[#EAEFF7] bg-[#F8FAFC] text-[#05264E] hover:bg-[#E8F0FE] transition cursor-pointer"
+                  title="Toggle Sidebar"
+                >
+                  <FiMenu className="text-base" />
+                </button>
+              )}
+
               <button
-                onClick={onToggleSidebar}
-                className="p-1.5 rounded-xl border border-[#EAEFF7] bg-[#F8FAFC] text-[#05264E] hover:bg-[#E8F0FE] hover:text-[#3C65F5] transition cursor-pointer"
-                title="Toggle Sidebar"
+                onClick={onClose}
+                className="text-[#66789C] hover:text-[#05264E] lg:hidden cursor-pointer p-1"
               >
-                <FiMenu className="text-base" />
+                <FiX className="text-xl" />
               </button>
-            )}
+            </div>
+          </div>
 
-            <button
-              onClick={onClose}
-              className="text-gray-400 hover:text-gray-600 lg:hidden cursor-pointer p-1"
+          {/* Navigation Menu Links */}
+          <div className="space-y-2">
+            <p
+              className={`px-3 text-[10px] font-black uppercase tracking-widest text-[#66789C] mb-3 ${
+                isDesktopCollapsed ? "lg:hidden" : ""
+              }`}
             >
-              <FiX className="text-xl" />
-            </button>
+              Main Management
+            </p>
+
+            {navItems.map((item) => {
+              const Icon = item.icon;
+              return (
+                <NavLink
+                  key={item.path}
+                  to={item.path}
+                  onClick={onClose}
+                  title={isDesktopCollapsed ? item.label : undefined}
+                  className={({ isActive }) =>
+                    `relative flex items-center ${
+                      isDesktopCollapsed
+                        ? "lg:justify-center lg:w-12 lg:h-12 lg:mx-auto lg:p-0"
+                        : "px-4 py-3.5"
+                    } gap-3.5 rounded-2xl text-xs font-bold transition-all duration-200 group ${
+                      isActive
+                        ? "bg-[#3C65F5] text-white shadow-md shadow-blue-500/20"
+                        : "text-[#66789C] hover:text-[#05264E] hover:bg-[#F8FAFC]"
+                    }`
+                  }
+                >
+                  {({ isActive }) => (
+                    <>
+                      <Icon
+                        className={`text-lg transition-transform group-hover:scale-110 ${
+                          isActive ? "text-white" : "text-[#66789C] group-hover:text-[#3C65F5]"
+                        }`}
+                      />
+                      <span className={`${isDesktopCollapsed ? "lg:hidden" : ""}`}>
+                        {item.label}
+                      </span>
+                    </>
+                  )}
+                </NavLink>
+              );
+            })}
           </div>
         </div>
 
-        {/* Navigation Menu Links */}
-        <div className={`flex-1 overflow-y-auto no-scrollbar ${isDesktopCollapsed ? "lg:px-2" : "px-4"} py-6 space-y-1.5`}>
-          <p className={`px-3 text-[11px] font-bold uppercase tracking-wider text-[#66789C] mb-2 ${isDesktopCollapsed ? "lg:hidden" : ""}`}>
-            Main Management
-          </p>
-
-          {navItems.map((item) => {
-            const Icon = item.icon;
-            return (
-              <NavLink
-                key={item.path}
-                to={item.path}
-                onClick={onClose}
-                title={isDesktopCollapsed ? item.label : undefined}
-                className={({ isActive }) =>
-                  `flex items-center ${
-                    isDesktopCollapsed
-                      ? "lg:justify-center lg:w-11 lg:h-11 lg:mx-auto lg:p-0"
-                      : "gap-3 px-4 py-3"
-                  } rounded-2xl text-xs font-bold transition-all duration-200 ${
-                    isActive
-                      ? "bg-[#3C65F5] text-white shadow-md shadow-blue-500/20"
-                      : "text-[#66789C] hover:bg-[#F8FAFC] hover:text-[#05264E]"
-                  }`
-                }
-              >
-                <Icon className="text-base shrink-0" />
-                <span className={isDesktopCollapsed ? "lg:hidden" : ""}>{item.label}</span>
-              </NavLink>
-            );
-          })}
-        </div>
-
-        {/* Bottom Back to Main Portal Link */}
-        <div className="p-4 border-t border-[#EAEFF7] shrink-0">
+        {/* Footer Link to Public Platform */}
+        <div className="pt-4 border-t border-[#F0F4FC]">
           <Link
-            to="/jobs"
-            title={isDesktopCollapsed ? "Public Site" : undefined}
-            className={`flex items-center justify-center gap-2 rounded-2xl border border-[#EAEFF7] bg-[#F8FAFC] ${
-              isDesktopCollapsed ? "lg:w-11 lg:h-11 lg:p-0 lg:mx-auto" : "py-3"
-            } text-xs font-bold text-[#05264E] transition hover:bg-[#E8F0FE] hover:text-[#3C65F5]`}
+            to="/"
+            className={`flex items-center ${
+              isDesktopCollapsed ? "lg:justify-center lg:p-2.5" : "px-3.5 py-2.5"
+            } gap-3 rounded-xl text-xs font-bold text-[#66789C] hover:text-[#05264E] hover:bg-[#F8FAFC] transition cursor-pointer`}
           >
-            <FiGlobe className="text-base shrink-0" />
-            <span className={isDesktopCollapsed ? "lg:hidden" : ""}>Public Site</span>
+            <FiGlobe className="text-base text-[#3C65F5]" />
+            <span className={`${isDesktopCollapsed ? "lg:hidden" : ""}`}>Live Portal</span>
           </Link>
         </div>
       </aside>

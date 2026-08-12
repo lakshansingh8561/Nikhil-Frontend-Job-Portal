@@ -35,10 +35,12 @@ export interface IPaymentRecord {
   subscriptionId?: string;
   amount: number;
   currency: string;
-  status: "PENDING" | "AUTHORIZED" | "CAPTURED" | "SUCCESS" | "FAILED" | "REFUNDED";
-  provider: string;
-  razorpayOrderId?: string;
-  razorpayPaymentId?: string;
+  status: "PENDING" | "AUTHORIZED" | "PROCESSING" | "SUCCESS" | "FAILED" | "CANCELLED" | "REFUNDED";
+  provider: "RAZORPAY" | "POLAR" | "STRIPE" | "PAYPAL" | "MANUAL" | string;
+  providerPaymentId?: string;
+  providerOrderId?: string;
+  providerSubscriptionId?: string;
+  paymentMethod?: string;
   paidAt?: string;
   createdAt: string;
   updatedAt: string;

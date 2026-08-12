@@ -24,7 +24,7 @@ export const CompanyOverviewCard = ({ company }: CompanyOverviewCardProps) => {
             <FiBriefcase className="text-[#3C65F5]" /> Industry
           </span>
           <p className="text-xs font-black text-[#05264E] leading-snug">
-            {company?.industry || "Information Technology"}
+            {company?.industry || "Not Specified"}
           </p>
         </div>
 
@@ -34,7 +34,7 @@ export const CompanyOverviewCard = ({ company }: CompanyOverviewCardProps) => {
             <FiUsers className="text-[#3C65F5]" /> Company Size
           </span>
           <p className="text-xs font-black text-[#05264E] leading-snug">
-            {company?.companySize || "1-10 Employees"}
+            {company?.companySize || "Not Specified"}
           </p>
         </div>
 
@@ -44,7 +44,7 @@ export const CompanyOverviewCard = ({ company }: CompanyOverviewCardProps) => {
             <FiCalendar className="text-[#3C65F5]" /> Founded Year
           </span>
           <p className="text-xs font-black text-[#05264E] leading-snug">
-            {company?.foundedYear || "2018"}
+            {company?.foundedYear || "Not Specified"}
           </p>
         </div>
 
@@ -56,7 +56,7 @@ export const CompanyOverviewCard = ({ company }: CompanyOverviewCardProps) => {
           <p className="text-xs font-black text-[#05264E] leading-snug">
             {company?.city || company?.country
               ? `${company.city || ""}${company.city && company.country ? ", " : ""}${company.country || ""}`
-              : "New York, US"}
+              : "Not Specified"}
           </p>
         </div>
 

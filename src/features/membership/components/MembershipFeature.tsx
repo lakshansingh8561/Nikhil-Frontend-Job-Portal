@@ -10,12 +10,12 @@ export const MembershipFeature: React.FC<MembershipFeatureProps> = ({
   feature,
 }) => {
   return (
-    <li className="flex items-center gap-2.5 py-1 text-xs">
+    <li className="flex items-center gap-2.5 py-1.5 text-xs">
       <span
-        className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full text-[10px] font-bold ${
+        className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full text-[10px] font-extrabold ${
           feature.enabled
             ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
-            : "bg-slate-800 text-slate-500 border border-slate-700"
+            : "bg-slate-800/80 text-slate-500 border border-slate-700/80"
         }`}
       >
         {feature.enabled ? <FiCheck /> : <FiX />}

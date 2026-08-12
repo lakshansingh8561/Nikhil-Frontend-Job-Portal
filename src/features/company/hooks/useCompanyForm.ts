@@ -52,7 +52,7 @@ export const useCompanyForm = () => {
   useEffect(() => {
     if (company) {
       reset({
-        companyName: company.companyName || "",
+        companyName: company.companyName || company.name || "",
         tagline: company.tagline || "",
         description: company.description || "",
         mission: company.mission || "",

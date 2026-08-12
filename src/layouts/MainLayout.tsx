@@ -1,5 +1,6 @@
 import { Outlet, Navigate } from "react-router-dom";
 import Navbar from "../components/common/Navbar";
+import Footer from "../components/common/Footer";
 import { useAppSelector } from "../hooks/useAppSelector";
 
 const MainLayout = () => {
@@ -19,11 +20,14 @@ const MainLayout = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#F5F7FC]">
-      <Navbar />
-      <main>
-        <Outlet />
-      </main>
+    <div className="min-h-screen bg-[#F5F7FC] flex flex-col justify-between">
+      <div>
+        <Navbar />
+        <main>
+          <Outlet />
+        </main>
+      </div>
+      <Footer />
     </div>
   );
 };

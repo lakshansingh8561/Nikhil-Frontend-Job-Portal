@@ -8,6 +8,7 @@ export interface RecruiterUser {
 export interface Company {
   _id: string;
   companyName: string;
+  name?: string;
   logo?: string;
   location?: string;
   website?: string;
@@ -25,6 +26,7 @@ export interface RecruiterProfile {
   phone: string;
   designation: string;
   currentCompany?: string;
+  companyName?: string;
   experience?: number;
   currentLocation?: string;
   headline?: string;

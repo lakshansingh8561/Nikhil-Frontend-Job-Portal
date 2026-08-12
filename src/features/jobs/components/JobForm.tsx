@@ -6,6 +6,7 @@ import { EmploymentSection } from "./EmploymentSection";
 import { SalarySection } from "./SalarySection";
 import { SkillsSection } from "./SkillsSection";
 import { PublishCard } from "./PublishCard";
+import { FiSend } from "react-icons/fi";
 
 interface JobFormProps {
   register: UseFormRegister<JobFormData>;
@@ -47,13 +48,13 @@ export const JobForm = ({
         watch={watch}
       />
 
-      {/* Action Buttons */}
-      <div className="flex items-center justify-end gap-4 rounded-2xl border border-[#EAEFF7] bg-white p-6 shadow-sm">
+      {/* Action Buttons Bar */}
+      <div className="flex items-center justify-end gap-4 rounded-3xl border border-slate-200/90 bg-white p-6 shadow-sm">
         {onCancel && (
           <button
             type="button"
             onClick={onCancel}
-            className="rounded-xl border border-[#EAEFF7] bg-white px-6 py-3 text-xs font-semibold text-[#66789C] transition hover:bg-gray-50 cursor-pointer"
+            className="rounded-2xl border border-slate-200 bg-slate-50 px-6 py-3.5 text-xs font-bold text-slate-600 transition hover:bg-slate-100 cursor-pointer"
           >
             Cancel
           </button>
@@ -62,9 +63,10 @@ export const JobForm = ({
         <button
           type="submit"
           disabled={isSubmitting}
-          className="rounded-xl bg-[#3C65F5] px-8 py-3 text-xs font-semibold text-white shadow-md transition hover:bg-[#254BD6] disabled:opacity-50 cursor-pointer"
+          className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-indigo-700 px-8 py-3.5 text-xs font-black text-white shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:brightness-110 active:scale-[0.98] transition cursor-pointer disabled:opacity-50"
         >
-          {isSubmitting ? "Saving..." : submitButtonText}
+          <FiSend className="text-sm" />
+          <span>{isSubmitting ? "Saving..." : submitButtonText}</span>
         </button>
       </div>
     </form>

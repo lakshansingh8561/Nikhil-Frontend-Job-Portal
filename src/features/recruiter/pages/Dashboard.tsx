@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import { PageHeader } from "../components/PageHeader";
 import { DashboardStats } from "../dashboard/DashboardStats";
 import { QuickActions } from "../dashboard/QuickActions";
@@ -21,7 +22,12 @@ export const Dashboard = () => {
     : 0;
 
   return (
-    <div className="space-y-8">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.4 }}
+      className="space-y-8 pb-10"
+    >
       {/* Page Header */}
       <PageHeader
         title="Recruiter Overview Dashboard"
@@ -29,7 +35,7 @@ export const Dashboard = () => {
         action={
           <Link
             to="/recruiter/post-job"
-            className="flex items-center gap-2 rounded-xl bg-[#1D4ED8] px-5 py-3 text-xs font-semibold text-white shadow-md transition hover:bg-[#1E40AF]"
+            className="flex items-center gap-2 rounded-xl bg-[#3C65F5] px-5 py-3 text-xs font-bold text-white shadow-md transition hover:bg-[#254BD6]"
           >
             <FiPlusSquare className="text-base" /> Post New Job
           </Link>
@@ -37,41 +43,46 @@ export const Dashboard = () => {
       />
 
       {/* Recruiter Membership Status Widget */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#05264E] via-[#0F396E] to-[#1D4ED8] p-6 text-white shadow-xl">
+      <motion.div
+        initial={{ opacity: 0, y: 15 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        className="relative overflow-hidden rounded-3xl bg-white border border-[#EAEFF7] p-6 sm:p-8 text-[#05264E] shadow-xs"
+      >
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 relative z-10">
           <div className="space-y-2">
             <div className="flex items-center gap-2">
-              <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-yellow-400/20 text-yellow-300 text-sm">
-                <FiZap className="fill-yellow-300" />
+              <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-50 text-amber-600 text-sm">
+                <FiZap className="fill-yellow-400" />
               </span>
-              <span className="text-xs font-bold uppercase tracking-wider text-blue-200">
-                Recruiter Plan: <strong className="text-yellow-300 font-black">{planName}</strong>
+              <span className="text-xs font-bold uppercase tracking-wider text-[#66789C]">
+                Recruiter Plan: <strong className="text-[#3C65F5] font-extrabold">{planName}</strong>
               </span>
             </div>
-            <h3 className="text-xl font-extrabold text-white">
+            <h3 className="text-xl font-black text-[#05264E]">
               {isFree ? "Free Tier — 3 Active Jobs Limit" : `${planName} Subscription Active`}
             </h3>
-            <div className="flex flex-wrap items-center gap-3 text-xs text-blue-100/90 font-medium">
-              <span className="flex items-center gap-1.5 rounded-lg bg-white/10 px-3 py-1 border border-white/10">
-                <FiBriefcase className="text-yellow-300" /> Jobs Posted: <strong>{activeJobsCount} / {maxActiveJobs}</strong>
+            <div className="flex flex-wrap items-center gap-3 text-xs text-[#66789C] font-medium">
+              <span className="flex items-center gap-1.5 rounded-xl bg-[#F8FAFC] px-3 py-1 border border-[#EAEFF7]">
+                <FiBriefcase className="text-[#3C65F5]" /> Jobs Posted: <strong className="text-[#05264E]">{activeJobsCount} / {maxActiveJobs}</strong>
               </span>
-              <span className="flex items-center gap-1.5 rounded-lg bg-white/10 px-3 py-1 border border-white/10">
-                <FiCalendar className="text-blue-300" /> Active Days Remaining: <strong>{hasActiveSub ? `${recDaysRemaining} Days` : "Free Tier"}</strong>
+              <span className="flex items-center gap-1.5 rounded-xl bg-[#F8FAFC] px-3 py-1 border border-[#EAEFF7]">
+                <FiCalendar className="text-[#3C65F5]" /> Active Days Remaining: <strong className="text-[#05264E]">{hasActiveSub ? `${recDaysRemaining} Days` : "Free Tier"}</strong>
               </span>
-              <span className="flex items-center gap-1.5 rounded-lg bg-white/10 px-3 py-1 border border-white/10">
-                <FiShield className="text-emerald-400" /> Features: <strong>{isFree ? "Standard Hiring" : "Unlimited Jobs & AI"}</strong>
+              <span className="flex items-center gap-1.5 rounded-xl bg-[#F8FAFC] px-3 py-1 border border-[#EAEFF7]">
+                <FiShield className="text-emerald-600" /> Features: <strong className="text-[#05264E]">{isFree ? "Standard Hiring" : "Unlimited Jobs & AI"}</strong>
               </span>
             </div>
           </div>
 
           <Link
             to="/recruiter/membership"
-            className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-6 py-3 text-xs font-extrabold text-[#05264E] hover:bg-blue-50 transition-all shadow-md shrink-0 cursor-pointer"
+            className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#3C65F5] px-6 py-3 text-xs font-bold text-white hover:bg-[#254BD6] transition-all shadow-md shrink-0 cursor-pointer"
           >
             Manage Membership <FiArrowRight />
           </Link>
         </div>
-      </div>
+      </motion.div>
 
       {/* Top 4 Statistic Cards */}
       <DashboardStats />
@@ -84,7 +95,7 @@ export const Dashboard = () => {
         <RecentJobs />
         <RecentApplications />
       </div>
-    </div>
+    </motion.div>
   );
 };
 

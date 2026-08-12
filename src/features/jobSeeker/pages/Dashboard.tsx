@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 import {
   FiBriefcase,
   FiCheckCircle,
@@ -20,6 +21,21 @@ import StatusBadge from "../../applications/components/StatusBadge";
 import ResumeViewer from "../../applications/components/ResumeViewer";
 import ApplicationSkeleton from "../../applications/components/ApplicationSkeleton";
 import { useAppSelector } from "../../../hooks/useAppSelector";
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.08,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 15 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.3 } },
+};
 
 export const Dashboard: React.FC = () => {
   const { user } = useAppSelector((state) => state.auth);
@@ -58,22 +74,28 @@ export const Dashboard: React.FC = () => {
     : user?.email?.split("@")[0] || "Candidate";
 
   const recentApps = allApplications.slice(0, 4);
-  const matchingJobs = jobsResponse?.jobs || [];
-  const totalActiveJobs = jobsResponse?.pagination?.total || matchingJobs.length;
 
   return (
-    <div className="h-full overflow-y-auto overscroll-contain pr-1 pb-12 space-y-8 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-gray-200 [&::-webkit-scrollbar-thumb]:rounded-full">
+    <motion.div
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+      className="h-full overflow-y-auto overscroll-contain pr-1 pb-12 space-y-8 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-gray-200 [&::-webkit-scrollbar-thumb]:rounded-full"
+    >
       {/* Welcome Banner */}
-      <div className="rounded-3xl border border-[#EAEFF7] bg-gradient-to-r from-[#05264E] to-[#1D4ED8] p-6 sm:p-8 text-white shadow-md relative overflow-hidden">
+      <motion.div
+        variants={itemVariants}
+        className="rounded-3xl border border-[#EAEFF7] bg-white p-6 sm:p-8 text-[#05264E] shadow-xs relative overflow-hidden"
+      >
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div>
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-xs font-bold text-blue-200 backdrop-blur-xs mb-3 border border-white/10">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-3 py-1 text-xs font-bold text-[#3C65F5] mb-3 border border-blue-100">
               <FiAward /> Job Seeker Dashboard
             </span>
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-[#05264E]">
               Welcome Back, {candidateName}! 👋
             </h1>
-            <p className="mt-2 text-xs sm:text-sm font-medium text-blue-100 max-w-xl">
+            <p className="mt-2 text-xs sm:text-sm font-medium text-[#66789C] max-w-xl">
               {profile?.headline ||
                 "Keep your profile updated, track application statuses, and discover new matching job openings."}
             </p>
@@ -82,24 +104,24 @@ export const Dashboard: React.FC = () => {
           <div className="flex items-center gap-3">
             <Link
               to="/job-seeker/profile"
-              className="flex items-center gap-2 rounded-2xl bg-white px-5 py-3 text-xs font-bold text-[#05264E] shadow-sm transition hover:bg-blue-50 cursor-pointer"
+              className="flex items-center gap-2 rounded-2xl bg-white border border-gray-200 px-5 py-3 text-xs font-bold text-[#05264E] shadow-2xs transition hover:bg-blue-50 hover:border-blue-300 hover:text-[#3C65F5] cursor-pointer"
             >
               <FiUser /> Edit Profile
             </Link>
             <Link
               to="/job-seeker/jobs"
-              className="flex items-center gap-2 rounded-2xl bg-[#3C65F5] px-5 py-3 text-xs font-bold text-white shadow-sm transition hover:bg-[#254BD6] cursor-pointer border border-blue-400/30"
+              className="flex items-center gap-2 rounded-2xl bg-[#3C65F5] px-5 py-3 text-xs font-bold text-white shadow-md transition hover:bg-[#254BD6] cursor-pointer active:scale-98"
             >
               <FiSearch /> Browse Jobs
             </Link>
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Analytics Stats Grid */}
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-5">
+      <motion.div variants={itemVariants} className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-5">
         {/* Total Applications */}
-        <div className="flex items-center justify-between rounded-3xl border border-[#EAEFF7] bg-white p-5 shadow-xs">
+        <motion.div whileHover={{ y: -4 }} className="flex items-center justify-between rounded-3xl border border-[#EAEFF7] bg-white p-5 shadow-xs transition-shadow hover:shadow-md">
           <div>
             <p className="text-xs font-bold text-[#66789C] uppercase tracking-wider">
               Applications
@@ -112,10 +134,10 @@ export const Dashboard: React.FC = () => {
           <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#E8F0FE] text-[#3C65F5] shrink-0">
             <FiFileText className="text-xl" />
           </div>
-        </div>
+        </motion.div>
 
         {/* Shortlisted / Interviewing */}
-        <div className="flex items-center justify-between rounded-3xl border border-[#EAEFF7] bg-white p-5 shadow-xs">
+        <motion.div whileHover={{ y: -4 }} className="flex items-center justify-between rounded-3xl border border-[#EAEFF7] bg-white p-5 shadow-xs transition-shadow hover:shadow-md">
           <div>
             <p className="text-xs font-bold text-[#66789C] uppercase tracking-wider">
               Shortlisted
@@ -130,10 +152,10 @@ export const Dashboard: React.FC = () => {
           <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600 shrink-0">
             <FiCheckCircle className="text-xl" />
           </div>
-        </div>
+        </motion.div>
 
         {/* Active Membership Status & Days */}
-        <div className="flex items-center justify-between rounded-3xl border border-[#EAEFF7] bg-white p-5 shadow-xs">
+        <motion.div whileHover={{ y: -4 }} className="flex items-center justify-between rounded-3xl border border-[#EAEFF7] bg-white p-5 shadow-xs transition-shadow hover:shadow-md">
           <div>
             <p className="text-xs font-bold text-[#66789C] uppercase tracking-wider">
               Membership
@@ -154,10 +176,10 @@ export const Dashboard: React.FC = () => {
           <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-50 text-amber-600 shrink-0">
             <FiZap className="text-xl fill-yellow-400" />
           </div>
-        </div>
+        </motion.div>
 
         {/* Profile Completion */}
-        <div className="flex items-center justify-between rounded-3xl border border-[#EAEFF7] bg-white p-5 shadow-xs">
+        <motion.div whileHover={{ y: -4 }} className="flex items-center justify-between rounded-3xl border border-[#EAEFF7] bg-white p-5 shadow-xs transition-shadow hover:shadow-md">
           <div>
             <p className="text-xs font-bold text-[#66789C] uppercase tracking-wider">
               Profile Score
@@ -170,27 +192,27 @@ export const Dashboard: React.FC = () => {
           <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-purple-50 text-purple-600 shrink-0">
             <FiUser className="text-xl" />
           </div>
-        </div>
+        </motion.div>
 
         {/* Matching Jobs */}
-        <div className="flex items-center justify-between rounded-3xl border border-[#EAEFF7] bg-white p-5 shadow-xs">
+        <motion.div whileHover={{ y: -4 }} className="flex items-center justify-between rounded-3xl border border-[#EAEFF7] bg-white p-5 shadow-xs transition-shadow hover:shadow-md">
           <div>
             <p className="text-xs font-bold text-[#66789C] uppercase tracking-wider">
               Available Jobs
             </p>
             <h3 className="mt-2 text-2xl font-extrabold text-[#05264E]">
-              {totalActiveJobs}
+              {jobsResponse?.pagination?.total || jobsResponse?.jobs?.length || 0}
             </h3>
             <p className="mt-1 text-[11px] text-[#3C65F5] font-bold">Active openings</p>
           </div>
           <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-[#3C65F5] shrink-0">
             <FiBriefcase className="text-xl" />
           </div>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
 
       {/* Main Content Layout Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Left Column: Recent Applications */}
         <div className="lg:col-span-8 space-y-4">
           <div className="flex items-center justify-between">
@@ -345,9 +367,11 @@ export const Dashboard: React.FC = () => {
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };
 
 export default Dashboard;
+
+

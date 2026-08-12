@@ -66,7 +66,7 @@ export const PaymentHistoryPage: React.FC = () => {
                 </thead>
                 <tbody className="divide-y divide-[#EAEFF7]">
                   {payments.map((payment) => {
-                    const isSuccess = payment.status === "CAPTURED" || payment.status === "SUCCESS";
+                    const isSuccess = payment.status === "SUCCESS" || (payment.status as string) === "CAPTURED";
                     const isFailed = payment.status === "FAILED";
                     const formattedDate = payment.createdAt
                       ? new Date(payment.createdAt).toLocaleDateString("en-US", {
@@ -97,7 +97,7 @@ export const PaymentHistoryPage: React.FC = () => {
                           {payment.provider || "RAZORPAY"}
                         </td>
                         <td className="px-6 py-4 font-mono text-[11px] text-[#66789C]">
-                          {payment.razorpayPaymentId || payment.razorpayOrderId || "—"}
+                          {payment.providerPaymentId || payment.providerOrderId || "—"}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           {isSuccess && (

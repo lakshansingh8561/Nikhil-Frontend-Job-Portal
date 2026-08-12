@@ -1,11 +1,18 @@
 import React, { useState } from "react";
-import { FiX, FiCheckCircle, FiZap, FiCreditCard, FiGlobe } from "react-icons/fi";
+import { FiX, FiCheckCircle, FiZap, FiCreditCard, FiGlobe, FiTag } from "react-icons/fi";
 import type { IMembership } from "../types/membership.types";
 
 interface UpgradeModalProps {
   isOpen: boolean;
   onClose: () => void;
   plan: IMembership | null;
+  currentPlanName?: string;
+  upgradePreview?: {
+    isUpgrade: boolean;
+    unusedCredit: number;
+    finalUpgradePrice: number;
+    currency: string;
+  } | null;
   onConfirm: (planId: string, gateway?: "razorpay" | "polar") => void;
   isLoading?: boolean;
 }
@@ -14,6 +21,8 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
   isOpen,
   onClose,
   plan,
+  currentPlanName = "Free",
+  upgradePreview,
   onConfirm,
   isLoading = false,
 }) => {
@@ -22,6 +31,9 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
   if (!isOpen || !plan) return null;
 
   const isFree = plan.price === 0;
+  const isUpgrade = Boolean(upgradePreview?.isUpgrade);
+  const unusedCredit = upgradePreview?.unusedCredit || 0;
+  const finalPrice = upgradePreview ? upgradePreview.finalUpgradePrice : plan.price;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 overflow-y-auto">
@@ -42,29 +54,54 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
         {/* Modal Title */}
         <div className="text-center mb-6">
           <h3 className="text-2xl font-black text-[#05264E]">
-            Upgrade to {plan.name}
+            {isUpgrade ? `Upgrade to ${plan.name}` : `Subscribe to ${plan.name}`}
           </h3>
           <p className="text-xs font-medium text-gray-500 mt-1 max-w-xs mx-auto">
             {plan.description}
           </p>
         </div>
 
-        {/* Summary Card */}
+        {/* Summary Card with Prorated Upgrade Breakdown */}
         <div className="rounded-2xl border border-gray-100 bg-[#F8FAFC] p-5 mb-5 space-y-3">
+          {isUpgrade && (
+            <div className="flex items-center justify-between text-xs font-semibold text-gray-500 pb-2 border-b border-gray-200/60">
+              <span>Current Active Plan</span>
+              <span className="font-bold text-[#05264E]">{currentPlanName}</span>
+            </div>
+          )}
+
           <div className="flex items-center justify-between text-sm">
-            <span className="font-semibold text-gray-600">Selected Plan</span>
+            <span className="font-semibold text-gray-600">New Selected Plan</span>
             <span className="font-bold text-[#05264E]">{plan.name}</span>
           </div>
+
+          <div className="flex items-center justify-between text-sm">
+            <span className="font-semibold text-gray-600">Plan List Price</span>
+            <span className="font-bold text-[#05264E]">{isFree ? "Free" : `₹${plan.price}`}</span>
+          </div>
+
+          {isUpgrade && unusedCredit > 0 && (
+            <div className="flex items-center justify-between text-xs font-bold text-emerald-600 bg-emerald-50 px-3 py-2 rounded-xl border border-emerald-100">
+              <span className="flex items-center gap-1.5">
+                <FiTag className="text-sm" /> Unused Subscription Credit
+              </span>
+              <span>-₹{unusedCredit}</span>
+            </div>
+          )}
+
           <div className="flex items-center justify-between text-sm">
             <span className="font-semibold text-gray-600">Duration</span>
             <span className="font-bold text-[#05264E]">
               {plan.durationInDays} Days
             </span>
           </div>
+
           <div className="flex items-center justify-between border-t border-gray-200/60 pt-3 text-base">
-            <span className="font-extrabold text-[#05264E]">Total Amount</span>
-            <span className="text-xl font-black text-[#3C65F5]">
-              {isFree ? "Free" : `₹${plan.price}`}
+            <span className="font-extrabold text-[#05264E]">
+              {isUpgrade ? "Upgrade Amount to Pay" : "Total Amount"}
+            </span>
+            <span className="text-2xl font-black text-[#3C65F5]">
+              {isFree ? "Free" : `₹${finalPrice}`}
             </span>
           </div>
         </div>
@@ -127,7 +164,15 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
             ) : (
               <FiCheckCircle className="text-lg" />
             )}
-            {isLoading ? "Redirecting..." : gateway === "polar" && !isFree ? "Pay with Polar" : "Confirm & Subscribe"}
+            {isLoading
+              ? "Processing..."
+              : isFree
+              ? "Confirm Free Plan"
+              : isUpgrade
+              ? `Upgrade for ₹${finalPrice}`
+              : gateway === "polar"
+              ? "Pay with Polar"
+              : "Confirm & Subscribe"}
           </button>
         </div>
       </div>

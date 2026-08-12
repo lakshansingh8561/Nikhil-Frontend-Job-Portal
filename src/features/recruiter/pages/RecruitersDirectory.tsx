@@ -229,10 +229,19 @@ const RecruitersDirectory = () => {
             ) : recruiters.length > 0 ? (
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 {recruiters.map((rec, index) => {
-                  const companyName = rec.currentCompany || (rec.firstName ? `${rec.firstName} ${rec.lastName}` : "Top Company");
+                  const compObj = typeof rec.companyId === "object" && rec.companyId !== null ? (rec.companyId as any) : null;
+                  const companyName =
+                    compObj?.name ||
+                    compObj?.companyName ||
+                    rec.currentCompany ||
+                    rec.companyName ||
+                    (rec.firstName ? `${rec.firstName} ${rec.lastName}` : (rec.userId as any)?.email?.split("@")[0] || "Company");
                   const openCount = rec.openJobsCount || 0;
                   const fallbackLogo = companyLogos[index % companyLogos.length];
-                  const logoSrc = getCompanyLogoSrc(rec.profilePicture, index);
+                  const logoSrc = compObj?.logo || getCompanyLogoSrc(rec.profilePicture, index);
+                  const locationStr = compObj?.city || compObj?.country
+                    ? `${compObj.city || ""}${compObj.city && compObj.country ? ", " : ""}${compObj.country || ""}`
+                    : rec.currentLocation || "Location Not Specified";
 
                   return (
                     <div
@@ -269,13 +278,13 @@ const RecruitersDirectory = () => {
 
                         <p className="mt-2 text-xs font-medium text-[#66789C] flex items-center justify-center gap-1">
                           <FiMapPin className="text-gray-400" />
-                          <span>{rec.currentLocation || "New York, US"}</span>
+                          <span>{locationStr}</span>
                         </p>
                       </div>
 
                       {/* Open Jobs Pill Button */}
                       <div className="mt-6 w-full rounded-xl bg-[#EBF2FF] py-3 text-xs font-extrabold text-[#3C65F5] group-hover:bg-[#3C65F5] group-hover:text-white transition-all shadow-2xs">
-                        {openCount > 0 ? `${openCount} Jobs Open` : "12 Jobs Open"}
+                        {`${openCount} Jobs Open`}
                       </div>
                     </div>
                   );

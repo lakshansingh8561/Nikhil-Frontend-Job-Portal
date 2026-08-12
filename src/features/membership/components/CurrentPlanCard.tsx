@@ -1,5 +1,5 @@
 import React from "react";
-import { FiZap, FiCalendar, FiShield, FiAlertCircle } from "react-icons/fi";
+import { FiZap, FiCalendar, FiShield, FiAlertCircle, FiClock } from "react-icons/fi";
 import type { CurrentSubscriptionResponse } from "../types/membership.types";
 
 interface CurrentPlanCardProps {
@@ -19,52 +19,88 @@ export const CurrentPlanCard: React.FC<CurrentPlanCardProps> = ({
   const sub = currentSubscription?.subscription;
   const plan = currentSubscription?.plan;
 
-  const isFree = !hasSub || !sub || sub.planName === "Free" || plan?.price === 0;
+  const isFree = !hasSub || !sub || sub.planName === "Free" || (plan as any)?.price === 0;
 
-  const formattedEndDate = sub?.endDate
-    ? new Date(sub.endDate).toLocaleDateString("en-IN", {
-        day: "numeric",
-        month: "short",
-        year: "numeric",
-      })
+  const now = new Date();
+  const startDate = sub?.startDate ? new Date(sub.startDate) : null;
+  const endDate = sub?.endDate ? new Date(sub.endDate) : null;
+
+  const formattedStartDate = startDate
+    ? startDate.toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })
+    : "—";
+
+  const formattedEndDate = endDate
+    ? endDate.toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })
     : "Lifetime";
 
-  return (
-    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#05264E] via-[#0F396E] to-[#3C65F5] p-8 text-white shadow-xl">
-      {/* Decorative Blur */}
-      <div className="absolute -top-24 -right-24 h-64 w-64 rounded-full bg-blue-400/20 blur-3xl" />
-      <div className="absolute -bottom-24 -left-24 h-64 w-64 rounded-full bg-indigo-500/20 blur-3xl" />
+  const daysRemaining = endDate
+    ? Math.max(0, Math.ceil((endDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)))
+    : null;
 
+  const isExpiringSoon = daysRemaining !== null && daysRemaining > 0 && daysRemaining <= 3;
+  const isExpired = daysRemaining !== null && daysRemaining === 0;
+
+  return (
+    <div className="relative overflow-hidden rounded-3xl bg-white border border-[#EAEFF7] p-8 text-[#05264E] shadow-xs">
       <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-8">
         {/* Plan Info */}
         <div className="space-y-4 max-w-xl">
           <div className="flex items-center gap-3">
-            <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white/10 backdrop-blur-md text-yellow-300 border border-white/10 shadow-inner">
-              <FiZap className="text-xl fill-yellow-300" />
+            <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-amber-50 text-amber-600 shadow-inner">
+              <FiZap className="text-xl fill-yellow-400" />
             </span>
             <div>
-              <span className="text-xs font-bold uppercase tracking-wider text-blue-200">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#66789C]">
                 Current Subscription
               </span>
-              <h2 className="text-3xl font-black tracking-tight text-white">
-                {sub?.planName || plan?.name || "Free Tier"}
+              <h2 className="text-3xl font-black tracking-tight text-[#05264E]">
+                {sub?.planName || (plan as any)?.name || "Free Tier"}
               </h2>
             </div>
           </div>
 
-          <p className="text-sm text-blue-100/90 font-normal leading-relaxed">
-            {plan?.description || "Enjoy essential job search and application tools."}
+          <p className="text-sm text-[#66789C] font-normal leading-relaxed">
+            {(plan as any)?.description || "Enjoy essential tools to build your career."}
           </p>
 
-          <div className="flex flex-wrap items-center gap-4 text-xs font-medium text-blue-200/90 pt-2">
-            <span className="flex items-center gap-1.5 rounded-xl bg-white/10 px-3 py-1.5 backdrop-blur-xs border border-white/10">
-              <FiShield className="text-emerald-400 text-sm" />
-              Status: <strong className="text-white uppercase font-bold">{sub?.status || "ACTIVE"}</strong>
+          <div className="flex flex-wrap items-center gap-4 text-xs font-medium text-[#66789C] pt-2">
+            <span className="flex items-center gap-1.5 rounded-xl bg-[#F8FAFC] px-3 py-1.5 border border-[#EAEFF7]">
+              <FiShield className="text-emerald-600 text-sm" />
+              Status: <strong className="text-[#05264E] uppercase font-bold">{isExpired ? "EXPIRED" : sub?.status || "ACTIVE"}</strong>
             </span>
-            <span className="flex items-center gap-1.5 rounded-xl bg-white/10 px-3 py-1.5 backdrop-blur-xs border border-white/10">
-              <FiCalendar className="text-blue-300 text-sm" />
-              Expires: <strong className="text-white font-bold">{formattedEndDate}</strong>
-            </span>
+
+            {startDate && (
+              <span className="flex items-center gap-1.5 rounded-xl bg-[#F8FAFC] px-3 py-1.5 border border-[#EAEFF7]">
+                <FiCalendar className="text-[#3C65F5] text-sm" />
+                Started: <strong className="text-[#05264E] font-bold">{formattedStartDate}</strong>
+              </span>
+            )}
+
+            {endDate && (
+              <span className="flex items-center gap-1.5 rounded-xl bg-[#F8FAFC] px-3 py-1.5 border border-[#EAEFF7]">
+                <FiCalendar className="text-[#3C65F5] text-sm" />
+                Expires: <strong className="text-[#05264E] font-bold">{formattedEndDate}</strong>
+              </span>
+            )}
+
+            {daysRemaining !== null && !isFree && (
+              <span
+                className={`flex items-center gap-1.5 rounded-xl px-3 py-1.5 border font-bold ${
+                  isExpiringSoon
+                    ? "bg-amber-50 text-amber-700 border-amber-200"
+                    : isExpired
+                    ? "bg-red-50 text-red-700 border-red-200"
+                    : "bg-blue-50 text-[#3C65F5] border-blue-200"
+                }`}
+              >
+                <FiClock className="text-sm" />
+                {isExpired
+                  ? "Subscription Expired"
+                  : isExpiringSoon
+                  ? `Expires in ${daysRemaining} day${daysRemaining > 1 ? "s" : ""}`
+                  : `${daysRemaining} Days Remaining`}
+              </span>
+            )}
           </div>
         </div>
 
@@ -72,16 +108,16 @@ export const CurrentPlanCard: React.FC<CurrentPlanCardProps> = ({
         <div className="flex flex-col sm:flex-row lg:flex-col gap-3 shrink-0">
           <button
             onClick={onUpgrade}
-            className="rounded-2xl bg-white px-8 py-3.5 text-sm font-extrabold text-[#05264E] hover:bg-blue-50 transition-all duration-200 shadow-lg hover:shadow-xl active:scale-[0.99] cursor-pointer"
+            className="rounded-2xl bg-[#3C65F5] px-8 py-3.5 text-sm font-bold text-white hover:bg-[#254BD6] transition-all duration-200 shadow-md active:scale-[0.99] cursor-pointer"
           >
-            {isFree ? "Upgrade Plan Now" : "Change / Upgrade Plan"}
+            {isFree ? "Upgrade Plan Now" : isExpired ? "Renew Plan Now" : "Change / Upgrade Plan"}
           </button>
 
-          {!isFree && sub?.status === "ACTIVE" && (
+          {!isFree && sub?.status === "ACTIVE" && !isExpired && (
             <button
               onClick={onCancel}
               disabled={isCancelling}
-              className="inline-flex items-center justify-center gap-1.5 rounded-2xl bg-red-500/20 hover:bg-red-500/30 px-6 py-3 text-xs font-bold text-red-200 transition-all border border-red-400/30 cursor-pointer disabled:opacity-50"
+              className="inline-flex items-center justify-center gap-1.5 rounded-2xl bg-red-50 hover:bg-red-100 px-6 py-3 text-xs font-bold text-red-600 transition-all border border-red-200 cursor-pointer disabled:opacity-50"
             >
               <FiAlertCircle />
               {isCancelling ? "Cancelling..." : "Cancel Subscription"}

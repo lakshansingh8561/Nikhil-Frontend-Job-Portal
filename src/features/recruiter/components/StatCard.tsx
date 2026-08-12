@@ -1,3 +1,5 @@
+import React from "react";
+import { motion } from "framer-motion";
 import { FiBriefcase, FiCheckCircle, FiUsers, FiStar, FiTrendingUp, FiTrendingDown } from "react-icons/fi";
 import type { StatItem } from "../types/dashboard.types";
 
@@ -6,39 +8,45 @@ interface StatCardProps {
 }
 
 const iconMap = {
-  jobs: { icon: FiBriefcase, color: "bg-blue-50 text-[#3C65F5]" },
-  activeJobs: { icon: FiCheckCircle, color: "bg-emerald-50 text-emerald-600" },
-  applicants: { icon: FiUsers, color: "bg-[#EBF2FF] text-[#3C65F5]" },
-  shortlisted: { icon: FiStar, color: "bg-amber-50 text-amber-500" },
+  jobs: { icon: FiBriefcase, color: "bg-[#3C65F5] text-white shadow-md shadow-blue-500/20" },
+  activeJobs: { icon: FiCheckCircle, color: "bg-emerald-600 text-white shadow-md shadow-emerald-500/20" },
+  applicants: { icon: FiUsers, color: "bg-indigo-600 text-white shadow-md shadow-indigo-500/20" },
+  shortlisted: { icon: FiStar, color: "bg-amber-500 text-white shadow-md shadow-amber-500/20" },
 };
 
-export const StatCard = ({ stat }: StatCardProps) => {
+export const StatCard: React.FC<StatCardProps> = ({ stat }) => {
   const config = iconMap[stat.iconName] || iconMap.jobs;
   const Icon = config.icon;
 
   return (
-    <div className="rounded-2xl border border-[#EAEFF7] bg-white p-6 shadow-xs hover:-translate-y-1 hover:shadow-md transition-all duration-300">
+    <motion.div
+      initial={{ opacity: 0, y: 15 }}
+      animate={{ opacity: 1, y: 0 }}
+      whileHover={{ y: -5 }}
+      transition={{ duration: 0.3 }}
+      className="group relative overflow-hidden rounded-3xl border border-[#EAEFF7] bg-white p-6 shadow-xs hover:shadow-md transition-all duration-300"
+    >
       <div className="flex items-center justify-between">
-        <div className={`flex h-12 w-12 items-center justify-center rounded-2xl ${config.color}`}>
+        <div className={`flex h-12 w-12 items-center justify-center rounded-2xl ${config.color} group-hover:scale-105 transition-transform duration-300`}>
           <Icon className="text-xl" />
         </div>
 
         <div
-          className={`flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-bold ${
+          className={`flex items-center gap-1 rounded-full px-3 py-1 text-[11px] font-extrabold tracking-wide ${
             stat.isPositive
-              ? "bg-emerald-50 text-emerald-600 border border-emerald-200"
-              : "bg-red-50 text-red-600 border border-red-200"
+              ? "bg-emerald-50 text-emerald-700 border border-emerald-200/80"
+              : "bg-amber-50 text-amber-700 border border-amber-200/80"
           }`}
         >
-          {stat.isPositive ? <FiTrendingUp /> : <FiTrendingDown />}
+          {stat.isPositive ? <FiTrendingUp className="text-xs" /> : <FiTrendingDown className="text-xs" />}
           <span>{stat.change}</span>
         </div>
       </div>
 
-      <div className="mt-4">
-        <h3 className="text-2xl font-extrabold text-[#05264E]">{stat.value}</h3>
-        <p className="mt-0.5 text-xs font-semibold text-[#66789C]">{stat.title}</p>
+      <div className="mt-5">
+        <h3 className="text-3xl font-black text-[#05264E] tracking-tight">{stat.value}</h3>
+        <p className="mt-1 text-xs font-bold text-[#66789C]">{stat.title}</p>
       </div>
-    </div>
+    </motion.div>
   );
 };

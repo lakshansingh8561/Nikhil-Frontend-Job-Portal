@@ -9,33 +9,33 @@ export const RecentApplications = () => {
   const applicationsList = applications || [];
 
   return (
-    <div className="rounded-3xl border border-[#EAEFF7] bg-white p-6 shadow-xs">
-      <div className="flex items-center justify-between border-b border-[#F0F4FC] pb-4 mb-4">
+    <div className="rounded-3xl border border-slate-200/90 bg-white p-6 sm:p-7 shadow-[0_4px_20px_rgba(0,0,0,0.02)]">
+      <div className="flex items-center justify-between border-b border-slate-100 pb-4 mb-5">
         <div>
-          <h3 className="text-base font-extrabold text-[#05264E]">Recent Candidate Applications</h3>
-          <p className="text-xs text-[#66789C] font-medium mt-0.5">
+          <h3 className="text-lg font-black text-slate-900 tracking-tight">Recent Candidate Applications</h3>
+          <p className="text-xs text-slate-400 font-semibold mt-0.5">
             Review incoming applications from job seekers
           </p>
         </div>
 
         <Link
           to="/recruiter/applications"
-          className="flex items-center gap-1 text-xs font-extrabold text-[#3C65F5] hover:underline"
+          className="inline-flex items-center gap-1.5 text-xs font-black text-indigo-600 hover:text-indigo-700 transition"
         >
-          <span>View All Applications</span>
+          <span>View Applications</span>
           <FiArrowRight />
         </Link>
       </div>
 
       {isLoading ? (
-        <div className="flex h-32 items-center justify-center">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#3C65F5] border-t-transparent" />
+        <div className="flex h-40 items-center justify-center">
+          <div className="h-8 w-8 animate-spin rounded-full border-3 border-indigo-600 border-t-transparent" />
         </div>
       ) : applicationsList.length === 0 ? (
-        <div className="py-8 text-center text-xs font-medium text-gray-500 space-y-2">
-          <FiUsers className="mx-auto text-3xl text-gray-300" />
-          <p className="font-bold text-[#05264E]">No applications received yet.</p>
-          <Link to="/recruiter/applications" className="text-[#3C65F5] font-bold underline">
+        <div className="py-10 text-center text-xs font-semibold text-slate-400 bg-slate-50/50 rounded-2xl border border-dashed border-slate-200 space-y-2">
+          <FiUsers className="mx-auto text-3xl text-slate-300" />
+          <p className="font-bold text-slate-900">No applications received yet.</p>
+          <Link to="/recruiter/applications" className="text-indigo-600 font-bold underline">
             View applications workspace
           </Link>
         </div>
@@ -43,16 +43,15 @@ export const RecentApplications = () => {
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b border-[#F0F4FC] text-[11px] font-bold uppercase tracking-wider text-[#66789C]">
-                <th className="py-3 px-4">Candidate</th>
-                <th className="py-3 px-4">Applied Position</th>
-                <th className="py-3 px-4">Resume</th>
-                <th className="py-3 px-4">Status</th>
-                <th className="py-3 px-4">Applied Date</th>
-                <th className="py-3 px-4 text-right">Action</th>
+              <tr className="border-b border-slate-100 text-[10px] font-black uppercase tracking-wider text-slate-400">
+                <th className="py-3 px-3">Candidate</th>
+                <th className="py-3 px-3">Applied Position</th>
+                <th className="py-3 px-3">Resume</th>
+                <th className="py-3 px-3">Status</th>
+                <th className="py-3 px-3 text-right">Action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#F0F4FC] text-xs font-medium">
+            <tbody className="divide-y divide-slate-100 text-xs font-medium">
               {applicationsList.slice(0, 5).map((app) => {
                 const applicant =
                   typeof app.applicantId === "object" && app.applicantId !== null
@@ -74,36 +73,42 @@ export const RecentApplications = () => {
                     : "Position";
 
                 return (
-                  <tr key={app._id} className="hover:bg-[#F8FAFC] transition">
-                    <td className="py-3.5 px-4">
+                  <tr key={app._id} className="hover:bg-slate-50/80 transition-colors">
+                    <td className="py-3.5 px-3">
                       <div className="flex items-center gap-3">
-                        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#3C65F5] font-extrabold text-white text-xs shrink-0 shadow-2xs">
+                        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 font-extrabold text-white text-xs shrink-0 shadow-xs">
                           {name.charAt(0).toUpperCase()}
                         </div>
-                        <div>
-                          <div className="font-bold text-[#05264E]">{name}</div>
-                          <div className="text-[11px] font-normal text-[#66789C]">{email}</div>
+                        <div className="min-w-0">
+                          <div className="font-extrabold text-slate-900 truncate max-w-[120px]">{name}</div>
+                          <div className="text-[10px] font-medium text-slate-400 truncate max-w-[120px]">{email}</div>
                         </div>
                       </div>
                     </td>
-                    <td className="py-3.5 px-4 font-bold text-[#05264E]">
-                      {jobTitle}
+
+                    <td className="py-3.5 px-3 font-bold text-slate-800">
+                      <span className="truncate max-w-[130px] inline-block">{jobTitle}</span>
                     </td>
-                    <td className="py-3.5 px-4">
-                      <ResumeViewer resumeUrl={app.resume} applicantName={name} />
+
+                    <td className="py-3.5 px-3">
+                      {app.resume ? (
+                        <ResumeViewer resumeUrl={app.resume} applicantName={name} />
+                      ) : (
+                        <span className="text-[11px] text-slate-400 font-medium italic">No file</span>
+                      )}
                     </td>
-                    <td className="py-3.5 px-4">
-                      <StatusBadge status={app.status} size="sm" />
+
+                    <td className="py-3.5 px-3">
+                      <StatusBadge status={app.status} />
                     </td>
-                    <td className="py-3.5 px-4 text-[#66789C]">
-                      {app.createdAt ? new Date(app.createdAt).toLocaleDateString() : "Recently"}
-                    </td>
-                    <td className="py-3.5 px-4 text-right">
+
+                    <td className="py-3.5 px-3 text-right">
                       <Link
                         to="/recruiter/applications"
-                        className="inline-flex items-center gap-1 text-xs font-bold text-[#3C65F5] hover:underline"
+                        className="inline-flex items-center gap-1 text-[11px] font-extrabold text-indigo-600 hover:underline"
                       >
-                        Manage <FiExternalLink />
+                        <span>Manage</span>
+                        <FiExternalLink />
                       </Link>
                     </td>
                   </tr>
@@ -116,5 +121,3 @@ export const RecentApplications = () => {
     </div>
   );
 };
-
-export default RecentApplications;

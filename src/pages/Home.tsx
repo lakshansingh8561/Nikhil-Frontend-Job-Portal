@@ -23,6 +23,8 @@ import { useGetJobsQuery } from "../features/jobBrowser/api/jobBrowserApi";
 import hiringImage1 from "../assets/images/hiring-image1.png";
 import hiringImage2 from "../assets/images/hiring-image2.png";
 import FindRightJobSection from "../components/home/FindRightJobSection";
+import TopRecruitersSection from "../components/home/TopRecruitersSection";
+import NewsletterSection from "../components/home/NewsletterSection";
 
 const categories = [
   { name: "Marketing & Sale", jobsCount: "1526 Jobs Available", icon: FiBriefcase },
@@ -249,6 +251,12 @@ const Home = () => {
 
       {/* 4. Millions Of Jobs / Find The One That's Right For You Section */}
       <FindRightJobSection />
+
+      {/* 5. Top Recruiters Section */}
+      <TopRecruitersSection />
+
+      {/* 6. Newsletter Subscription Section */}
+      <NewsletterSection />
 
       <ScrollToTop />
     </div>
