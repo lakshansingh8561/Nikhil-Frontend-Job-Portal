@@ -1,7 +1,15 @@
 import { configureStore } from "@reduxjs/toolkit";
 
-import  authReducer from "../features/auth/authSlice";
+import authReducer from "../features/auth/authSlice";
 import { apiSlice } from "../Redux/api/apiSlice";
+
+const authResetMiddleware = (storeApi: any) => (next: any) => (action: any) => {
+  const result = next(action);
+  if (action.type === "auth/setCredentials" || action.type === "auth/logout") {
+    storeApi.dispatch(apiSlice.util.resetApiState());
+  }
+  return result;
+};
 
 export const store = configureStore({
   reducer: {
@@ -12,7 +20,8 @@ export const store = configureStore({
 
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
-      apiSlice.middleware
+      apiSlice.middleware,
+      authResetMiddleware
     ),
 });
 
@@ -21,4 +30,4 @@ export type RootState = ReturnType<
 >;
 
 export type AppDispatch =
-  typeof store.dispatch;
+  typeof store.dispatch;

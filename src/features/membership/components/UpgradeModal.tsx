@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FiX, FiCheckCircle, FiZap, FiCreditCard, FiGlobe, FiTag } from "react-icons/fi";
+import { FiX, FiCheckCircle, FiZap, FiTag } from "react-icons/fi";
 import type { IMembership } from "../types/membership.types";
 
 interface UpgradeModalProps {
@@ -35,49 +35,46 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
   const unusedCredit = upgradePreview?.unusedCredit || 0;
   const finalPrice = upgradePreview ? upgradePreview.finalUpgradePrice : plan.price;
 
+  const handleConfirm = () => {
+    onConfirm(plan._id || plan.id || "", gateway);
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 overflow-y-auto">
       <div className="relative w-full max-w-lg overflow-hidden rounded-3xl bg-white p-8 shadow-2xl transition-all duration-300 animate-in fade-in zoom-in-95">
-        {/* Close Button */}
-        <button
-          onClick={onClose}
-          className="absolute top-5 right-5 flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 text-gray-400 hover:bg-gray-200 hover:text-gray-700 transition cursor-pointer"
-        >
-          <FiX className="text-xl" />
-        </button>
-
-        {/* Header Icon */}
-        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-50 text-[#3C65F5] mb-5 border border-blue-100 shadow-xs">
-          <FiZap className="text-3xl fill-yellow-400 text-yellow-500" />
-        </div>
-
-        {/* Modal Title */}
-        <div className="text-center mb-6">
-          <h3 className="text-2xl font-black text-[#05264E]">
-            {isUpgrade ? `Upgrade to ${plan.name}` : `Subscribe to ${plan.name}`}
-          </h3>
-          <p className="text-xs font-medium text-gray-500 mt-1 max-w-xs mx-auto">
-            {plan.description}
-          </p>
-        </div>
-
-        {/* Summary Card with Prorated Upgrade Breakdown */}
-        <div className="rounded-2xl border border-gray-100 bg-[#F8FAFC] p-5 mb-5 space-y-3">
-          {isUpgrade && (
-            <div className="flex items-center justify-between text-xs font-semibold text-gray-500 pb-2 border-b border-gray-200/60">
-              <span>Current Active Plan</span>
-              <span className="font-bold text-[#05264E]">{currentPlanName}</span>
+        {/* Header */}
+        <div className="flex items-center justify-between border-b border-gray-100 pb-5 mb-6">
+          <div className="flex items-center gap-3">
+            <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-blue-50 text-[#3C65F5]">
+              <FiZap className="text-xl" />
+            </span>
+            <div>
+              <h3 className="text-xl font-black text-[#05264E]">
+                {isFree ? "Activate Free Plan" : isUpgrade ? "Upgrade Plan" : "Subscribe Plan"}
+              </h3>
+              <p className="text-xs font-semibold text-gray-500">
+                Current Plan: <span className="font-bold text-[#05264E]">{currentPlanName}</span>
+              </p>
             </div>
-          )}
+          </div>
+          <button
+            onClick={onClose}
+            className="rounded-full p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition cursor-pointer"
+          >
+            <FiX className="text-lg" />
+          </button>
+        </div>
 
+        {/* Breakdown Card */}
+        <div className="rounded-2xl bg-gray-50/80 p-5 space-y-3 mb-6 border border-gray-100">
           <div className="flex items-center justify-between text-sm">
-            <span className="font-semibold text-gray-600">New Selected Plan</span>
+            <span className="font-semibold text-gray-600">Selected Plan</span>
             <span className="font-bold text-[#05264E]">{plan.name}</span>
           </div>
 
           <div className="flex items-center justify-between text-sm">
             <span className="font-semibold text-gray-600">Plan List Price</span>
-            <span className="font-bold text-[#05264E]">{isFree ? "Free" : `₹${plan.price}`}</span>
+            <span className="font-bold text-[#05264E]">{isFree ? "Free" : `$${plan.price}`}</span>
           </div>
 
           {isUpgrade && unusedCredit > 0 && (
@@ -85,7 +82,7 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
               <span className="flex items-center gap-1.5">
                 <FiTag className="text-sm" /> Unused Subscription Credit
               </span>
-              <span>-₹{unusedCredit}</span>
+              <span>-${unusedCredit}</span>
             </div>
           )}
 
@@ -101,61 +98,57 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
               {isUpgrade ? "Upgrade Amount to Pay" : "Total Amount"}
             </span>
             <span className="text-2xl font-black text-[#3C65F5]">
-              {isFree ? "Free" : `₹${finalPrice}`}
+              {isFree ? "Free" : `$${finalPrice}`}
             </span>
           </div>
         </div>
 
         {/* Gateway Selection for Paid Plans */}
         {!isFree && (
-          <div className="mb-6">
-            <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
+          <div className="mb-6 space-y-2">
+            <label className="block text-xs font-black uppercase tracking-wider text-gray-500">
               Select Payment Gateway
             </label>
             <div className="grid grid-cols-2 gap-3">
               <button
                 type="button"
                 onClick={() => setGateway("polar")}
-                className={`flex flex-col items-center justify-center p-3.5 rounded-2xl border transition cursor-pointer ${
+                className={`flex flex-col items-center justify-center p-3 rounded-2xl border-2 transition-all cursor-pointer ${
                   gateway === "polar"
-                    ? "border-[#3C65F5] bg-blue-50/60 text-[#3C65F5] shadow-xs"
-                    : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"
+                    ? "border-indigo-600 bg-indigo-50/50 text-indigo-900 font-black shadow-xs"
+                    : "border-gray-200 hover:border-gray-300 bg-white text-gray-600 font-semibold"
                 }`}
               >
-                <FiGlobe className="text-2xl mb-1 text-[#3C65F5]" />
-                <span className="text-xs font-extrabold">Polar Sandbox</span>
-                <span className="text-[10px] text-gray-500 font-medium">Global Dummy Test</span>
+                <span className="text-xs uppercase font-extrabold tracking-wider text-indigo-600">⚡ Polar</span>
+                <span className="text-[10px] text-gray-500 font-normal">Card / AutoPay</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => setGateway("razorpay")}
-                className={`flex flex-col items-center justify-center p-3.5 rounded-2xl border transition cursor-pointer ${
+                className={`flex flex-col items-center justify-center p-3 rounded-2xl border-2 transition-all cursor-pointer ${
                   gateway === "razorpay"
-                    ? "border-[#3C65F5] bg-blue-50/60 text-[#3C65F5] shadow-xs"
-                    : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"
+                    ? "border-blue-600 bg-blue-50/50 text-blue-900 font-black shadow-xs"
+                    : "border-gray-200 hover:border-gray-300 bg-white text-gray-600 font-semibold"
                 }`}
               >
-                <FiCreditCard className="text-2xl mb-1 text-indigo-600" />
-                <span className="text-xs font-extrabold">Razorpay</span>
-                <span className="text-[10px] text-gray-500 font-medium">India / UPI / Cards</span>
+                <span className="text-xs uppercase font-extrabold tracking-wider text-blue-600">💳 Razorpay</span>
+                <span className="text-[10px] text-gray-500 font-normal">Cards, UPI, Netbanking</span>
               </button>
             </div>
           </div>
         )}
 
-        {/* Action Buttons */}
-        <div className="flex items-center justify-end gap-3">
+        <div className="flex gap-3 pt-2">
           <button
-            type="button"
             onClick={onClose}
-            className="w-1/2 rounded-xl border border-gray-200 py-3.5 text-xs sm:text-sm font-bold text-gray-600 hover:bg-gray-50 transition cursor-pointer"
+            disabled={isLoading}
+            className="w-1/2 rounded-xl border border-gray-200 bg-gray-50 py-3.5 text-xs sm:text-sm font-bold text-gray-600 hover:bg-gray-100 transition cursor-pointer disabled:opacity-50"
           >
             Cancel
           </button>
           <button
-            type="button"
-            onClick={() => onConfirm(plan._id || plan.id || "", gateway)}
+            onClick={handleConfirm}
             disabled={isLoading}
             className="w-1/2 rounded-xl bg-[#3C65F5] py-3.5 text-xs sm:text-sm font-extrabold text-white hover:bg-[#254BD6] shadow-md hover:shadow-lg transition cursor-pointer disabled:opacity-50 inline-flex items-center justify-center gap-2"
           >
@@ -169,7 +162,7 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
               : isFree
               ? "Confirm Free Plan"
               : isUpgrade
-              ? `Upgrade for ₹${finalPrice}`
+              ? `Upgrade for $${finalPrice}`
               : gateway === "polar"
               ? "Pay with Polar"
               : "Confirm & Subscribe"}

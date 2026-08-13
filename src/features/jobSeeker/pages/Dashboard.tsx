@@ -42,7 +42,9 @@ export const Dashboard: React.FC = () => {
   const { data: profile, isLoading: isLoadingProfile } = useGetProfileQuery();
   const { data: applications, isLoading: isLoadingApps } = useGetMyApplicationsQuery();
   const { data: jobsResponse } = useGetJobsQuery({ limit: 5 });
-  const { data: currentSub } = useGetCurrentSubscriptionQuery();
+  const { data: currentSub } = useGetCurrentSubscriptionQuery(undefined, {
+    refetchOnMountOrArgChange: true,
+  });
 
   const sub = currentSub?.subscription;
   const hasActiveSub = Boolean(currentSub?.hasActiveSubscription && sub?.status === "ACTIVE");
@@ -247,15 +249,15 @@ export const Dashboard: React.FC = () => {
               </Link>
             </div>
           ) : (
-            <div className="overflow-x-auto rounded-3xl border border-[#EAEFF7] bg-white shadow-xs">
-              <table className="w-full text-left border-collapse">
+            <div className="overflow-x-auto no-scrollbar custom-table-scrollbar rounded-3xl border border-[#EAEFF7] bg-white shadow-xs">
+              <table className="w-full text-left border-collapse min-w-[580px]">
                 <thead>
                   <tr className="border-b border-[#F0F4FC] bg-[#F8FAFC] text-[11px] font-bold uppercase tracking-wider text-[#66789C]">
-                    <th className="py-3.5 px-5">Job Title & Company</th>
-                    <th className="py-3.5 px-5">Resume</th>
-                    <th className="py-3.5 px-5">Status</th>
-                    <th className="py-3.5 px-5">Applied Date</th>
-                    <th className="py-3.5 px-5 text-right">Action</th>
+                    <th className="py-3 px-3.5 sm:px-4">Job Title & Company</th>
+                    <th className="py-3 px-3.5 sm:px-4">Resume</th>
+                    <th className="py-3 px-3.5 sm:px-4">Status</th>
+                    <th className="py-3 px-3.5 sm:px-4">Applied Date</th>
+                    <th className="py-3 px-3.5 sm:px-4 text-right">Action</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#F0F4FC] text-xs font-medium">
@@ -267,26 +269,26 @@ export const Dashboard: React.FC = () => {
 
                     return (
                       <tr key={app._id} className="hover:bg-[#F8FAFC] transition">
-                        <td className="py-3.5 px-5">
+                        <td className="py-3 px-3.5 sm:px-4">
                           <div>
-                            <p className="font-bold text-[#05264E]">
+                            <p className="font-bold text-[#05264E] line-clamp-1">
                               {job?.title || "Applied Job"}
                             </p>
-                            <p className="text-[11px] font-semibold text-[#3C65F5]">
+                            <p className="text-[11px] font-semibold text-[#3C65F5] line-clamp-1">
                               {company?.companyName || "Company"}
                             </p>
                           </div>
                         </td>
-                        <td className="py-3.5 px-5">
-                          <ResumeViewer resumeUrl={app.resume} applicantName={candidateName} />
+                        <td className="py-3 px-3.5 sm:px-4">
+                          <ResumeViewer resumeUrl={app.resume} applicantName={candidateName} variant="compact" />
                         </td>
-                        <td className="py-3.5 px-5">
+                        <td className="py-3 px-3.5 sm:px-4">
                           <StatusBadge status={app.status} size="sm" />
                         </td>
-                        <td className="py-3.5 px-5 text-[#66789C]">
+                        <td className="py-3 px-3.5 sm:px-4 text-[#66789C] whitespace-nowrap">
                           {new Date(app.createdAt).toLocaleDateString()}
                         </td>
-                        <td className="py-3.5 px-5 text-right">
+                        <td className="py-3 px-3.5 sm:px-4 text-right whitespace-nowrap">
                           {jobId && (
                             <Link
                               to={`/job-seeker/messages?jobId=${jobId}`}

@@ -136,7 +136,7 @@ export const PaymentStatusModal: React.FC<PaymentStatusModalProps> = ({
                   <div className="flex justify-between items-center text-purple-200/80">
                     <span>Total Amount Paid:</span>
                     <span className="font-bold text-emerald-400">
-                      ₹{amount} {currency}
+                      {currency === "INR" ? "₹" : "$"}{amount} {currency}
                     </span>
                   </div>
                 )}

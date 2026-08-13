@@ -6,6 +6,7 @@ import {
   useGetCurrentRecruiterPlanQuery,
   useCancelRecruiterMembershipMutation,
   useGetRecruiterHistoryQuery,
+  useReactivateAutopayMutation,
 } from "../api/membershipApi";
 import { useCreatePolarCheckoutMutation } from "../api/paymentApi";
 import type { IMembership } from "../types/membership.types";
@@ -34,10 +35,15 @@ const RECRUITER_PLAN_LEVELS: Record<string, number> = {
 
 export const RecruiterMembership: React.FC = () => {
   const { data: plans = [], isLoading: isLoadingPlans } = useGetRecruiterPlansQuery();
-  const { data: currentSub, isLoading: isLoadingSub } = useGetCurrentRecruiterPlanQuery();
-  const { data: history = [], isLoading: isLoadingHistory } = useGetRecruiterHistoryQuery();
+  const { data: currentSub, isLoading: isLoadingSub } = useGetCurrentRecruiterPlanQuery(undefined, {
+    refetchOnMountOrArgChange: true,
+  });
+  const { data: history = [], isLoading: isLoadingHistory } = useGetRecruiterHistoryQuery(undefined, {
+    refetchOnMountOrArgChange: true,
+  });
 
   const [cancelRecruiterMembership, { isLoading: isCancelling }] = useCancelRecruiterMembershipMutation();
+  const [reactivateAutopay, { isLoading: isReactivating }] = useReactivateAutopayMutation();
   const [createPolarCheckout] = useCreatePolarCheckoutMutation();
 
   const { startCheckout, modalStatus, errorMessage, currentPlan, closeModal } = useRazorpayCheckout();
@@ -67,10 +73,10 @@ export const RecruiterMembership: React.FC = () => {
   const lastExpiredPlanName = lastExpiredSub?.planName;
   const lastExpiredDate = lastExpiredSub?.endDate
     ? new Date(lastExpiredSub.endDate).toLocaleDateString("en-IN", {
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-      })
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    })
     : null;
 
   const expiredPlanObject = lastExpiredPlanName
@@ -114,12 +120,21 @@ export const RecruiterMembership: React.FC = () => {
   };
 
   const handleCancelSubscription = async () => {
-    if (!window.confirm("Are you sure you want to cancel your recruiter subscription?")) return;
+    if (!window.confirm("Are you sure you want to cancel your AutoPay subscription? Your access will remain active until the end of your billing cycle.")) return;
     try {
       await cancelRecruiterMembership().unwrap();
-      toast.success("Recruiter Subscription Cancelled.");
+      toast.success("Recruiter AutoPay Cancelled. Access retained until period end.");
     } catch (err: any) {
-      toast.error(err?.data?.message || "Failed to cancel subscription.");
+      toast.error(err?.data?.message || "Failed to cancel AutoPay.");
+    }
+  };
+
+  const handleReactivateAutoPay = async () => {
+    try {
+      await reactivateAutopay().unwrap();
+      toast.success("Recruiter AutoPay reactivated! Your subscription will auto-renew 🎉");
+    } catch (err: any) {
+      toast.error(err?.data?.message || "Failed to reactivate AutoPay.");
     }
   };
 
@@ -195,6 +210,16 @@ export const RecruiterMembership: React.FC = () => {
                   <FiShield className="text-emerald-400 text-sm" />
                   Status: <strong className="text-white uppercase font-bold">{sub?.status || "ACTIVE"}</strong>
                 </span>
+                {!isFree && (
+                  <span className={`flex items-center gap-1.5 rounded-xl px-3.5 py-1.5 backdrop-blur-xs border font-bold ${
+                    !sub?.cancelAtPeriodEnd
+                      ? "bg-emerald-500/20 text-emerald-200 border-emerald-400/30"
+                      : "bg-amber-500/20 text-amber-200 border-amber-400/30"
+                  }`}>
+                    <FiRefreshCw className="text-xs" />
+                    AutoPay: {!sub?.cancelAtPeriodEnd ? "Active" : "Cancelled"}
+                  </span>
+                )}
                 <span className="flex items-center gap-1.5 rounded-xl bg-white/10 px-3.5 py-1.5 backdrop-blur-xs border border-white/10">
                   <FiCalendar className="text-blue-300 text-sm" />
                   Remaining: <strong className="text-white font-bold">{remainingDays} Days</strong>
@@ -222,14 +247,25 @@ export const RecruiterMembership: React.FC = () => {
               </button>
 
               {!isFree && sub?.status === "ACTIVE" && (
-                <button
-                  onClick={handleCancelSubscription}
-                  disabled={isCancelling}
-                  className="inline-flex items-center justify-center gap-1.5 rounded-2xl bg-red-500/20 hover:bg-red-500/30 px-6 py-3 text-xs font-bold text-red-100 transition-all border border-red-400/30 cursor-pointer disabled:opacity-50"
-                >
-                  <FiAlertCircle />
-                  {isCancelling ? "Cancelling..." : "Cancel Subscription"}
-                </button>
+                !sub?.cancelAtPeriodEnd ? (
+                  <button
+                    onClick={handleCancelSubscription}
+                    disabled={isCancelling}
+                    className="inline-flex items-center justify-center gap-1.5 rounded-2xl bg-red-500/20 hover:bg-red-500/30 px-6 py-3 text-xs font-bold text-red-100 transition-all border border-red-400/30 cursor-pointer disabled:opacity-50"
+                  >
+                    <FiAlertCircle />
+                    {isCancelling ? "Cancelling..." : "Cancel AutoPay"}
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleReactivateAutoPay}
+                    disabled={isReactivating}
+                    className="inline-flex items-center justify-center gap-1.5 rounded-2xl bg-emerald-500/20 hover:bg-emerald-500/30 px-6 py-3 text-xs font-bold text-emerald-100 transition-all border border-emerald-400/30 cursor-pointer disabled:opacity-50 shadow-xs"
+                  >
+                    <FiRefreshCw />
+                    {isReactivating ? "Reactivating..." : "Reactivate AutoPay"}
+                  </button>
+                )
               )}
             </div>
           </div>
@@ -298,21 +334,19 @@ export const RecruiterMembership: React.FC = () => {
           <div className="inline-flex items-center rounded-full bg-[#F0F4FC] p-1.5 border border-[#EAEFF7] shrink-0">
             <button
               onClick={() => setBillingCycle("monthly")}
-              className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
-                billingCycle === "monthly"
+              className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer ${billingCycle === "monthly"
                   ? "bg-[#3C65F5] text-white shadow-sm"
                   : "text-[#66789C] hover:text-[#05264E]"
-              }`}
+                }`}
             >
               Monthly
             </button>
             <button
               onClick={() => setBillingCycle("annually")}
-              className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
-                billingCycle === "annually"
+              className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${billingCycle === "annually"
                   ? "bg-[#3C65F5] text-white shadow-sm"
                   : "text-[#66789C] hover:text-[#05264E]"
-              }`}
+                }`}
             >
               <span>Annually</span>
               <span className="text-[10px] font-extrabold bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">
@@ -409,7 +443,7 @@ export const RecruiterMembership: React.FC = () => {
                   <tr key={hSub._id || hSub.id} className="hover:bg-gray-50/50 transition">
                     <td className="py-4 font-bold text-[#05264E]">{hSub.planName}</td>
                     <td className="py-4 font-extrabold text-[#3C65F5]">
-                      {hSub.amount === 0 ? "Free" : `₹${hSub.amount} ${hSub.currency}`}
+                      {hSub.amount === 0 ? "Free" : `${hSub.currency === "INR" ? "₹" : "$"}${hSub.amount} ${hSub.currency}`}
                     </td>
                     <td className="py-4 text-xs font-medium text-gray-600">
                       {new Date(hSub.startDate).toLocaleDateString("en-IN")}
@@ -419,17 +453,16 @@ export const RecruiterMembership: React.FC = () => {
                     </td>
                     <td className="py-4">
                       <span
-                        className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-bold ${
-                          hSub.status === "ACTIVE"
+                        className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-bold ${hSub.status === "ACTIVE"
                             ? "bg-emerald-100 text-emerald-700"
                             : hSub.status === "CANCELLED"
-                            ? "bg-amber-100 text-amber-700"
-                            : hSub.status === "EXPIRED"
-                            ? "bg-red-100 text-red-700"
-                            : hSub.status === "PENDING"
-                            ? "bg-blue-100 text-blue-700"
-                            : "bg-gray-100 text-gray-600"
-                        }`}
+                              ? "bg-amber-100 text-amber-700"
+                              : hSub.status === "EXPIRED"
+                                ? "bg-red-100 text-red-700"
+                                : hSub.status === "PENDING"
+                                  ? "bg-blue-100 text-blue-700"
+                                  : "bg-gray-100 text-gray-600"
+                          }`}
                       >
                         <FiCheckCircle className="text-xs" /> {hSub.status}
                       </span>

@@ -100,6 +100,15 @@ export const membershipApi = apiSlice.injectEndpoints({
       transformResponse: (response: { data: ISubscription[] }) => response.data,
       providesTags: ["Subscription"],
     }),
+
+    reactivateAutopay: builder.mutation<any, void>({
+      query: () => ({
+        url: "/payments/reactivate-autopay",
+        method: "POST",
+      }),
+      transformResponse: (response: { data: any }) => response.data,
+      invalidatesTags: ["Subscription", "Membership", "Payment", "Job"],
+    }),
   }),
 });
 
@@ -114,4 +123,5 @@ export const {
   useSubscribeRecruiterMutation,
   useCancelRecruiterMembershipMutation,
   useGetRecruiterHistoryQuery,
+  useReactivateAutopayMutation,
 } = membershipApi;

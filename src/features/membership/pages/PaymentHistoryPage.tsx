@@ -91,7 +91,7 @@ export const PaymentHistoryPage: React.FC = () => {
                           {payment.membershipId?.name || "Membership Plan"}
                         </td>
                         <td className="px-6 py-4 font-black text-[#05264E]">
-                          ₹{displayAmount} {payment.currency}
+                          {payment.currency === "INR" ? "₹" : "$"}{displayAmount} {payment.currency}
                         </td>
                         <td className="px-6 py-4 text-[#66789C] font-semibold">
                           {payment.provider || "RAZORPAY"}

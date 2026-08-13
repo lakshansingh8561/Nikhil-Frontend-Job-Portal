@@ -18,12 +18,19 @@
     color: #05264E;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    /* Smooth scrolling on all platforms */
+    scroll-behavior: smooth;
   }
 
   body {
     font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     background-color: #F5F7FC;
     color: #05264E;
+    /* Improve tap highlight on mobile */
+    -webkit-tap-highlight-color: transparent;
+    /* Prevent text size inflation on mobile after orientation change */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
   }
 
   button {
@@ -36,6 +43,8 @@
   textarea {
     outline: none;
     font-family: inherit;
+    /* Better touch targets on mobile */
+    touch-action: manipulation;
   }
 
   img {
@@ -56,6 +65,31 @@
   border-color: rgba(60, 101, 245, 0.4) !important;
 }
 
+/* Hide scrollbars cleanly when requested */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Sleek ultra-thin custom scrollbars for tables */
+.custom-table-scrollbar::-webkit-scrollbar {
+  height: 4px;
+  width: 4px;
+}
+.custom-table-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-table-scrollbar::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 9999px;
+}
+.custom-table-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}
+
 /* Line clamps for clean snippets */
 .line-clamp-1 {
   display: -webkit-box;
@@ -67,6 +101,13 @@
 .line-clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -122,4 +163,53 @@
 }
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #94A3B8;
+}
+
+/* ─── Mobile Responsive Helpers ─────────────────────────────────────── */
+
+/* Ensure mobile menu drawer doesn't cause horizontal scroll */
+.mobile-menu-drawer {
+  max-width: 85vw;
+}
+
+/* Fluid typography helper: responsive headings without media queries */
+.fluid-heading-xl {
+  font-size: clamp(2rem, 5vw, 4rem);
+  line-height: 1.1;
+}
+
+.fluid-heading-lg {
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  line-height: 1.15;
+}
+
+/* Touch-friendly minimum tap target size */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Card hover lift — only apply on non-touch devices */
+@media (hover: hover) and (pointer: fine) {
+  .card-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(50, 75, 130, 0.10);
+  }
+}
+
+/* ─── Responsive Table Helper ────────────────────────────────────────── */
+.table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ─── Very Small Screens (<375px) overrides ──────────────────────────── */
+@media (max-width: 374px) {
+  .text-xs {
+    font-size: 0.7rem;
+  }
+  .px-7 {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
 }

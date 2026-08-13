@@ -1,19 +1,23 @@
 import React from "react";
-import { FiZap, FiCalendar, FiShield, FiAlertCircle, FiClock } from "react-icons/fi";
+import { FiZap, FiCalendar, FiShield, FiAlertCircle, FiClock, FiRefreshCw } from "react-icons/fi";
 import type { CurrentSubscriptionResponse } from "../types/membership.types";
 
 interface CurrentPlanCardProps {
   currentSubscription: CurrentSubscriptionResponse | undefined;
   onUpgrade: () => void;
   onCancel: () => void;
+  onReactivate?: () => void;
   isCancelling?: boolean;
+  isReactivating?: boolean;
 }
 
 export const CurrentPlanCard: React.FC<CurrentPlanCardProps> = ({
   currentSubscription,
   onUpgrade,
   onCancel,
+  onReactivate,
   isCancelling = false,
+  isReactivating = false,
 }) => {
   const hasSub = currentSubscription?.hasActiveSubscription;
   const sub = currentSubscription?.subscription;
@@ -23,14 +27,15 @@ export const CurrentPlanCard: React.FC<CurrentPlanCardProps> = ({
 
   const now = new Date();
   const startDate = sub?.startDate ? new Date(sub.startDate) : null;
-  const endDate = sub?.endDate ? new Date(sub.endDate) : null;
+  const endDateStr = sub?.endDate || sub?.currentPeriodEnd;
+  const endDate = endDateStr ? new Date(endDateStr) : null;
 
   const formattedStartDate = startDate
-    ? startDate.toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })
+    ? startDate.toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" })
     : "—";
 
   const formattedEndDate = endDate
-    ? endDate.toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })
+    ? endDate.toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" })
     : "Lifetime";
 
   const daysRemaining = endDate
@@ -39,6 +44,11 @@ export const CurrentPlanCard: React.FC<CurrentPlanCardProps> = ({
 
   const isExpiringSoon = daysRemaining !== null && daysRemaining > 0 && daysRemaining <= 3;
   const isExpired = daysRemaining !== null && daysRemaining === 0;
+
+  const priceVal = sub?.amount ?? (plan as any)?.price ?? 0;
+  const currencySymbol = sub?.currency === "INR" ? "₹" : "$";
+  const billingCycle = sub?.billingCycle || "monthly";
+  const isAutoPayActive = !sub?.cancelAtPeriodEnd;
 
   return (
     <div className="relative overflow-hidden rounded-3xl bg-white border border-[#EAEFF7] p-8 text-[#05264E] shadow-xs">
@@ -53,8 +63,13 @@ export const CurrentPlanCard: React.FC<CurrentPlanCardProps> = ({
               <span className="text-xs font-bold uppercase tracking-wider text-[#66789C]">
                 Current Subscription
               </span>
-              <h2 className="text-3xl font-black tracking-tight text-[#05264E]">
+              <h2 className="text-3xl font-black tracking-tight text-[#05264E] flex items-center gap-2">
                 {sub?.planName || (plan as any)?.name || "Free Tier"}
+                {!isFree && (
+                  <span className="text-sm font-bold text-slate-500 bg-slate-100 px-3 py-0.5 rounded-full">
+                    {currencySymbol}{priceVal} / {billingCycle}
+                  </span>
+                )}
               </h2>
             </div>
           </div>
@@ -63,11 +78,22 @@ export const CurrentPlanCard: React.FC<CurrentPlanCardProps> = ({
             {(plan as any)?.description || "Enjoy essential tools to build your career."}
           </p>
 
-          <div className="flex flex-wrap items-center gap-4 text-xs font-medium text-[#66789C] pt-2">
+          <div className="flex flex-wrap items-center gap-3 text-xs font-medium text-[#66789C] pt-2">
             <span className="flex items-center gap-1.5 rounded-xl bg-[#F8FAFC] px-3 py-1.5 border border-[#EAEFF7]">
               <FiShield className="text-emerald-600 text-sm" />
               Status: <strong className="text-[#05264E] uppercase font-bold">{isExpired ? "EXPIRED" : sub?.status || "ACTIVE"}</strong>
             </span>
+
+            {!isFree && (
+              <span className={`flex items-center gap-1.5 rounded-xl px-3 py-1.5 border font-bold ${
+                isAutoPayActive
+                  ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                  : "bg-amber-50 text-amber-700 border-amber-200"
+              }`}>
+                <FiRefreshCw className="text-xs" />
+                AutoPay: {isAutoPayActive ? "Active (Auto-renews)" : "Cancelled (Ends on period end)"}
+              </span>
+            )}
 
             {startDate && (
               <span className="flex items-center gap-1.5 rounded-xl bg-[#F8FAFC] px-3 py-1.5 border border-[#EAEFF7]">
@@ -79,7 +105,7 @@ export const CurrentPlanCard: React.FC<CurrentPlanCardProps> = ({
             {endDate && (
               <span className="flex items-center gap-1.5 rounded-xl bg-[#F8FAFC] px-3 py-1.5 border border-[#EAEFF7]">
                 <FiCalendar className="text-[#3C65F5] text-sm" />
-                Expires: <strong className="text-[#05264E] font-bold">{formattedEndDate}</strong>
+                Period End: <strong className="text-[#05264E] font-bold">{formattedEndDate}</strong>
               </span>
             )}
 
@@ -114,14 +140,25 @@ export const CurrentPlanCard: React.FC<CurrentPlanCardProps> = ({
           </button>
 
           {!isFree && sub?.status === "ACTIVE" && !isExpired && (
-            <button
-              onClick={onCancel}
-              disabled={isCancelling}
-              className="inline-flex items-center justify-center gap-1.5 rounded-2xl bg-red-50 hover:bg-red-100 px-6 py-3 text-xs font-bold text-red-600 transition-all border border-red-200 cursor-pointer disabled:opacity-50"
-            >
-              <FiAlertCircle />
-              {isCancelling ? "Cancelling..." : "Cancel Subscription"}
-            </button>
+            isAutoPayActive ? (
+              <button
+                onClick={onCancel}
+                disabled={isCancelling}
+                className="inline-flex items-center justify-center gap-1.5 rounded-2xl bg-red-50 hover:bg-red-100 px-6 py-3 text-xs font-bold text-red-600 transition-all border border-red-200 cursor-pointer disabled:opacity-50"
+              >
+                <FiAlertCircle />
+                {isCancelling ? "Cancelling..." : "Cancel AutoPay"}
+              </button>
+            ) : (
+              <button
+                onClick={onReactivate}
+                disabled={isReactivating}
+                className="inline-flex items-center justify-center gap-1.5 rounded-2xl bg-emerald-50 hover:bg-emerald-100 px-6 py-3 text-xs font-bold text-emerald-700 transition-all border border-emerald-200 cursor-pointer disabled:opacity-50 shadow-xs"
+              >
+                <FiRefreshCw />
+                {isReactivating ? "Reactivating..." : "Reactivate AutoPay"}
+              </button>
+            )
           )}
         </div>
       </div>
