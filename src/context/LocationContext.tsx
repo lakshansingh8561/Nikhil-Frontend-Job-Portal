@@ -128,8 +128,14 @@ export const LocationProvider: React.FC<{ children: React.ReactNode }> = ({
     LocationService.clearCachedLocation();
   }, []);
 
-  // On mount: Check cached location or attempt initial detection
+  // On mount or auth change: Check cached location or attempt initial detection ONLY when user is logged in
   useEffect(() => {
+    if (!isAuthenticated) {
+      setLocation(null);
+      setStatus("idle");
+      return;
+    }
+
     const cached = LocationService.getCachedLocation();
     if (cached) {
       setLocation(cached);
@@ -147,7 +153,7 @@ export const LocationProvider: React.FC<{ children: React.ReactNode }> = ({
           .catch(() => null);
       }
     }
-  }, [detectLocation]);
+  }, [isAuthenticated, detectLocation]);
 
   // Sync to backend whenever user logs in
   useEffect(() => {

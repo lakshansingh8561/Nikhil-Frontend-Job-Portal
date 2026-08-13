@@ -40,8 +40,8 @@ export const RecentApplications = () => {
           </Link>
         </div>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+        <div className="overflow-x-auto no-scrollbar custom-table-scrollbar">
+          <table className="w-full text-left border-collapse min-w-[580px]">
             <thead>
               <tr className="border-b border-slate-100 text-[10px] font-black uppercase tracking-wider text-slate-400">
                 <th className="py-3 px-3">Candidate</th>
@@ -92,7 +92,7 @@ export const RecentApplications = () => {
 
                     <td className="py-3.5 px-3">
                       {app.resume ? (
-                        <ResumeViewer resumeUrl={app.resume} applicantName={name} />
+                        <ResumeViewer resumeUrl={app.resume} applicantName={name} variant="compact" />
                       ) : (
                         <span className="text-[11px] text-slate-400 font-medium italic">No file</span>
                       )}

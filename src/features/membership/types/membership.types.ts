@@ -4,6 +4,13 @@ export interface IMembershipFeature {
   enabled: boolean;
 }
 
+export interface IMembershipPrice {
+  billingCycle: "monthly" | "yearly";
+  price: number;
+  currency: string;
+  durationInDays: number;
+}
+
 export interface IMembership {
   _id: string;
   id?: string;
@@ -12,6 +19,7 @@ export interface IMembership {
   price: number;
   currency: string;
   durationInDays: number;
+  prices?: IMembershipPrice[];
   description: string;
   features: IMembershipFeature[];
   isPopular: boolean;
@@ -21,8 +29,8 @@ export interface IMembership {
   updatedAt: string;
 }
 
-export type SubscriptionStatus = "ACTIVE" | "EXPIRED" | "CANCELLED" | "PENDING";
-export type PaymentStatus = "PENDING" | "SUCCESS" | "FAILED";
+export type SubscriptionStatus = "PENDING" | "ACTIVE" | "CANCELLED" | "EXPIRED" | "PAST_DUE";
+export type PaymentStatus = "PENDING" | "SUCCESS" | "FAILED" | "REFUNDED";
 
 export interface ISubscription {
   _id: string;
@@ -32,11 +40,18 @@ export interface ISubscription {
   planName: string;
   amount: number;
   currency: string;
+  billingCycle?: string;
+  provider?: string;
+  providerSubscriptionId?: string;
+  providerCustomerId?: string;
   startDate: string;
   endDate: string;
+  currentPeriodStart?: string;
+  currentPeriodEnd?: string;
   status: SubscriptionStatus;
   paymentStatus: PaymentStatus;
-  autoRenew: boolean;
+  cancelAtPeriodEnd?: boolean;
+  autoRenew?: boolean;
   cancelledAt?: string | null;
   createdAt: string;
   updatedAt: string;

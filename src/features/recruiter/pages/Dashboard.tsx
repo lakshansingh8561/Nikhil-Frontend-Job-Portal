@@ -9,7 +9,9 @@ import { FiPlusSquare, FiZap, FiArrowRight, FiShield, FiBriefcase, FiCalendar } 
 import { useGetCurrentRecruiterPlanQuery } from "../../membership/api/membershipApi";
 
 export const Dashboard = () => {
-  const { data: recSub } = useGetCurrentRecruiterPlanQuery();
+  const { data: recSub } = useGetCurrentRecruiterPlanQuery(undefined, {
+    refetchOnMountOrArgChange: true,
+  });
 
   const sub = recSub?.subscription;
   const planName = sub?.planName || recSub?.plan?.name || "Free";

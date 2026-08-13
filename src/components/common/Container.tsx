@@ -12,8 +12,8 @@ const Container = ({ children, className = "" }: ContainerProps) => {
       style={{
         marginLeft: "auto",
         marginRight: "auto",
-        paddingLeft: "clamp(32px, 7vw, 110px)",
-        paddingRight: "clamp(32px, 7vw, 110px)",
+        paddingLeft: "clamp(16px, 5vw, 110px)",
+        paddingRight: "clamp(16px, 5vw, 110px)",
       }}
     >
       {children}

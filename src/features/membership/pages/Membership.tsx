@@ -6,6 +6,7 @@ import {
   useGetCurrentSubscriptionQuery,
   useCancelSubscriptionMutation,
   useGetSubscriptionHistoryQuery,
+  useReactivateAutopayMutation,
 } from "../api/membershipApi";
 import { useCreatePolarCheckoutMutation } from "../api/paymentApi";
 import type { IMembership } from "../types/membership.types";
@@ -24,10 +25,15 @@ const JOB_SEEKER_PLAN_LEVELS: Record<string, number> = {
 
 export const Membership: React.FC = () => {
   const { data: plans = [], isLoading: isLoadingPlans } = useGetMembershipsQuery();
-  const { data: currentSub, isLoading: isLoadingSub } = useGetCurrentSubscriptionQuery();
-  const { data: history = [], isLoading: isLoadingHistory } = useGetSubscriptionHistoryQuery();
+  const { data: currentSub, isLoading: isLoadingSub } = useGetCurrentSubscriptionQuery(undefined, {
+    refetchOnMountOrArgChange: true,
+  });
+  const { data: history = [], isLoading: isLoadingHistory } = useGetSubscriptionHistoryQuery(undefined, {
+    refetchOnMountOrArgChange: true,
+  });
 
   const [cancelSubscription, { isLoading: isCancelling }] = useCancelSubscriptionMutation();
+  const [reactivateAutopay, { isLoading: isReactivating }] = useReactivateAutopayMutation();
   const [createPolarCheckout] = useCreatePolarCheckoutMutation();
 
   const { startCheckout, modalStatus, errorMessage, currentPlan, closeModal } = useRazorpayCheckout();
@@ -49,10 +55,10 @@ export const Membership: React.FC = () => {
   const lastExpiredPlanName = lastExpiredSub?.planName;
   const lastExpiredDate = lastExpiredSub?.endDate
     ? new Date(lastExpiredSub.endDate).toLocaleDateString("en-IN", {
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-      })
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    })
     : null;
 
   // Find the plan object matching the expired plan so user can re-subscribe directly
@@ -106,6 +112,15 @@ export const Membership: React.FC = () => {
     }
   };
 
+  const handleReactivateAutoPay = async () => {
+    try {
+      await reactivateAutopay().unwrap();
+      toast.success("AutoPay reactivated! Your subscription will auto-renew 🎉");
+    } catch (err: any) {
+      toast.error(err?.data?.message || "Failed to reactivate AutoPay.");
+    }
+  };
+
   const getUpgradePreview = (targetPlan: IMembership | null) => {
     if (!targetPlan || !hasActiveSub || !sub || targetPlan.price === 0) return null;
     const targetLevel = JOB_SEEKER_PLAN_LEVELS[targetPlan.name] || 1;
@@ -154,7 +169,9 @@ export const Membership: React.FC = () => {
             if (higherPlan) handleSelectPlan(higherPlan);
           }}
           onCancel={handleCancelSubscription}
+          onReactivate={handleReactivateAutoPay}
           isCancelling={isCancelling}
+          isReactivating={isReactivating}
         />
       )}
 
@@ -302,7 +319,7 @@ export const Membership: React.FC = () => {
                   <tr key={hSub._id || hSub.id} className="hover:bg-gray-50/50 transition">
                     <td className="py-4 font-bold text-[#05264E]">{hSub.planName}</td>
                     <td className="py-4 font-extrabold text-[#3C65F5]">
-                      {hSub.amount === 0 ? "Free" : `₹${hSub.amount} ${hSub.currency}`}
+                      {hSub.amount === 0 ? "Free" : `${hSub.currency === "INR" ? "₹" : "$"}${hSub.amount} ${hSub.currency}`}
                     </td>
                     <td className="py-4 text-xs font-medium text-gray-600">
                       {new Date(hSub.startDate).toLocaleDateString("en-IN")}
@@ -312,9 +329,8 @@ export const Membership: React.FC = () => {
                     </td>
                     <td className="py-4">
                       <span
-                        className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-bold ${
-                          statusColors[hSub.status] ?? "bg-gray-100 text-gray-600"
-                        }`}
+                        className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-bold ${statusColors[hSub.status] ?? "bg-gray-100 text-gray-600"
+                          }`}
                       >
                         {hSub.status}
                       </span>

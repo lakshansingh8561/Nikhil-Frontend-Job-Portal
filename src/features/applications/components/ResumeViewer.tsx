@@ -20,6 +20,7 @@ interface ResumeViewerProps {
   applicantHeadline?: string;
   applicantSkills?: string[];
   coverLetter?: string;
+  variant?: "default" | "compact";
 }
 
 export const ResumeViewer: React.FC<ResumeViewerProps> = ({
@@ -31,6 +32,7 @@ export const ResumeViewer: React.FC<ResumeViewerProps> = ({
   applicantHeadline = "",
   applicantSkills = [],
   coverLetter = "",
+  variant = "default",
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -97,25 +99,46 @@ JobBox Portal Verified Candidate Profile
 
   return (
     <>
-      <div className="inline-flex items-center gap-2">
-        <button
-          onClick={handleView}
-          className="inline-flex items-center gap-1.5 rounded-xl border border-[#EAEFF7] bg-[#F8FAFC] px-3.5 py-2 text-xs font-bold text-[#05264E] transition hover:bg-[#E8F0FE] hover:text-[#3C65F5] cursor-pointer shadow-sm"
-          title="View Candidate Resume"
-        >
-          <FiExternalLink className="text-xs shrink-0" />
-          <span>View Resume</span>
-        </button>
+      {variant === "compact" ? (
+        <div className="inline-flex items-center gap-1.5 shrink-0">
+          <button
+            onClick={handleView}
+            className="inline-flex items-center gap-1 rounded-lg border border-[#EAEFF7] bg-[#F8FAFC] px-2.5 py-1 text-[11px] font-bold text-[#05264E] transition hover:bg-[#E8F0FE] hover:text-[#3C65F5] cursor-pointer shadow-2xs"
+            title="View Candidate Resume"
+          >
+            <FiExternalLink className="text-[10px] shrink-0" />
+            <span>View</span>
+          </button>
 
-        <button
-          onClick={handleDownload}
-          className="inline-flex items-center gap-1.5 rounded-xl border border-[#EAEFF7] bg-white px-3.5 py-2 text-xs font-bold text-gray-700 transition hover:bg-gray-50 hover:text-[#3C65F5] cursor-pointer shadow-sm"
-          title="Download Candidate Resume"
-        >
-          <FiDownload className="text-xs shrink-0" />
-          <span>Download</span>
-        </button>
-      </div>
+          <button
+            onClick={handleDownload}
+            className="inline-flex items-center justify-center h-7 w-7 rounded-lg border border-[#EAEFF7] bg-white text-gray-700 transition hover:bg-gray-50 hover:text-[#3C65F5] cursor-pointer shadow-2xs"
+            title="Download Candidate Resume"
+          >
+            <FiDownload className="text-xs shrink-0" />
+          </button>
+        </div>
+      ) : (
+        <div className="inline-flex items-center gap-2">
+          <button
+            onClick={handleView}
+            className="inline-flex items-center gap-1.5 rounded-xl border border-[#EAEFF7] bg-[#F8FAFC] px-3.5 py-2 text-xs font-bold text-[#05264E] transition hover:bg-[#E8F0FE] hover:text-[#3C65F5] cursor-pointer shadow-sm"
+            title="View Candidate Resume"
+          >
+            <FiExternalLink className="text-xs shrink-0" />
+            <span>View Resume</span>
+          </button>
+
+          <button
+            onClick={handleDownload}
+            className="inline-flex items-center gap-1.5 rounded-xl border border-[#EAEFF7] bg-white px-3.5 py-2 text-xs font-bold text-gray-700 transition hover:bg-gray-50 hover:text-[#3C65F5] cursor-pointer shadow-sm"
+            title="Download Candidate Resume"
+          >
+            <FiDownload className="text-xs shrink-0" />
+            <span>Download</span>
+          </button>
+        </div>
+      )}
 
       {/* Resume Viewer Modal Preview */}
       {isModalOpen && (

@@ -86,7 +86,7 @@ export const MembershipCard: React.FC<MembershipCardProps> = ({
         {/* Pricing Display */}
         <div className="mb-6 flex items-baseline gap-1.5 border-b border-slate-800/80 pb-5">
           <span className="text-4xl sm:text-5xl font-black tracking-tight text-white">
-            {plan.price === 0 ? "Free" : `₹${plan.price}`}
+            {plan.price === 0 ? "Free" : `$${plan.price}`}
           </span>
           {plan.price > 0 && (
             <span className="text-xs font-semibold text-slate-400">

@@ -13,6 +13,7 @@ import { useAppDispatch } from "../../../hooks/useAppDispatch";
 import { useAppSelector } from "../../../hooks/useAppSelector";
 import { logout } from "../../auth/authSlice";
 import NotificationDropdown from "../../../components/common/NotificationDropdown";
+import { DetectLocationButton } from "../../../components/common/DetectLocationButton";
 
 interface RecruiterHeaderProps {
   onToggleSidebar?: () => void;
@@ -69,6 +70,9 @@ export const RecruiterHeader = ({ onToggleSidebar }: RecruiterHeaderProps) => {
 
       {/* Notifications & Avatar Menu */}
       <div className="flex items-center gap-3 shrink-0">
+        {/* Detected Location Badge */}
+        <DetectLocationButton variant="badge" />
+
         {/* Notifications Dropdown */}
         <NotificationDropdown />
 
