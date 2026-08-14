@@ -62,82 +62,82 @@ function App() {
     <>
       <LocationDeniedBanner />
       <Routes>
-      {/* Public Auth Routes (Redirects to dashboard if already logged in) */}
-      <Route element={<PublicOnlyRoute />}>
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-      </Route>
-
-      {/* Main Layout (Public Pages) */}
-      <Route element={<MainLayout />}>
-        <Route path="/" element={<Home />} />
-        <Route path="/jobs" element={<BrowseJobs />} />
-        <Route path="/jobs/:id" element={<JobSeekerJobDetails />} />
-        <Route path="/candidates" element={<CandidatesPage />} />
-        <Route path="/recruiters" element={<RecruitersDirectory />} />
-        <Route path="/membership" element={<Pricing />} />
-        <Route path="/pricing" element={<Pricing />} />
-      </Route>
-
-      {/* Standalone Payment Result Routes (accessible when logged in) */}
-      <Route path="/payment/polar/success" element={<PolarSuccessPage />} />
-      <Route path="/payment/polar/cancel" element={<PolarCancelPage />} />
-
-      {/* Protected Job Seeker Dashboard Routes */}
-      <Route element={<ProtectedRoute allowedRoles={["JOB_SEEKER"]} />}>
-        <Route path="/job-seeker" element={<JobSeekerLayout />}>
-          <Route index element={<Navigate to="dashboard" replace />} />
-          <Route path="dashboard" element={<JobSeekerDashboard />} />
-          <Route path="profile" element={<JobSeekerProfilePage />} />
-          <Route path="applications" element={<MyApplications />} />
-          <Route path="membership" element={<Membership />} />
-          <Route path="billing" element={<PaymentHistoryPage />} />
-          <Route path="messages" element={<ChatPage />} />
-          <Route path="jobs" element={<BrowseJobs />} />
-          <Route path="jobs/:id" element={<JobSeekerJobDetails />} />
-          <Route path="settings" element={<JobSeekerSettings />} />
+        {/* Public Auth Routes (Redirects to dashboard if already logged in) */}
+        <Route element={<PublicOnlyRoute />}>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
         </Route>
-      </Route>
 
-      {/* Protected Recruiter Routes (Strict RBAC Guard for RECRUITER role) */}
-      <Route element={<ProtectedRoute allowedRoles={["RECRUITER"]} />}>
-        <Route path="/recruiter" element={<RecruiterLayout />}>
-          <Route index element={<Navigate to="dashboard" replace />} />
-          <Route path="dashboard" element={<Dashboard />} />
-          <Route path="company" element={<Company />} />
-          <Route path="membership" element={<RecruiterMembership />} />
-          <Route path="billing" element={<PaymentHistoryPage />} />
-          <Route path="post-job" element={<PostJob />} />
-          <Route path="my-jobs" element={<MyJobs />} />
-          <Route path="jobs" element={<MyJobs />} />
-          <Route path="jobs/create" element={<CreateJob />} />
-          <Route path="jobs/edit/:id" element={<EditJob />} />
-          <Route path="jobs/:jobId/applications" element={<RecruiterApplications />} />
-          <Route path="jobs/:id" element={<RecruiterJobDetails />} />
-          <Route path="applications" element={<RecruiterApplications />} />
-          <Route path="messages" element={<ChatPage />} />
-          <Route path="settings" element={<Settings />} />
-          <Route path="profile" element={<RecruiterProfile />} />
+        {/* Main Layout (Public Pages) */}
+        <Route element={<MainLayout />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/jobs" element={<BrowseJobs />} />
+          <Route path="/jobs/:id" element={<JobSeekerJobDetails />} />
+          <Route path="/candidates" element={<CandidatesPage />} />
+          <Route path="/recruiters" element={<RecruitersDirectory />} />
+          <Route path="/membership" element={<Pricing />} />
+          <Route path="/pricing" element={<Pricing />} />
         </Route>
-      </Route>
 
-      {/* Protected Admin Routes (Strict RBAC Guard for ADMIN role) */}
-      <Route element={<ProtectedRoute allowedRoles={["ADMIN"]} />}>
-        <Route path="/admin" element={<AdminLayout />}>
-          <Route index element={<Navigate to="dashboard" replace />} />
-          <Route path="dashboard" element={<AdminDashboard />} />
-          <Route path="users" element={<AdminUsers />} />
-          <Route path="recruiters" element={<AdminRecruiters />} />
-          <Route path="jobs" element={<AdminJobs />} />
-          <Route path="applications" element={<AdminApplications />} />
-          <Route path="payments" element={<PaymentHistoryPage />} />
-          <Route path="settings" element={<AdminSettings />} />
+        {/* Standalone Payment Result Routes (accessible when logged in) */}
+        <Route path="/payment/polar/success" element={<PolarSuccessPage />} />
+        <Route path="/payment/polar/cancel" element={<PolarCancelPage />} />
+
+        {/* Protected Job Seeker Dashboard Routes */}
+        <Route element={<ProtectedRoute allowedRoles={["JOB_SEEKER"]} />}>
+          <Route path="/job-seeker" element={<JobSeekerLayout />}>
+            <Route index element={<Navigate to="dashboard" replace />} />
+            <Route path="dashboard" element={<JobSeekerDashboard />} />
+            <Route path="profile" element={<JobSeekerProfilePage />} />
+            <Route path="applications" element={<MyApplications />} />
+            <Route path="membership" element={<Membership />} />
+            <Route path="billing" element={<PaymentHistoryPage />} />
+            <Route path="messages" element={<ChatPage />} />
+            <Route path="jobs" element={<BrowseJobs />} />
+            <Route path="jobs/:id" element={<JobSeekerJobDetails />} />
+            <Route path="settings" element={<JobSeekerSettings />} />
+          </Route>
         </Route>
-      </Route>
 
-      {/* Fallback Route */}
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+        {/* Protected Recruiter Routes (Strict RBAC Guard for RECRUITER role) */}
+        <Route element={<ProtectedRoute allowedRoles={["RECRUITER"]} />}>
+          <Route path="/recruiter" element={<RecruiterLayout />}>
+            <Route index element={<Navigate to="dashboard" replace />} />
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="company" element={<Company />} />
+            <Route path="membership" element={<RecruiterMembership />} />
+            <Route path="billing" element={<PaymentHistoryPage />} />
+            <Route path="post-job" element={<PostJob />} />
+            <Route path="my-jobs" element={<MyJobs />} />
+            <Route path="jobs" element={<MyJobs />} />
+            <Route path="jobs/create" element={<CreateJob />} />
+            <Route path="jobs/edit/:id" element={<EditJob />} />
+            <Route path="jobs/:jobId/applications" element={<RecruiterApplications />} />
+            <Route path="jobs/:id" element={<RecruiterJobDetails />} />
+            <Route path="applications" element={<RecruiterApplications />} />
+            <Route path="messages" element={<ChatPage />} />
+            <Route path="settings" element={<Settings />} />
+            <Route path="profile" element={<RecruiterProfile />} />
+          </Route>
+        </Route>
+
+        {/* Protected Admin Routes (Strict RBAC Guard for ADMIN role) */}
+        <Route element={<ProtectedRoute allowedRoles={["ADMIN"]} />}>
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<Navigate to="dashboard" replace />} />
+            <Route path="dashboard" element={<AdminDashboard />} />
+            <Route path="users" element={<AdminUsers />} />
+            <Route path="recruiters" element={<AdminRecruiters />} />
+            <Route path="jobs" element={<AdminJobs />} />
+            <Route path="applications" element={<AdminApplications />} />
+            <Route path="payments" element={<PaymentHistoryPage />} />
+            <Route path="settings" element={<AdminSettings />} />
+          </Route>
+        </Route>
+
+        {/* Fallback Route */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
     </>
   );
 }

@@ -64,3 +64,9 @@ export interface PolarStatusResponse {
   subscription?: any;
   payment?: any;
 }
+
+export interface CreatePolarCheckoutRequest {
+  membershipId: string;
+  productId?: string;
+  billingCycle?: "monthly" | "yearly" | string;
+}

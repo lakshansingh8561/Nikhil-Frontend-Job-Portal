@@ -46,16 +46,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
       )}
 
       <aside
-        className={`fixed top-0 bottom-0 left-0 z-50 flex flex-col justify-between bg-white text-[#05264E] border-r border-[#EAEFF7] transition-all duration-300 w-64 ${
-          isDesktopCollapsed ? "lg:w-20 p-3" : "lg:w-64 p-5"
-        } p-5 ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}
+        className={`fixed top-0 bottom-0 left-0 z-50 flex flex-col justify-between bg-white text-[#05264E] border-r border-[#EAEFF7] transition-all duration-300 w-64 ${isDesktopCollapsed ? "lg:w-20 p-3" : "lg:w-64 p-5"
+          } p-5 ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}
       >
         <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar space-y-6">
           {/* Top Logo Section */}
           <div
-            className={`flex items-center ${
-              isDesktopCollapsed ? "lg:justify-center flex-col gap-3" : "justify-between"
-            } pb-4 border-b border-[#F0F4FC]`}
+            className={`flex items-center ${isDesktopCollapsed ? "lg:justify-center flex-col gap-3" : "justify-between"
+              } pb-4 border-b border-[#F0F4FC]`}
           >
             <Link to="/admin/dashboard" className="flex items-center gap-2.5 group">
               <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#3C65F5] shadow-md shadow-blue-500/20 group-hover:scale-105 transition-transform">
@@ -94,9 +92,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
           {/* Navigation Menu Links */}
           <div className="space-y-2">
             <p
-              className={`px-3 text-[10px] font-black uppercase tracking-widest text-[#66789C] mb-3 ${
-                isDesktopCollapsed ? "lg:hidden" : ""
-              }`}
+              className={`px-3 text-[10px] font-black uppercase tracking-widest text-[#66789C] mb-3 ${isDesktopCollapsed ? "lg:hidden" : ""
+                }`}
             >
               Main Management
             </p>
@@ -110,23 +107,20 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   onClick={onClose}
                   title={isDesktopCollapsed ? item.label : undefined}
                   className={({ isActive }) =>
-                    `relative flex items-center ${
-                      isDesktopCollapsed
-                        ? "lg:justify-center lg:w-12 lg:h-12 lg:mx-auto lg:p-0"
-                        : "px-4 py-3.5"
-                    } gap-3.5 rounded-2xl text-xs font-bold transition-all duration-200 group ${
-                      isActive
-                        ? "bg-[#3C65F5] text-white shadow-md shadow-blue-500/20"
-                        : "text-[#66789C] hover:text-[#05264E] hover:bg-[#F8FAFC]"
+                    `relative flex items-center ${isDesktopCollapsed
+                      ? "lg:justify-center lg:w-12 lg:h-12 lg:mx-auto lg:p-0"
+                      : "px-4 py-3.5"
+                    } gap-3.5 rounded-2xl text-xs font-bold transition-all duration-200 group ${isActive
+                      ? "bg-[#3C65F5] text-white shadow-md shadow-blue-500/20"
+                      : "text-[#66789C] hover:text-[#05264E] hover:bg-[#F8FAFC]"
                     }`
                   }
                 >
                   {({ isActive }) => (
                     <>
                       <Icon
-                        className={`text-lg transition-transform group-hover:scale-110 ${
-                          isActive ? "text-white" : "text-[#66789C] group-hover:text-[#3C65F5]"
-                        }`}
+                        className={`text-lg transition-transform group-hover:scale-110 ${isActive ? "text-white" : "text-[#66789C] group-hover:text-[#3C65F5]"
+                          }`}
                       />
                       <span className={`${isDesktopCollapsed ? "lg:hidden" : ""}`}>
                         {item.label}
@@ -143,9 +137,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <div className="pt-4 border-t border-[#F0F4FC]">
           <Link
             to="/"
-            className={`flex items-center ${
-              isDesktopCollapsed ? "lg:justify-center lg:p-2.5" : "px-3.5 py-2.5"
-            } gap-3 rounded-xl text-xs font-bold text-[#66789C] hover:text-[#05264E] hover:bg-[#F8FAFC] transition cursor-pointer`}
+            className={`flex items-center ${isDesktopCollapsed ? "lg:justify-center lg:p-2.5" : "px-3.5 py-2.5"
+              } gap-3 rounded-xl text-xs font-bold text-[#66789C] hover:text-[#05264E] hover:bg-[#F8FAFC] transition cursor-pointer`}
           >
             <FiGlobe className="text-base text-[#3C65F5]" />
             <span className={`${isDesktopCollapsed ? "lg:hidden" : ""}`}>Live Portal</span>

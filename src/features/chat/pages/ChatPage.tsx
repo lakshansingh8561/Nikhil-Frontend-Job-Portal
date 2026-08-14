@@ -10,6 +10,8 @@ import { ConversationList } from "../components/ConversationList";
 import { ChatWindow } from "../components/ChatWindow";
 import { NewChatModal } from "../components/NewChatModal";
 
+import toast from "react-hot-toast";
+
 export const ChatPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const targetConvId = searchParams.get("conversationId");
@@ -33,12 +35,17 @@ export const ChatPage: React.FC = () => {
   }) => {
     try {
       const conv = await createOrGetConversation(payload).unwrap();
-      const convId = conv.id || conv._id;
-      setSelectedConvId(convId);
-      setActiveConversation(conv);
-      setHasNavigatedBack(false);
-    } catch (err) {
+      const convId = conv ? (conv.id || conv._id) : null;
+      if (conv && convId) {
+        setSelectedConvId(convId);
+        setActiveConversation(conv);
+        setHasNavigatedBack(false);
+      } else {
+        toast.error("Unable to open conversation.");
+      }
+    } catch (err: any) {
       console.error("Failed to start chat from modal:", err);
+      toast.error(err?.data?.message || "Failed to start chat. Please try again.");
     }
   };
 
