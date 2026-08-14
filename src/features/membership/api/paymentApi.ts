@@ -4,6 +4,7 @@ import type {
   VerifyPaymentRequest,
   IPaymentRecord,
   CreatePolarCheckoutResponse,
+  CreatePolarCheckoutRequest,
   PolarStatusResponse,
 } from "../types/payment.types";
 
@@ -29,7 +30,7 @@ export const paymentApi = apiSlice.injectEndpoints({
       invalidatesTags: ["Subscription", "Membership", "Payment", "Job"],
     }),
 
-    createPolarCheckout: builder.mutation<CreatePolarCheckoutResponse, { membershipId: string; productId?: string }>({
+    createPolarCheckout: builder.mutation<CreatePolarCheckoutResponse, CreatePolarCheckoutRequest>({
       query: (body) => ({
         url: "/payments/polar/create-checkout",
         method: "POST",

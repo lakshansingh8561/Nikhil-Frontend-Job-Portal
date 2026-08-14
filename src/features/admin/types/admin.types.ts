@@ -51,24 +51,24 @@ export interface AdminJob {
   _id: string;
   title: string;
   companyId:
-    | string
-    | {
-        _id: string;
-        companyName: string;
-        logo?: string;
-      };
+  | string
+  | {
+    _id: string;
+    companyName: string;
+    logo?: string;
+  };
   userId?:
-    | string
-    | {
-        _id: string;
-        email: string;
-      };
+  | string
+  | {
+    _id: string;
+    email: string;
+  };
   recruiterId?:
-    | string
-    | {
-        _id: string;
-        email: string;
-      };
+  | string
+  | {
+    _id: string;
+    email: string;
+  };
   employmentType: string;
   experienceLevel: string;
   location: string;
@@ -93,18 +93,18 @@ export interface AdminApplicantProfile {
 export interface AdminApplication {
   _id: string;
   jobId:
+  | string
+  | {
+    _id: string;
+    title: string;
+    companyId?:
     | string
     | {
-        _id: string;
-        title: string;
-        companyId?:
-          | string
-          | {
-              _id: string;
-              companyName: string;
-              logo?: string;
-            };
-      };
+      _id: string;
+      companyName: string;
+      logo?: string;
+    };
+  };
   userId?: string | AdminApplicantProfile;
   applicantId?: string | AdminApplicantProfile;
   resume: string;

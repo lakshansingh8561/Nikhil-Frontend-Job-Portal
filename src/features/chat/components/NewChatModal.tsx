@@ -166,32 +166,39 @@ export const NewChatModal: React.FC<NewChatModalProps> = ({
             </div>
           ) : (
             filteredJobSeekerApps.map((app: any) => {
-              const jobId =
-                typeof app.jobId === "object" && app.jobId !== null
-                  ? app.jobId._id
-                  : app.jobId;
+                const targetJobId =
+                  typeof app.jobId === "object" && app.jobId !== null
+                    ? (app.jobId._id || app.jobId.id || "").toString()
+                    : (app.jobId || "").toString();
 
-              const jobTitle = (app.jobId as any)?.title || "Job Position";
-              const companyName =
-                (app.jobId as any)?.companyId?.name ||
-                (app.jobId as any)?.companyId?.companyName ||
-                "Hiring Company";
+                const jobTitle = (app.jobId as any)?.title || "Job Position";
+                const companyName =
+                  (app.jobId as any)?.companyId?.name ||
+                  (app.jobId as any)?.companyId?.companyName ||
+                  "Hiring Company";
 
-              const recruiterUserId =
-                (app.jobId as any)?.userId?._id ||
-                (app.jobId as any)?.userId ||
-                (app.jobId as any)?.recruiterId?._id ||
-                (app.jobId as any)?.recruiterId ||
-                (app.recruiterId as any)?._id ||
-                app.recruiterId;
+                const rawRecruiter =
+                  (app.jobId as any)?.userId ||
+                  (app.jobId as any)?.recruiterId ||
+                  (app.jobId as any)?.companyId?.userId ||
+                  (app.jobId as any)?.companyId?.ownerId ||
+                  app.recruiterId;
 
-              return (
-                <button
-                  key={app._id}
-                  onClick={() => {
-                    onSelect({ jobId, applicantId: recruiterUserId });
-                    onClose();
-                  }}
+                const recruiterUserId =
+                  typeof rawRecruiter === "object" && rawRecruiter !== null
+                    ? (rawRecruiter._id || rawRecruiter.id || "").toString()
+                    : (rawRecruiter || "").toString();
+
+                return (
+                  <button
+                    key={app._id}
+                    onClick={() => {
+                      onSelect({
+                        jobId: targetJobId,
+                        applicantId: recruiterUserId || undefined,
+                      });
+                      onClose();
+                    }}
                   className="flex w-full items-center justify-between p-3.5 text-left rounded-xl hover:bg-indigo-50/70 transition-all duration-200 cursor-pointer border border-transparent hover:border-indigo-100"
                 >
                   <div className="flex items-center gap-3 min-w-0">

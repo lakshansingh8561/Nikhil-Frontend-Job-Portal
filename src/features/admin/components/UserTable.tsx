@@ -72,13 +72,12 @@ export const UserTable: React.FC<UserTableProps> = ({
                 {/* Role Badge */}
                 <td className="py-4 px-6">
                   <span
-                    className={`inline-flex rounded-lg px-2.5 py-1 text-[11px] font-bold ${
-                      user.role === "ADMIN"
+                    className={`inline-flex rounded-lg px-2.5 py-1 text-[11px] font-bold ${user.role === "ADMIN"
                         ? "bg-purple-100 text-purple-700"
                         : user.role === "RECRUITER"
-                        ? "bg-indigo-100 text-indigo-700"
-                        : "bg-blue-100 text-[#3C65F5]"
-                    }`}
+                          ? "bg-indigo-100 text-indigo-700"
+                          : "bg-blue-100 text-[#3C65F5]"
+                      }`}
                   >
                     {user.role}
                   </span>
@@ -88,11 +87,10 @@ export const UserTable: React.FC<UserTableProps> = ({
                 <td className="py-4 px-6">
                   <div className="flex flex-col gap-0.5">
                     <span
-                      className={`inline-flex items-center gap-1 w-fit rounded-full px-2.5 py-0.5 text-[11px] font-extrabold ${
-                        isSubActive
+                      className={`inline-flex items-center gap-1 w-fit rounded-full px-2.5 py-0.5 text-[11px] font-extrabold ${isSubActive
                           ? "bg-emerald-100 text-emerald-800 border border-emerald-200"
                           : "bg-gray-100 text-gray-600"
-                      }`}
+                        }`}
                     >
                       {mem?.planName || "Free"} {isSubActive ? "✓" : ""}
                     </span>
@@ -133,11 +131,10 @@ export const UserTable: React.FC<UserTableProps> = ({
 
                     <button
                       onClick={() => onToggleBlock(user)}
-                      className={`flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-bold transition cursor-pointer ${
-                        isBlocked
+                      className={`flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-bold transition cursor-pointer ${isBlocked
                           ? "bg-emerald-50 text-emerald-600 border border-emerald-200 hover:bg-emerald-100"
                           : "bg-red-50 text-red-600 border border-red-200 hover:bg-red-100"
-                      }`}
+                        }`}
                       title={isBlocked ? "Unblock User" : "Block User"}
                     >
                       {isBlocked ? (

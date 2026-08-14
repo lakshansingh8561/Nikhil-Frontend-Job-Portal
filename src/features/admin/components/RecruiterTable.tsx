@@ -63,11 +63,10 @@ export const RecruiterTable: React.FC<RecruiterTableProps> = ({
                 <td className="py-4 px-6">
                   <div className="flex flex-col gap-0.5">
                     <span
-                      className={`inline-flex items-center gap-1 w-fit rounded-full px-2.5 py-0.5 text-[11px] font-extrabold ${
-                        isSubActive
+                      className={`inline-flex items-center gap-1 w-fit rounded-full px-2.5 py-0.5 text-[11px] font-extrabold ${isSubActive
                           ? "bg-emerald-100 text-emerald-800 border border-emerald-200"
                           : "bg-gray-100 text-gray-600"
-                      }`}
+                        }`}
                     >
                       {mem?.planName || "Free Tier"} {isSubActive ? "✓" : ""}
                     </span>
@@ -116,11 +115,10 @@ export const RecruiterTable: React.FC<RecruiterTableProps> = ({
 
                     <button
                       onClick={() => onToggleBlock(rec)}
-                      className={`flex items-center gap-1 rounded-xl px-3 py-1.5 text-xs font-bold transition cursor-pointer ${
-                        isBlocked
+                      className={`flex items-center gap-1 rounded-xl px-3 py-1.5 text-xs font-bold transition cursor-pointer ${isBlocked
                           ? "bg-emerald-50 text-emerald-600 border border-emerald-200 hover:bg-emerald-100"
                           : "bg-red-50 text-red-600 border border-red-200 hover:bg-red-100"
-                      }`}
+                        }`}
                       title={isBlocked ? "Unblock Recruiter" : "Block Recruiter"}
                     >
                       {isBlocked ? (

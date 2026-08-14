@@ -106,7 +106,8 @@ export const RecruiterMembership: React.FC = () => {
     } else {
       const toastId = toast.loading("Creating Polar Sandbox Checkout...");
       try {
-        const res = await createPolarCheckout({ membershipId: planId }).unwrap();
+        const cycle = billingCycle === "annually" ? "yearly" : "monthly";
+        const res = await createPolarCheckout({ membershipId: planId, billingCycle: cycle }).unwrap();
         toast.success("Redirecting to Polar Sandbox...", { id: toastId });
         if (res.checkoutUrl) {
           window.location.href = res.checkoutUrl;
@@ -238,8 +239,13 @@ export const RecruiterMembership: React.FC = () => {
             <div className="flex flex-col sm:flex-row lg:flex-col gap-3 shrink-0">
               <button
                 onClick={() => {
-                  const higherPlan = plans.find((p) => (RECRUITER_PLAN_LEVELS[p.name] || 1) > currentLevel);
-                  if (higherPlan) handleSelectPlan(higherPlan);
+                  const el = document.getElementById("recruiter-plans-grid");
+                  if (el) {
+                    el.scrollIntoView({ behavior: "smooth" });
+                  } else {
+                    const higherPlan = plans.find((p) => (RECRUITER_PLAN_LEVELS[p.name] || 1) > currentLevel);
+                    if (higherPlan) handleSelectPlan(higherPlan);
+                  }
                 }}
                 className="rounded-2xl bg-white px-8 py-3.5 text-xs font-extrabold text-[#05264E] hover:bg-blue-50 transition-all duration-200 shadow-md active:scale-[0.99] cursor-pointer"
               >
@@ -363,7 +369,7 @@ export const RecruiterMembership: React.FC = () => {
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-3 items-stretch">
+          <div id="recruiter-plans-grid" className="grid grid-cols-1 gap-8 md:grid-cols-3 items-stretch">
             {plans.map((planItem) => {
               const planLevel = RECRUITER_PLAN_LEVELS[planItem.name] || 1;
               const isCurrent = Boolean(hasSub && currentPlanName === planItem.name);
