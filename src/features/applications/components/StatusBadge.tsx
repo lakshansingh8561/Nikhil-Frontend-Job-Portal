@@ -64,7 +64,16 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({
   status,
   size = "md",
 }) => {
-  const config = statusConfig[status] || statusConfig.APPLIED;
+  const normalizedStatus =
+    status === ("SUBMITTED" as any) || (status as string) === "UNDER_REVIEW"
+      ? "APPLIED"
+      : (status as string) === "INTERVIEW_SCHEDULED"
+      ? "INTERVIEW"
+      : (status as string) === "OFFERED"
+      ? "HIRED"
+      : status;
+
+  const config = statusConfig[normalizedStatus as ApplicationStatus] || statusConfig.APPLIED;
   const Icon = config.icon;
 
   const sizeClasses = {

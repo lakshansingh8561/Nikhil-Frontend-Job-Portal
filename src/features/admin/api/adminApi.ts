@@ -96,6 +96,51 @@ export const adminApi = apiSlice.injectEndpoints({
       ) => response.data,
       providesTags: ["Admin", "Application"],
     }),
+
+    // Admin Membership Management
+    getAllAdminMemberships: builder.query<any[], void>({
+      query: () => "/memberships/admin/all",
+      transformResponse: (response: { data: any[] }) => response.data,
+      providesTags: ["Membership", "Admin"],
+    }),
+
+    createMembershipPlan: builder.mutation<any, Partial<any>>({
+      query: (body) => ({
+        url: "/memberships/admin",
+        method: "POST",
+        body,
+      }),
+      transformResponse: (response: { data: any }) => response.data,
+      invalidatesTags: ["Membership", "Admin"],
+    }),
+
+    updateMembershipPlan: builder.mutation<any, { id: string } & Partial<any>>({
+      query: ({ id, ...body }) => ({
+        url: `/memberships/admin/${id}`,
+        method: "PUT",
+        body,
+      }),
+      transformResponse: (response: { data: any }) => response.data,
+      invalidatesTags: ["Membership", "Admin"],
+    }),
+
+    toggleMembershipStatus: builder.mutation<any, string>({
+      query: (id) => ({
+        url: `/memberships/admin/${id}/toggle-status`,
+        method: "PATCH",
+      }),
+      transformResponse: (response: { data: any }) => response.data,
+      invalidatesTags: ["Membership", "Admin"],
+    }),
+
+    deleteMembershipPlan: builder.mutation<{ message: string }, string>({
+      query: (id) => ({
+        url: `/memberships/admin/${id}`,
+        method: "DELETE",
+      }),
+      transformResponse: (response: { data: { message: string } }) => response.data,
+      invalidatesTags: ["Membership", "Admin"],
+    }),
   }),
 });
 
@@ -108,4 +153,9 @@ export const {
   useGetAllAdminJobsQuery,
   useDeleteAdminJobMutation,
   useGetAllAdminApplicationsQuery,
+  useGetAllAdminMembershipsQuery,
+  useCreateMembershipPlanMutation,
+  useUpdateMembershipPlanMutation,
+  useToggleMembershipStatusMutation,
+  useDeleteMembershipPlanMutation,
 } = adminApi;

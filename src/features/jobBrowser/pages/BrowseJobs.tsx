@@ -24,7 +24,6 @@ const BrowseJobs: React.FC = () => {
   const [layout, setLayout] = useState<"grid" | "list">("grid");
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
 
-  // Query parameters state passed to RTK Query
   const [activeParams, setActiveParams] = useState({
     page: 1,
     limit: 12,
@@ -37,7 +36,6 @@ const BrowseJobs: React.FC = () => {
     skills: [] as string[],
   });
 
-  // Sync state when URL query params change (e.g., navigating from Home page search bar)
   useEffect(() => {
     const urlSearch = searchParams.get("search") || "";
     const urlLocation = searchParams.get("location") || "";
@@ -62,7 +60,6 @@ const BrowseJobs: React.FC = () => {
     }));
   }, [searchParams]);
 
-  // Fetch jobs using RTK Query
   const { data, isLoading, isError, error, refetch } = useGetJobsQuery({
     page,
     limit,
@@ -121,31 +118,28 @@ const BrowseJobs: React.FC = () => {
     });
   };
 
-  // Sync pagination page change
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
   };
 
-  // Shared inner content with independent column scrolling
   const renderIndependentContent = (isPublicPage = false) => (
-    <div className={`flex flex-col w-full min-h-0 overflow-hidden ${isPublicPage ? "h-[calc(100vh-110px)]" : "h-full"}`}>
-      {/* Fixed Top Header & Search Bar */}
-      <div className="shrink-0 mb-3">
-        <div className="flex items-start justify-between mb-2 gap-3">
+    <div className={`flex flex-col w-full min-h-0 overflow-hidden ${isPublicPage ? "h-[calc(100vh-100px)]" : "h-full"}`}>
+      {/* Top Header & Search Control */}
+      <div className="shrink-0 mb-4">
+        <div className="flex items-center justify-between mb-3 gap-3">
           <div>
-            <h1 className="text-xl sm:text-2xl font-extrabold text-[#05264E]">
-              Browse Jobs
+            <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
+              Explore Tech Positions
             </h1>
-            <p className="text-xs font-medium text-[#66789C]">
-              Explore live job opportunities from top tech companies
+            <p className="text-xs font-medium text-slate-500">
+              Filter through verified engineering opportunities across modern software companies
             </p>
           </div>
-          {/* Mobile Filter Toggle */}
           <button
             onClick={() => setMobileFilterOpen(true)}
-            className="lg:hidden flex items-center gap-1.5 shrink-0 px-3 py-2 rounded-xl border border-[#EAEFF7] bg-white text-xs font-bold text-[#05264E] hover:border-[#3C65F5] hover:text-[#3C65F5] transition cursor-pointer"
+            className="lg:hidden saas-btn-secondary h-8 text-xs px-3"
           >
-            <FiFilter className="text-sm" /> Filters
+            <FiFilter /> Filters
           </button>
         </div>
 
@@ -184,18 +178,18 @@ const BrowseJobs: React.FC = () => {
           className="fixed inset-0 z-50 lg:hidden"
           onClick={() => setMobileFilterOpen(false)}
         >
-          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
+          <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-xs" />
           <div
-            className="absolute right-0 top-0 bottom-0 w-[300px] max-w-[85vw] bg-white overflow-y-auto p-4 shadow-2xl"
+            className="absolute right-0 top-0 bottom-0 w-[300px] max-w-[85vw] bg-white overflow-y-auto p-4 shadow-xl"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-base font-bold text-[#05264E]">Filters</h3>
+            <div className="flex items-center justify-between mb-4 border-b border-slate-100 pb-3">
+              <h3 className="text-sm font-bold text-slate-900">Filters</h3>
               <button
                 onClick={() => setMobileFilterOpen(false)}
-                className="p-2 rounded-xl border border-[#EAEFF7] text-[#05264E] hover:bg-red-50 hover:text-red-500 transition cursor-pointer"
+                className="p-1 text-slate-400 hover:text-slate-900 cursor-pointer"
               >
-                <FiX className="text-base" />
+                <FiX className="text-lg" />
               </button>
             </div>
             <FilterSidebar
@@ -242,10 +236,10 @@ const BrowseJobs: React.FC = () => {
         </div>
       )}
 
-      {/* Independent Scrolling Columns Container */}
+      {/* Main Grid Content */}
       <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-0 overflow-hidden">
-        {/* Left Column: Desktop Scrollable Filter Jobs Sidebar (hidden on mobile) */}
-        <div className="hidden lg:block lg:col-span-4 xl:col-span-3 h-full overflow-y-auto overscroll-contain pr-1 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-gray-200 [&::-webkit-scrollbar-thumb]:rounded-full">
+        {/* Left Desktop Sidebar */}
+        <div className="hidden lg:block lg:col-span-4 xl:col-span-3 h-full overflow-y-auto overscroll-contain pr-1 custom-table-scrollbar">
           <FilterSidebar
             location={location}
             setLocation={(val) => {
@@ -285,8 +279,8 @@ const BrowseJobs: React.FC = () => {
           />
         </div>
 
-        {/* Right Column: Independent Scrollable Main Jobs List */}
-        <div className="lg:col-span-8 xl:col-span-9 h-full overflow-y-auto overscroll-contain pr-1 pb-8 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-gray-200 [&::-webkit-scrollbar-thumb]:rounded-full">
+        {/* Right Scrollable Job Grid */}
+        <div className="lg:col-span-8 xl:col-span-9 h-full overflow-y-auto overscroll-contain pr-1 pb-8 custom-table-scrollbar">
           <JobList
             jobs={jobsList}
             pagination={pagination}
@@ -315,14 +309,12 @@ const BrowseJobs: React.FC = () => {
     </div>
   );
 
-  // Dashboard Mode
   if (isDashboardMode) {
     return renderIndependentContent(false);
   }
 
-  // Public Landing Page Mode (http://localhost:5173/jobs)
   return (
-    <div className="h-screen w-full bg-[#F5F7FC] pt-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto overflow-hidden">
+    <div className="h-screen w-full bg-slate-50/50 pt-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto overflow-hidden">
       {renderIndependentContent(true)}
     </div>
   );

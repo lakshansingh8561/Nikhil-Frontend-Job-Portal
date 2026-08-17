@@ -18,6 +18,7 @@ export interface IMembership {
   role: string;
   price: number;
   currency: string;
+  planId?: string;
   durationInDays: number;
   prices?: IMembershipPrice[];
   description: string;

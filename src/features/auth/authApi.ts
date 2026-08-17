@@ -15,6 +15,27 @@ interface ApiResponseWrapper<T> {
 
 export const authApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
+    sendOtp: builder.mutation<{ message: string }, { email: string }>({
+      query: (body) => ({
+        url: "/auth/send-otp",
+        method: "POST",
+        body,
+      }),
+      transformResponse: (response: ApiResponseWrapper<{ message: string }>) =>
+        response.data,
+    }),
+
+    verifyOtp: builder.mutation<AuthResponse, RegisterRequest & { otp: string }>({
+      query: (body) => ({
+        url: "/auth/verify-otp",
+        method: "POST",
+        body,
+      }),
+      transformResponse: (response: ApiResponseWrapper<AuthResponse>) =>
+        response.data,
+      invalidatesTags: ["Auth"],
+    }),
+
     register: builder.mutation<AuthResponse, RegisterRequest>({
       query: (body) => ({
         url: "/auth/register",
@@ -82,6 +103,8 @@ export const authApi = apiSlice.injectEndpoints({
 });
 
 export const {
+  useSendOtpMutation,
+  useVerifyOtpMutation,
   useRegisterMutation,
   useLoginMutation,
   useGoogleLoginMutation,

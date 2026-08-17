@@ -47,7 +47,14 @@ export interface ApplicantProfile {
 export interface Application {
   _id: string;
   jobId: JobInApplication | string;
-  applicantId: ApplicantProfile | string;
+  applicantId?: ApplicantProfile | string;
+  userId?: ApplicantUser | string;
+  applicantProfile?: {
+    firstName?: string;
+    lastName?: string;
+    profilePicture?: string;
+    headline?: string;
+  };
   resume: string;
   coverLetter?: string;
   status: ApplicationStatus;

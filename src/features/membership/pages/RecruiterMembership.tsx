@@ -34,7 +34,8 @@ const RECRUITER_PLAN_LEVELS: Record<string, number> = {
 };
 
 export const RecruiterMembership: React.FC = () => {
-  const { data: plans = [], isLoading: isLoadingPlans } = useGetRecruiterPlansQuery();
+  const [currency, setCurrency] = useState<"USD" | "INR">("USD");
+  const { data: plans = [], isLoading: isLoadingPlans } = useGetRecruiterPlansQuery(currency);
   const { data: currentSub, isLoading: isLoadingSub } = useGetCurrentRecruiterPlanQuery(undefined, {
     refetchOnMountOrArgChange: true,
   });
@@ -102,7 +103,7 @@ export const RecruiterMembership: React.FC = () => {
     setIsUpgradeModalOpen(false);
 
     if (selectedPlan.price === 0 || gateway === "razorpay") {
-      startCheckout(selectedPlan);
+      startCheckout(selectedPlan, billingCycle === "annually" ? "yearly" : "monthly");
     } else {
       const toastId = toast.loading("Creating Polar Sandbox Checkout...");
       try {
@@ -212,11 +213,10 @@ export const RecruiterMembership: React.FC = () => {
                   Status: <strong className="text-white uppercase font-bold">{sub?.status || "ACTIVE"}</strong>
                 </span>
                 {!isFree && (
-                  <span className={`flex items-center gap-1.5 rounded-xl px-3.5 py-1.5 backdrop-blur-xs border font-bold ${
-                    !sub?.cancelAtPeriodEnd
+                  <span className={`flex items-center gap-1.5 rounded-xl px-3.5 py-1.5 backdrop-blur-xs border font-bold ${!sub?.cancelAtPeriodEnd
                       ? "bg-emerald-500/20 text-emerald-200 border-emerald-400/30"
                       : "bg-amber-500/20 text-amber-200 border-amber-400/30"
-                  }`}>
+                    }`}>
                     <FiRefreshCw className="text-xs" />
                     AutoPay: {!sub?.cancelAtPeriodEnd ? "Active" : "Cancelled"}
                   </span>
@@ -336,29 +336,57 @@ export const RecruiterMembership: React.FC = () => {
             </p>
           </div>
 
-          {/* Billing Cycle Toggle */}
-          <div className="inline-flex items-center rounded-full bg-[#F0F4FC] p-1.5 border border-[#EAEFF7] shrink-0">
-            <button
-              onClick={() => setBillingCycle("monthly")}
-              className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer ${billingCycle === "monthly"
+          <div className="flex flex-wrap items-center gap-3 shrink-0">
+            {/* Currency Toggle */}
+            <div className="inline-flex items-center rounded-xl bg-[#F0F4FC] p-1 border border-[#EAEFF7]">
+              <button
+                type="button"
+                onClick={() => setCurrency("USD")}
+                className={`px-3 py-1 text-xs font-bold rounded-lg transition-all ${
+                  currency === "USD"
+                    ? "bg-white text-[#05264E] shadow-xs"
+                    : "text-[#66789C] hover:text-[#05264E]"
+                }`}
+              >
+                $ USD (Polar)
+              </button>
+              <button
+                type="button"
+                onClick={() => setCurrency("INR")}
+                className={`px-3 py-1 text-xs font-bold rounded-lg transition-all ${
+                  currency === "INR"
+                    ? "bg-emerald-600 text-white shadow-xs"
+                    : "text-[#66789C] hover:text-[#05264E]"
+                }`}
+              >
+                ₹ INR (Razorpay)
+              </button>
+            </div>
+
+            {/* Billing Cycle Toggle */}
+            <div className="inline-flex items-center rounded-full bg-[#F0F4FC] p-1.5 border border-[#EAEFF7]">
+              <button
+                onClick={() => setBillingCycle("monthly")}
+                className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer ${billingCycle === "monthly"
                   ? "bg-[#3C65F5] text-white shadow-sm"
                   : "text-[#66789C] hover:text-[#05264E]"
-                }`}
-            >
-              Monthly
-            </button>
-            <button
-              onClick={() => setBillingCycle("annually")}
-              className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${billingCycle === "annually"
+                  }`}
+              >
+                Monthly
+              </button>
+              <button
+                onClick={() => setBillingCycle("annually")}
+                className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${billingCycle === "annually"
                   ? "bg-[#3C65F5] text-white shadow-sm"
                   : "text-[#66789C] hover:text-[#05264E]"
-                }`}
-            >
-              <span>Annually</span>
-              <span className="text-[10px] font-extrabold bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">
-                Save 20%
-              </span>
-            </button>
+                  }`}
+              >
+                <span>Annually</span>
+                <span className="text-[10px] font-extrabold bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">
+                  Save 20%
+                </span>
+              </button>
+            </div>
           </div>
         </div>
 
@@ -460,14 +488,14 @@ export const RecruiterMembership: React.FC = () => {
                     <td className="py-4">
                       <span
                         className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-bold ${hSub.status === "ACTIVE"
-                            ? "bg-emerald-100 text-emerald-700"
-                            : hSub.status === "CANCELLED"
-                              ? "bg-amber-100 text-amber-700"
-                              : hSub.status === "EXPIRED"
-                                ? "bg-red-100 text-red-700"
-                                : hSub.status === "PENDING"
-                                  ? "bg-blue-100 text-blue-700"
-                                  : "bg-gray-100 text-gray-600"
+                          ? "bg-emerald-100 text-emerald-700"
+                          : hSub.status === "CANCELLED"
+                            ? "bg-amber-100 text-amber-700"
+                            : hSub.status === "EXPIRED"
+                              ? "bg-red-100 text-red-700"
+                              : hSub.status === "PENDING"
+                                ? "bg-blue-100 text-blue-700"
+                                : "bg-gray-100 text-gray-600"
                           }`}
                       >
                         <FiCheckCircle className="text-xs" /> {hSub.status}

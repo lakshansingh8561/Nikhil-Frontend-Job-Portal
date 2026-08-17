@@ -28,7 +28,6 @@ export const JobSeekerHeader = ({ onToggleSidebar }: JobSeekerHeaderProps) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -50,98 +49,90 @@ export const JobSeekerHeader = ({ onToggleSidebar }: JobSeekerHeaderProps) => {
     : user?.email?.split("@")[0] || "Candidate";
 
   return (
-    <header className="sticky top-0 z-30 flex h-[76px] w-full items-center justify-between bg-white/90 backdrop-blur-xl px-4 sm:px-8 border-b border-slate-200/80 shadow-[0_2px_15px_rgba(0,0,0,0.02)]">
-      {/* Left: Sidebar Toggle & Page Context */}
+    <header className="sticky top-0 z-30 flex h-16 w-full items-center justify-between bg-white/90 backdrop-blur-md px-4 sm:px-6 border-b border-slate-200/80">
+      {/* Left Context Title */}
       <div className="flex items-center gap-3">
         <button
           onClick={onToggleSidebar}
-          className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-700 lg:hidden hover:bg-slate-100 transition cursor-pointer"
-          title="Toggle Sidebar Menu"
+          className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-slate-50 text-slate-700 lg:hidden hover:bg-slate-100 transition cursor-pointer"
+          title="Toggle Menu"
         >
-          <FiMenu className="text-xl" />
+          <FiMenu className="text-base" />
         </button>
 
         <div>
-          <h2 className="text-base sm:text-lg font-black text-slate-900 tracking-tight">
-            Candidate Control Center
+          <h2 className="text-sm font-extrabold text-slate-900 tracking-tight">
+            Candidate Workspace
           </h2>
-          <p className="text-[11px] font-semibold text-slate-400 hidden sm:block">
-            Track job applications, manage profile qualifications, and review recruiter feedback
+          <p className="text-[11px] font-medium text-slate-500 hidden sm:block">
+            Track applications, profile status, and direct recruiter messages
           </p>
         </div>
       </div>
 
       {/* Right Actions */}
       <div className="flex items-center gap-3 shrink-0">
-        {/* Swiggy-Style Detected Location Badge */}
         <DetectLocationButton variant="badge" />
 
-        {/* Notifications Dropdown */}
         <NotificationDropdown />
 
         {/* User Profile Menu */}
-        <div className="relative ml-1" ref={dropdownRef}>
+        <div className="relative" ref={dropdownRef}>
           <button
             onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
-            className="flex items-center gap-2.5 rounded-2xl bg-white p-1.5 pr-3 border border-slate-200/90 hover:border-indigo-500/80 transition cursor-pointer shadow-xs"
+            className="flex items-center gap-2 rounded-xl bg-slate-50 p-1 pl-1.5 pr-2.5 border border-slate-200 hover:bg-slate-100 transition cursor-pointer"
           >
-            <div className="relative flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 font-extrabold text-white text-xs shadow-sm overflow-hidden">
+            <div className="relative flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-600 font-black text-white text-xs overflow-hidden">
               {profile?.profilePicture ? (
                 <img src={profile.profilePicture} alt="Avatar" className="h-full w-full object-cover" />
               ) : (
                 <span>{displayName.charAt(0).toUpperCase()}</span>
               )}
-              <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-emerald-500 ring-2 ring-white" />
             </div>
-            <div className="hidden sm:flex flex-col text-left">
-              <span className="text-xs font-extrabold text-slate-900 max-w-[110px] truncate leading-tight">
-                {displayName}
-              </span>
-              <span className="text-[10px] font-bold text-indigo-600 uppercase tracking-wider">
-                Candidate
-              </span>
-            </div>
-            <FiChevronDown className={`text-xs text-slate-400 transition-transform duration-200 ${profileDropdownOpen ? "rotate-180 text-indigo-600" : ""}`} />
+            <span className="hidden sm:inline text-xs font-bold text-slate-900 max-w-[100px] truncate">
+              {displayName}
+            </span>
+            <FiChevronDown className="text-xs text-slate-400" />
           </button>
 
           {profileDropdownOpen && (
-            <div className="absolute right-0 mt-2 w-56 rounded-2xl border border-slate-200/90 bg-white py-2 shadow-2xl z-50 animate-in fade-in slide-in-from-top-2 duration-200">
-              <div className="px-4 py-2.5 border-b border-slate-100 mb-1">
-                <p className="text-xs font-bold text-slate-900">{displayName}</p>
-                <p className="text-[11px] text-slate-500 font-medium truncate">{user?.email}</p>
+            <div className="absolute right-0 mt-2 w-52 rounded-2xl border border-slate-200 bg-white py-1.5 shadow-lg z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+              <div className="px-3.5 py-2 border-b border-slate-100 mb-1">
+                <p className="text-xs font-bold text-slate-900 truncate">{displayName}</p>
+                <p className="text-[10px] text-slate-500 font-medium truncate">{user?.email}</p>
               </div>
 
               <Link
                 to="/job-seeker/profile"
                 onClick={() => setProfileDropdownOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-600 transition"
+                className="flex items-center gap-2 px-3.5 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-indigo-600 transition"
               >
-                <FiUser className="text-base text-slate-400" /> My Profile
+                <FiUser /> Profile
               </Link>
 
               <Link
                 to="/job-seeker/applications"
                 onClick={() => setProfileDropdownOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-600 transition"
+                className="flex items-center gap-2 px-3.5 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-indigo-600 transition"
               >
-                <FiFileText className="text-base text-slate-400" /> My Applications
+                <FiFileText /> My Applications
               </Link>
 
               <Link
                 to="/job-seeker/membership"
                 onClick={() => setProfileDropdownOpen(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-600 transition"
+                className="flex items-center gap-2 px-3.5 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-indigo-600 transition"
               >
-                <FiZap className="text-base text-yellow-500" /> Membership Plans
+                <FiZap className="text-amber-500" /> Membership
               </Link>
 
               <div className="border-t border-slate-100 my-1" />
 
               <button
                 onClick={handleLogout}
-                className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs font-bold text-red-600 hover:bg-red-50 transition cursor-pointer"
+                className="w-full flex items-center gap-2 px-3.5 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50 transition cursor-pointer"
               >
-                <FiLogOut className="text-base text-red-500" /> Sign Out
+                <FiLogOut /> Sign Out
               </button>
             </div>
           )}

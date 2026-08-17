@@ -39,15 +39,14 @@ export const MembershipCard: React.FC<MembershipCardProps> = ({
       whileHover={!isDisabled ? { y: -6 } : {}}
       transition={{ duration: 0.3 }}
       onClick={handleCardClick}
-      className={`relative flex flex-col justify-between rounded-3xl p-6 sm:p-8 transition-all duration-300 ${
-        isCurrentPlan
+      className={`relative flex flex-col justify-between rounded-3xl p-6 sm:p-8 transition-all duration-300 ${isCurrentPlan
           ? "bg-[#0B132B] border-2 border-emerald-500/80 shadow-[0_0_30px_rgba(16,185,129,0.2)] cursor-default"
           : isHigherPlanActive
-          ? "bg-[#0B132B]/80 border border-slate-800 opacity-60 cursor-not-allowed"
-          : isPopular || isRecommended
-          ? "bg-[#0B132B] border-2 border-indigo-500/80 shadow-[0_0_35px_rgba(99,102,241,0.25)] cursor-pointer"
-          : "bg-[#0B132B] border border-slate-800/80 shadow-xl hover:border-slate-700 cursor-pointer"
-      }`}
+            ? "bg-[#0B132B]/80 border border-slate-800 opacity-60 cursor-not-allowed"
+            : isPopular || isRecommended
+              ? "bg-[#0B132B] border-2 border-indigo-500/80 shadow-[0_0_35px_rgba(99,102,241,0.25)] cursor-pointer"
+              : "bg-[#0B132B] border border-slate-800/80 shadow-xl hover:border-slate-700 cursor-pointer"
+        }`}
     >
       {/* Top Badge */}
       <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 flex items-center gap-2 z-10">
@@ -86,7 +85,11 @@ export const MembershipCard: React.FC<MembershipCardProps> = ({
         {/* Pricing Display */}
         <div className="mb-6 flex items-baseline gap-1.5 border-b border-slate-800/80 pb-5">
           <span className="text-4xl sm:text-5xl font-black tracking-tight text-white">
-            {plan.price === 0 ? "Free" : `$${plan.price}`}
+            {plan.price === 0
+              ? "Free"
+              : plan.currency === "INR" || plan.currency === "₹"
+              ? `₹${plan.price}`
+              : `$${plan.price}`}
           </span>
           {plan.price > 0 && (
             <span className="text-xs font-semibold text-slate-400">
@@ -116,25 +119,24 @@ export const MembershipCard: React.FC<MembershipCardProps> = ({
           handleCardClick();
         }}
         disabled={isDisabled}
-        className={`w-full rounded-2xl py-3.5 text-xs sm:text-sm font-black tracking-wide transition-all duration-200 shadow-md ${
-          isCurrentPlan
+        className={`w-full rounded-2xl py-3.5 text-xs sm:text-sm font-black tracking-wide transition-all duration-200 shadow-md ${isCurrentPlan
             ? "bg-slate-800/80 text-slate-400 cursor-not-allowed border border-slate-700/80"
             : isHigherPlanActive
-            ? "bg-slate-900/60 text-slate-500 cursor-not-allowed border border-slate-800"
-            : isUpgrade
-            ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-500 hover:to-indigo-500 active:scale-[0.98] cursor-pointer"
-            : "bg-white text-[#0B132B] hover:bg-slate-100 active:scale-[0.98] cursor-pointer"
-        }`}
+              ? "bg-slate-900/60 text-slate-500 cursor-not-allowed border border-slate-800"
+              : isUpgrade
+                ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-500 hover:to-indigo-500 active:scale-[0.98] cursor-pointer"
+                : "bg-white text-[#0B132B] hover:bg-slate-100 active:scale-[0.98] cursor-pointer"
+          }`}
       >
         {isCurrentPlan
           ? "Active Subscription"
           : isHigherPlanActive
-          ? "Included in Current Plan"
-          : isUpgrade
-          ? `Upgrade to ${plan.name}`
-          : plan.price === 0
-          ? "Get Free Plan"
-          : "Subscribe Now"}
+            ? "Included in Current Plan"
+            : isUpgrade
+              ? `Upgrade to ${plan.name}`
+              : plan.price === 0
+                ? "Get Free Plan"
+                : "Subscribe Now"}
       </motion.button>
     </motion.div>
   );

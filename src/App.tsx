@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import MainLayout from "./layouts/MainLayout";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
+import VerifyOtp from "./pages/auth/VerifyOtp";
 import Home from "./pages/Home";
 import CandidatesPage from "./pages/candidates/CandidatesPage";
 import ProtectedRoute from "./components/common/ProtectedRoute";
@@ -51,6 +52,7 @@ import AdminRecruiters from "./features/admin/pages/Recruiters";
 import AdminJobs from "./features/admin/pages/Jobs";
 import AdminApplications from "./features/admin/pages/Applications";
 import AdminSettings from "./features/admin/pages/Settings";
+import AdminMembershipsPage from "./features/admin/pages/Memberships";
 
 // Real-Time Chat Feature Page
 import { ChatPage } from "./features/chat";
@@ -66,6 +68,7 @@ function App() {
         <Route element={<PublicOnlyRoute />}>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/verify-otp" element={<VerifyOtp />} />
         </Route>
 
         {/* Main Layout (Public Pages) */}
@@ -130,6 +133,7 @@ function App() {
             <Route path="recruiters" element={<AdminRecruiters />} />
             <Route path="jobs" element={<AdminJobs />} />
             <Route path="applications" element={<AdminApplications />} />
+            <Route path="memberships" element={<AdminMembershipsPage />} />
             <Route path="payments" element={<PaymentHistoryPage />} />
             <Route path="settings" element={<AdminSettings />} />
           </Route>

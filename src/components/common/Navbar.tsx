@@ -8,6 +8,7 @@ import {
   FiMessageSquare,
   FiMenu,
   FiX,
+  FiBriefcase,
 } from "react-icons/fi";
 import Logo from "../../assets/logo.svg";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
@@ -19,7 +20,7 @@ import NotificationDropdown from "./NotificationDropdown";
 
 const links = [
   { name: "Home", path: "/" },
-  { name: "Find a Job", path: "/jobs" },
+  { name: "Find Jobs", path: "/jobs" },
   { name: "Recruiters", path: "/recruiters" },
   { name: "Candidates", path: "/candidates" },
 ];
@@ -35,13 +36,11 @@ const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Close menus when route changes
   useEffect(() => {
     setMobileMenuOpen(false);
     setProfileDropdownOpen(false);
   }, [location.pathname]);
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -52,7 +51,6 @@ const Navbar = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Close mobile menu on Escape key
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === "Escape") setMobileMenuOpen(false);
@@ -61,7 +59,6 @@ const Navbar = () => {
     return () => document.removeEventListener("keydown", handleEsc);
   }, []);
 
-  // Prevent body scroll when mobile menu is open
   useEffect(() => {
     if (mobileMenuOpen) {
       document.body.style.overflow = "hidden";
@@ -94,35 +91,27 @@ const Navbar = () => {
 
   return (
     <>
-      <header
-        className="fixed inset-x-0 top-0 z-50 w-full"
-        style={{
-          backgroundColor: "rgba(245, 248, 255, 0.97)",
-          backdropFilter: "blur(12px)",
-          WebkitBackdropFilter: "blur(12px)",
-          borderBottom: "1px solid #EAEFF7",
-        }}
-      >
-        <div className="mx-auto w-full max-w-[1200px] px-4 sm:px-5">
-          <div className="flex h-[72px] sm:h-[85px] items-center justify-between gap-4">
+      <header className="sticky top-0 z-50 w-full border-b border-slate-200/80 bg-white/80 backdrop-blur-md transition-all">
+        <div className="mx-auto w-full max-w-[1240px] px-4 sm:px-6">
+          <div className="flex h-16 sm:h-18 items-center justify-between gap-4">
             {/* Logo */}
             <div className="flex items-center shrink-0">
-              <Link to="/" className="flex items-center shrink-0">
-                <img src={Logo} alt="JobBox" className="h-8 sm:h-9 w-auto" />
+              <Link to="/" className="flex items-center gap-2">
+                <img src={Logo} alt="JobBox" className="h-8 w-auto" />
               </Link>
             </div>
 
-            {/* Nav Links - Desktop Centered */}
-            <nav className="hidden items-center justify-center gap-8 lg:flex flex-1">
+            {/* Desktop Navigation Links */}
+            <nav className="hidden items-center justify-center gap-1 lg:flex flex-1 max-w-md mx-auto">
               {links.map((item) => (
                 <NavLink
                   key={item.name}
                   to={item.path}
                   className={({ isActive }) =>
-                    `text-[15px] font-semibold whitespace-nowrap transition-colors ${
+                    `px-3.5 py-2 rounded-lg text-sm font-semibold transition-all whitespace-nowrap ${
                       isActive
-                        ? "text-[#3B5BDB]"
-                        : "text-[#05264E] hover:text-[#3B5BDB]"
+                        ? "bg-slate-100 text-indigo-600 font-bold"
+                        : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
                     }`
                   }
                 >
@@ -131,19 +120,19 @@ const Navbar = () => {
               ))}
             </nav>
 
-            {/* Right Action Buttons - Desktop */}
-            <div className="hidden lg:flex items-center gap-4 shrink-0">
+            {/* Desktop Right Action Bar */}
+            <div className="hidden lg:flex items-center gap-3 shrink-0">
               {user ? (
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2.5">
                   <NotificationDropdown />
 
                   {!isAdmin && (
                     <Link
                       to={chatPath}
-                      title="Real-Time Messages"
-                      className="relative flex h-10 w-10 items-center justify-center rounded-full bg-[#EBF2FF] text-[#05264E] hover:bg-blue-100 hover:text-[#3B5BDB] transition"
+                      title="Messages"
+                      className="relative flex h-9.5 w-9.5 items-center justify-center rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200/80 hover:text-indigo-600 transition"
                     >
-                      <FiMessageSquare className="text-lg" />
+                      <FiMessageSquare className="text-base" />
                       {unreadData && unreadData.unreadCount > 0 && (
                         <span className="absolute -top-1 -right-1">
                           <UnreadBadge count={unreadData.unreadCount} />
@@ -155,31 +144,37 @@ const Navbar = () => {
                   <div className="relative" ref={dropdownRef}>
                     <button
                       onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
-                      className="flex items-center gap-2.5 rounded-full bg-[#EBF2FF] p-1.5 pr-3 text-sm font-semibold text-[#05264E] hover:bg-blue-100 transition cursor-pointer"
+                      className="flex items-center gap-2 rounded-xl bg-slate-100 py-1.5 pl-2 pr-3 text-xs font-bold text-slate-800 hover:bg-slate-200/80 transition cursor-pointer"
                     >
-                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#3B5BDB] text-white font-bold text-xs">
+                      <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-600 text-white font-black text-xs">
                         {user.email ? user.email.charAt(0).toUpperCase() : "U"}
                       </div>
-                      <span className="hidden sm:inline max-w-[120px] truncate">
-                        {user.email}
+                      <span className="max-w-[120px] truncate">
+                        {user.email?.split("@")[0]}
                       </span>
-                      <FiChevronDown className="text-xs text-gray-500" />
+                      <FiChevronDown className="text-xs text-slate-400" />
                     </button>
 
                     {profileDropdownOpen && (
-                      <div className="absolute right-0 mt-2 w-52 rounded-2xl border border-[#EAEFF7] bg-white py-2 shadow-xl z-50">
+                      <div className="absolute right-0 mt-2 w-56 rounded-2xl border border-slate-200 bg-white py-1.5 shadow-lg z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+                        <div className="px-4 py-2 border-b border-slate-100">
+                          <p className="text-xs font-bold text-slate-900 truncate">{user.email}</p>
+                          <p className="text-[11px] font-semibold text-indigo-600 uppercase tracking-wider mt-0.5">{user.role}</p>
+                        </div>
+
                         <Link
                           to={profilePath}
                           onClick={() => setProfileDropdownOpen(false)}
-                          className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-[#3B5BDB]"
+                          className="flex items-center gap-2.5 px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-indigo-600 transition"
                         >
-                          <FiUser /> {isAdmin ? "Admin Dashboard" : isRecruiter ? "Dashboard" : "My Profile"}
+                          <FiUser /> {isAdmin ? "Admin Dashboard" : isRecruiter ? "Recruiter Suite" : "Candidate Dashboard"}
                         </Link>
+
                         {!isAdmin && (
                           <Link
                             to={chatPath}
                             onClick={() => setProfileDropdownOpen(false)}
-                            className="flex items-center justify-between px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-[#3B5BDB]"
+                            className="flex items-center justify-between px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-indigo-600 transition"
                           >
                             <div className="flex items-center gap-2.5">
                               <FiMessageSquare /> Messages
@@ -189,19 +184,31 @@ const Navbar = () => {
                             )}
                           </Link>
                         )}
+
                         {!isRecruiter && !isAdmin && (
                           <Link
                             to="/job-seeker/applications"
                             onClick={() => setProfileDropdownOpen(false)}
-                            className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-[#3B5BDB]"
+                            className="flex items-center gap-2.5 px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-indigo-600 transition"
                           >
                             <FiFileText /> My Applications
                           </Link>
                         )}
-                        <div className="my-1 border-t border-gray-100" />
+
+                        {isRecruiter && (
+                          <Link
+                            to="/recruiter/post-job"
+                            onClick={() => setProfileDropdownOpen(false)}
+                            className="flex items-center gap-2.5 px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-indigo-600 transition"
+                          >
+                            <FiBriefcase /> Post a Job
+                          </Link>
+                        )}
+
+                        <div className="my-1 border-t border-slate-100" />
                         <button
                           onClick={handleLogout}
-                          className="flex w-full items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 cursor-pointer"
+                          className="flex w-full items-center gap-2.5 px-4 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50 transition cursor-pointer"
                         >
                           <FiLogOut /> Sign Out
                         </button>
@@ -210,24 +217,24 @@ const Navbar = () => {
                   </div>
                 </div>
               ) : (
-                <div className="flex items-center gap-6">
-                  <Link
-                    to="/register"
-                    className="text-[15px] font-medium text-[#05264E] hover:text-[#3B5BDB] underline underline-offset-4 whitespace-nowrap transition-colors"
-                  >
-                    Register
-                  </Link>
+                <div className="flex items-center gap-2.5">
                   <Link
                     to="/login"
-                    className="flex h-[50px] items-center justify-center rounded-[12px] bg-[#3B5BDB] px-7 text-sm font-semibold text-white shadow-md shadow-blue-500/20 transition hover:bg-[#2B47C5] whitespace-nowrap"
+                    className="saas-btn-secondary h-9 text-xs px-4"
                   >
                     Sign in
+                  </Link>
+                  <Link
+                    to="/register"
+                    className="saas-btn-primary h-9 text-xs px-4"
+                  >
+                    Get Started
                   </Link>
                 </div>
               )}
             </div>
 
-            {/* Mobile Right: Notification + Hamburger */}
+            {/* Mobile Actions */}
             <div className="flex items-center gap-2 lg:hidden">
               {user && (
                 <>
@@ -235,7 +242,7 @@ const Navbar = () => {
                   {!isAdmin && (
                     <Link
                       to={chatPath}
-                      className="relative flex h-9 w-9 items-center justify-center rounded-full bg-[#EBF2FF] text-[#05264E] hover:bg-blue-100 transition"
+                      className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 transition"
                     >
                       <FiMessageSquare className="text-base" />
                       {unreadData && unreadData.unreadCount > 0 && (
@@ -249,44 +256,40 @@ const Navbar = () => {
               )}
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#EAEFF7] bg-white text-[#05264E] hover:bg-blue-50 transition cursor-pointer"
-                aria-label="Toggle mobile menu"
-                aria-expanded={mobileMenuOpen}
+                className="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 transition cursor-pointer"
+                aria-label="Toggle menu"
               >
-                {mobileMenuOpen ? <FiX className="text-xl" /> : <FiMenu className="text-xl" />}
+                {mobileMenuOpen ? <FiX className="text-lg" /> : <FiMenu className="text-lg" />}
               </button>
             </div>
           </div>
         </div>
       </header>
 
-      {/* Mobile Menu Backdrop */}
+      {/* Mobile Drawer */}
       {mobileMenuOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm lg:hidden"
+          className="fixed inset-0 z-40 bg-slate-950/40 backdrop-blur-xs lg:hidden"
           onClick={() => setMobileMenuOpen(false)}
         />
       )}
 
-      {/* Mobile Menu Drawer */}
       <div
         ref={mobileMenuRef}
-        className={`fixed top-0 right-0 bottom-0 z-50 w-[300px] max-w-[85vw] bg-white shadow-2xl transform transition-transform duration-300 ease-in-out lg:hidden flex flex-col ${
+        className={`fixed top-0 right-0 bottom-0 z-50 w-[280px] max-w-[85vw] bg-white shadow-xl transform transition-transform duration-200 ease-in-out lg:hidden flex flex-col ${
           mobileMenuOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        {/* Drawer Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-[#EAEFF7]">
-          <img src={Logo} alt="JobBox" className="h-8 w-auto" />
+        <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
+          <img src={Logo} alt="JobBox" className="h-7 w-auto" />
           <button
             onClick={() => setMobileMenuOpen(false)}
-            className="flex h-9 w-9 items-center justify-center rounded-xl border border-[#EAEFF7] text-[#05264E] hover:bg-red-50 hover:text-red-500 transition cursor-pointer"
+            className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 transition cursor-pointer"
           >
-            <FiX className="text-lg" />
+            <FiX className="text-base" />
           </button>
         </div>
 
-        {/* Drawer Nav Links */}
         <nav className="flex-1 overflow-y-auto px-4 py-4 space-y-1">
           {links.map((item) => (
             <NavLink
@@ -294,10 +297,10 @@ const Navbar = () => {
               to={item.path}
               onClick={() => setMobileMenuOpen(false)}
               className={({ isActive }) =>
-                `flex items-center px-4 py-3 rounded-xl text-sm font-semibold transition-colors ${
+                `flex items-center px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all ${
                   isActive
-                    ? "bg-[#EBF2FF] text-[#3B5BDB]"
-                    : "text-[#05264E] hover:bg-[#F5F8FF] hover:text-[#3B5BDB]"
+                    ? "bg-indigo-50 text-indigo-600 font-bold"
+                    : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
                 }`
               }
             >
@@ -305,75 +308,59 @@ const Navbar = () => {
             </NavLink>
           ))}
 
-          {/* Divider */}
-          <div className="my-3 border-t border-[#EAEFF7]" />
+          <div className="my-3 border-t border-slate-100" />
 
           {user ? (
             <>
-              {/* User info */}
-              <div className="flex items-center gap-3 px-4 py-3 bg-[#F8FAFC] rounded-xl mb-2">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#3B5BDB] text-white font-bold text-sm">
+              <div className="flex items-center gap-3 px-3.5 py-3 bg-slate-50 rounded-xl mb-2">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-indigo-600 text-white font-black text-xs">
                   {user.email ? user.email.charAt(0).toUpperCase() : "U"}
                 </div>
                 <div className="min-w-0">
-                  <p className="text-xs font-bold text-[#05264E] truncate">{user.email?.split("@")[0]}</p>
-                  <p className="text-[11px] text-[#66789C] truncate">{user.email}</p>
+                  <p className="text-xs font-bold text-slate-900 truncate">{user.email?.split("@")[0]}</p>
+                  <p className="text-[10px] text-slate-500 truncate">{user.email}</p>
                 </div>
               </div>
 
               <Link
                 to={profilePath}
                 onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-[#05264E] hover:bg-[#F5F8FF] hover:text-[#3B5BDB] transition"
+                className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50 transition"
               >
-                <FiUser className="shrink-0" />
-                {isAdmin ? "Admin Dashboard" : isRecruiter ? "Dashboard" : "My Profile"}
+                <FiUser /> {isAdmin ? "Admin Dashboard" : isRecruiter ? "Recruiter Suite" : "Dashboard"}
               </Link>
 
-              {!isRecruiter && !isAdmin && (
-                <Link
-                  to="/job-seeker/applications"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-[#05264E] hover:bg-[#F5F8FF] hover:text-[#3B5BDB] transition"
-                >
-                  <FiFileText className="shrink-0" />
-                  My Applications
-                </Link>
-              )}
-
-              <div className="my-2 border-t border-[#EAEFF7]" />
+              <div className="my-2 border-t border-slate-100" />
 
               <button
                 onClick={handleLogout}
-                className="flex w-full items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-red-600 hover:bg-red-50 transition cursor-pointer"
+                className="flex w-full items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-600 hover:bg-rose-50 transition cursor-pointer"
               >
-                <FiLogOut className="shrink-0" />
-                Sign Out
+                <FiLogOut /> Sign Out
               </button>
             </>
           ) : (
-            <div className="space-y-3 px-2 pt-2">
-              <Link
-                to="/register"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex w-full items-center justify-center py-3 rounded-xl border border-[#3B5BDB] text-[#3B5BDB] text-sm font-semibold hover:bg-[#EBF2FF] transition"
-              >
-                Register
-              </Link>
+            <div className="space-y-2 pt-2">
               <Link
                 to="/login"
                 onClick={() => setMobileMenuOpen(false)}
-                className="flex w-full items-center justify-center py-3 rounded-xl bg-[#3B5BDB] text-white text-sm font-semibold hover:bg-[#2B47C5] transition shadow-md shadow-blue-500/20"
+                className="saas-btn-secondary w-full text-xs"
               >
                 Sign in
+              </Link>
+              <Link
+                to="/register"
+                onClick={() => setMobileMenuOpen(false)}
+                className="saas-btn-primary w-full text-xs"
+              >
+                Get Started Free
               </Link>
             </div>
           )}
         </nav>
 
-        {/* Drawer Footer */}
-        <div className="px-5 py-4 border-t border-[#EAEFF7]">
-          <p className="text-center text-[11px] text-[#66789C]">© 2026 JobBox. All rights reserved.</p>
+        <div className="px-5 py-4 border-t border-slate-100">
+          <p className="text-center text-[11px] font-medium text-slate-400">© 2026 JobBox Portal.</p>
         </div>
       </div>
     </>

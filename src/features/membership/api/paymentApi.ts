@@ -30,6 +30,32 @@ export const paymentApi = apiSlice.injectEndpoints({
       invalidatesTags: ["Subscription", "Membership", "Payment", "Job"],
     }),
 
+    createRazorpaySubscription: builder.mutation<
+      { subscriptionId: string; keyId: string; amount: number; currency: string },
+      { membershipId: string; planKey?: string; billingCycle?: "monthly" | "yearly" }
+    >({
+      query: (body) => ({
+        url: "/payments/razorpay-subscription/create",
+        method: "POST",
+        body,
+      }),
+      transformResponse: (response: { data: any }) => response.data,
+      invalidatesTags: ["Payment"],
+    }),
+
+    verifyRazorpaySubscription: builder.mutation<
+      any,
+      { razorpay_payment_id: string; razorpay_subscription_id: string; razorpay_signature: string }
+    >({
+      query: (body) => ({
+        url: "/payments/razorpay-subscription/verify",
+        method: "POST",
+        body,
+      }),
+      transformResponse: (response: { data: any }) => response.data,
+      invalidatesTags: ["Subscription", "Membership", "Payment", "Job"],
+    }),
+
     createPolarCheckout: builder.mutation<CreatePolarCheckoutResponse, CreatePolarCheckoutRequest>({
       query: (body) => ({
         url: "/payments/polar/create-checkout",
@@ -72,6 +98,8 @@ export const paymentApi = apiSlice.injectEndpoints({
 export const {
   useCreatePaymentOrderMutation,
   useVerifyPaymentMutation,
+  useCreateRazorpaySubscriptionMutation,
+  useVerifyRazorpaySubscriptionMutation,
   useCreatePolarCheckoutMutation,
   useGetPolarStatusQuery,
   useGetPaymentHistoryQuery,

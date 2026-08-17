@@ -36,7 +36,7 @@ export const Pricing: React.FC = () => {
   const handleConfirmSubscribe = async (_planId: string) => {
     if (!selectedPlan) return;
     setIsModalOpen(false);
-    startCheckout(selectedPlan);
+    startCheckout(selectedPlan, billingCycle === "annually" ? "yearly" : "monthly");
   };
 
   return (
@@ -68,21 +68,19 @@ export const Pricing: React.FC = () => {
             <div className="inline-flex items-center rounded-full bg-[#120A2B] p-1.5 border border-purple-900/40 shadow-2xl">
               <button
                 onClick={() => setBillingCycle("monthly")}
-                className={`px-5 py-2 rounded-full text-xs font-black transition-all cursor-pointer ${
-                  billingCycle === "monthly"
+                className={`px-5 py-2 rounded-full text-xs font-black transition-all cursor-pointer ${billingCycle === "monthly"
                     ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-md shadow-purple-600/30"
                     : "text-purple-300/70 hover:text-white"
-                }`}
+                  }`}
               >
                 Monthly
               </button>
               <button
                 onClick={() => setBillingCycle("annually")}
-                className={`px-5 py-2 rounded-full text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer ${
-                  billingCycle === "annually"
+                className={`px-5 py-2 rounded-full text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer ${billingCycle === "annually"
                     ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-md shadow-purple-600/30"
                     : "text-purple-300/70 hover:text-white"
-                }`}
+                  }`}
               >
                 <span>Annually</span>
                 <span className="text-[10px] font-extrabold bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 px-2 py-0.5 rounded-full">
@@ -119,7 +117,7 @@ export const Pricing: React.FC = () => {
             {plans.map((plan) => {
               const planIdStr = String(plan._id || plan.id || "");
               const isCurrent = Boolean(currentSubscription?.hasActiveSubscription) && planIdStr === activePlanId;
-              
+
               // Apply discount indicator if annually selected
               const displayPlan = {
                 ...plan,

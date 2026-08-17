@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { FiClock, FiBriefcase, FiZap, FiMapPin, FiCheckCircle } from "react-icons/fi";
+import { FiMapPin, FiCheckCircle } from "react-icons/fi";
 import toast from "react-hot-toast";
 import type { Job } from "../../types/job.types";
 import { useAppSelector } from "../../hooks/useAppSelector";
@@ -50,7 +50,7 @@ const JobCard = ({ job, onSelect }: JobCardProps) => {
   const companyName =
     typeof job.companyId === "object" && job.companyId !== null
       ? job.companyId.companyName
-      : "Company";
+      : "Hiring Company";
 
   const customLogo =
     typeof job.companyId === "object" && job.companyId?.logo
@@ -74,7 +74,7 @@ const JobCard = ({ job, onSelect }: JobCardProps) => {
       ? `$${job.salaryMin.toLocaleString()}`
       : "Competitive";
 
-  const salaryUnit = job.salaryMin && job.salaryMin >= 1000 ? "/Year" : "";
+  const salaryUnit = job.salaryMin && job.salaryMin >= 1000 ? "/yr" : "";
 
   const handleApply = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -96,13 +96,13 @@ const JobCard = ({ job, onSelect }: JobCardProps) => {
   return (
     <div
       onClick={() => onSelect && onSelect(job)}
-      className="card-grid-2 hover-up group relative flex flex-col justify-between rounded-2xl border border-[#EAEFF7] bg-white p-6 transition-all duration-300 cursor-pointer shadow-sm min-h-[340px]"
+      className="saas-card-interactive p-5 flex flex-col justify-between cursor-pointer min-h-[300px]"
     >
       <div>
-        {/* Top Header: Logo + Info + Bolt Badge */}
+        {/* Top Header: Logo + Info */}
         <div className="flex items-start justify-between gap-3">
-          <div className="flex items-center gap-3.5 min-w-0">
-            <div className="flex h-[52px] w-[52px] min-w-[52px] items-center justify-center rounded-xl bg-[#F8FAFC] p-2 border border-[#EAEFF7] overflow-hidden shrink-0">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="flex h-11 w-11 min-w-[44px] items-center justify-center rounded-xl bg-slate-50 p-2 border border-slate-200 overflow-hidden shrink-0">
               <img
                 src={logoSrc}
                 alt={companyName}
@@ -113,50 +113,37 @@ const JobCard = ({ job, onSelect }: JobCardProps) => {
               />
             </div>
             <div className="min-w-0 flex-1">
-              <h4 className="text-[15px] font-semibold text-[#05264E] leading-tight truncate">
+              <h4 className="text-xs font-bold text-slate-900 truncate">
                 {companyName}
               </h4>
-              <p className="text-xs text-[#66789C] flex items-center gap-1 mt-1 truncate">
-                <FiMapPin className="text-gray-400 shrink-0" />
+              <p className="text-[11px] text-slate-500 flex items-center gap-1 mt-0.5 truncate font-medium">
+                <FiMapPin className="text-slate-400 shrink-0" />
                 <span className="truncate">{job.location}</span>
               </p>
             </div>
           </div>
 
-          {/* Green Bolt Flash Tag */}
-          <div className="flex h-8 w-8 min-w-[32px] items-center justify-center rounded-lg bg-[#E6F9F0] text-[#00BA63] shrink-0">
-            <FiZap className="text-sm" />
-          </div>
+          <span className="saas-badge saas-badge-indigo shrink-0 text-[10px]">
+            {job.employmentType ? job.employmentType.replace("_", " ") : "Full-time"}
+          </span>
         </div>
 
         {/* Job Title */}
-        <h3 className="mt-4 text-[17px] font-bold text-[#05264E] leading-snug transition-colors group-hover:text-[#3C65F5] line-clamp-1">
+        <h3 className="mt-3.5 text-base font-bold text-slate-900 leading-snug transition-colors group-hover:text-indigo-600 line-clamp-1">
           {job.title}
         </h3>
 
-        {/* Meta Info: Employment Type & Posted Duration */}
-        <div className="mt-2.5 flex items-center gap-3.5 text-xs text-[#66789C]">
-          <span className="flex items-center gap-1.5">
-            <FiBriefcase className="text-gray-400 text-xs shrink-0" />
-            <span>{job.employmentType ? job.employmentType.replace("_", " ") : "Fulltime"}</span>
-          </span>
-          <span className="flex items-center gap-1.5">
-            <FiClock className="text-gray-400 text-xs shrink-0" />
-            <span>Posted recently</span>
-          </span>
-        </div>
-
         {/* Description Snippet */}
-        <p className="mt-3.5 text-[14px] font-normal leading-relaxed text-[#66789C] line-clamp-2">
+        <p className="mt-2 text-xs font-normal leading-relaxed text-slate-600 line-clamp-2">
           {job.description}
         </p>
 
         {/* Skill Tags */}
-        <div className="mt-4 flex flex-wrap gap-1.5">
-          {skillsList.map((skill) => (
+        <div className="mt-3 flex flex-wrap gap-1.5">
+          {skillsList.slice(0, 4).map((skill) => (
             <span
               key={skill}
-              className="rounded-lg bg-[#F2F5F9] px-2.5 py-1 text-[12px] font-medium text-[#66789C]"
+              className="saas-badge saas-badge-neutral text-[10px]"
             >
               {skill}
             </span>
@@ -164,27 +151,27 @@ const JobCard = ({ job, onSelect }: JobCardProps) => {
         </div>
       </div>
 
-      {/* Footer Section: Salary & Apply Now Button */}
-      <div className="mt-6 flex items-center justify-between border-t border-[#F0F4FC] pt-4">
+      {/* Footer Section: Salary & Apply Button */}
+      <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-3.5">
         <div>
-          <span className="text-[18px] font-extrabold text-[#3C65F5]">
+          <span className="text-base font-extrabold text-slate-900">
             {formattedSalary}
           </span>
-          <span className="text-xs font-semibold text-[#66789C]">{salaryUnit}</span>
+          <span className="text-xs font-semibold text-slate-500 ml-0.5">{salaryUnit}</span>
         </div>
 
         {isApplied ? (
           <button
             disabled
             onClick={(e) => e.stopPropagation()}
-            className="rounded-xl bg-emerald-100 text-emerald-800 border border-emerald-200 px-4 py-2.5 text-xs font-extrabold cursor-not-allowed flex items-center gap-1.5 shadow-2xs"
+            className="saas-badge saas-badge-emerald py-1.5 px-3 text-xs"
           >
-            <FiCheckCircle className="text-emerald-700 text-sm" /> Applied ✓
+            <FiCheckCircle /> Applied
           </button>
         ) : (
           <button
             onClick={handleApply}
-            className="rounded-xl bg-[#E8F0FE] px-4 py-2.5 text-xs font-semibold text-[#3C65F5] transition-all duration-200 hover:bg-[#3C65F5] hover:text-white cursor-pointer"
+            className="saas-btn-primary h-8 text-xs px-3.5"
           >
             Apply Now
           </button>
