@@ -34,6 +34,7 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
   const isUpgrade = Boolean(upgradePreview?.isUpgrade);
   const unusedCredit = upgradePreview?.unusedCredit || 0;
   const finalPrice = upgradePreview ? upgradePreview.finalUpgradePrice : plan.price;
+  const currencySymbol = plan.currency === "INR" ? "₹" : "$";
 
   const handleConfirm = () => {
     onConfirm(plan._id || plan.id || "", gateway);
@@ -74,7 +75,7 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
 
           <div className="flex items-center justify-between text-sm">
             <span className="font-semibold text-gray-600">Plan List Price</span>
-            <span className="font-bold text-[#05264E]">{isFree ? "Free" : `$${plan.price}`}</span>
+            <span className="font-bold text-[#05264E]">{isFree ? "Free" : `${currencySymbol}${plan.price}`}</span>
           </div>
 
           {isUpgrade && unusedCredit > 0 && (
@@ -82,7 +83,7 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
               <span className="flex items-center gap-1.5">
                 <FiTag className="text-sm" /> Unused Subscription Credit
               </span>
-              <span>-${unusedCredit}</span>
+              <span>-{currencySymbol}{unusedCredit}</span>
             </div>
           )}
 
@@ -98,7 +99,7 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
               {isUpgrade ? "Upgrade Amount to Pay" : "Total Amount"}
             </span>
             <span className="text-2xl font-black text-[#3C65F5]">
-              {isFree ? "Free" : `$${finalPrice}`}
+              {isFree ? "Free" : `${currencySymbol}${finalPrice}`}
             </span>
           </div>
         </div>
@@ -113,26 +114,24 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
               <button
                 type="button"
                 onClick={() => setGateway("polar")}
-                className={`flex flex-col items-center justify-center p-3 rounded-2xl border-2 transition-all cursor-pointer ${
-                  gateway === "polar"
+                className={`flex flex-col items-center justify-center p-3 rounded-2xl border-2 transition-all cursor-pointer ${gateway === "polar"
                     ? "border-indigo-600 bg-indigo-50/50 text-indigo-900 font-black shadow-xs"
                     : "border-gray-200 hover:border-gray-300 bg-white text-gray-600 font-semibold"
-                }`}
+                  }`}
               >
-                <span className="text-xs uppercase font-extrabold tracking-wider text-indigo-600">⚡ Polar</span>
+                <span className="text-xs uppercase font-extrabold tracking-wider text-indigo-600">⚡ Polar ($ USD)</span>
                 <span className="text-[10px] text-gray-500 font-normal">Card / AutoPay</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => setGateway("razorpay")}
-                className={`flex flex-col items-center justify-center p-3 rounded-2xl border-2 transition-all cursor-pointer ${
-                  gateway === "razorpay"
+                className={`flex flex-col items-center justify-center p-3 rounded-2xl border-2 transition-all cursor-pointer ${gateway === "razorpay"
                     ? "border-blue-600 bg-blue-50/50 text-blue-900 font-black shadow-xs"
                     : "border-gray-200 hover:border-gray-300 bg-white text-gray-600 font-semibold"
-                }`}
+                  }`}
               >
-                <span className="text-xs uppercase font-extrabold tracking-wider text-blue-600">💳 Razorpay</span>
+                <span className="text-xs uppercase font-extrabold tracking-wider text-blue-600">💳 Razorpay (₹ INR)</span>
                 <span className="text-[10px] text-gray-500 font-normal">Cards, UPI, Netbanking</span>
               </button>
             </div>
@@ -160,12 +159,12 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
             {isLoading
               ? "Processing..."
               : isFree
-              ? "Confirm Free Plan"
-              : isUpgrade
-              ? `Upgrade for $${finalPrice}`
-              : gateway === "polar"
-              ? "Pay with Polar"
-              : "Confirm & Subscribe"}
+                ? "Confirm Free Plan"
+                : isUpgrade
+                  ? `Upgrade for ${currencySymbol}${finalPrice}`
+                  : gateway === "polar"
+                    ? "Pay with Polar"
+                    : "Confirm & Subscribe"}
           </button>
         </div>
       </div>

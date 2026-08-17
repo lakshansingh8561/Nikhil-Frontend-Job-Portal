@@ -14,23 +14,20 @@
     width: 100%;
     min-height: 100vh;
     font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    background-color: #F5F7FC;
-    color: #05264E;
+    background-color: #F8FAFC;
+    color: #0F172A;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    /* Smooth scrolling on all platforms */
     scroll-behavior: smooth;
   }
 
   body {
-    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    background-color: #F5F7FC;
-    color: #05264E;
-    /* Improve tap highlight on mobile */
+    background-color: #F8FAFC;
+    color: #0F172A;
     -webkit-tap-highlight-color: transparent;
-    /* Prevent text size inflation on mobile after orientation change */
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
+    overflow-x: hidden;
   }
 
   button {
@@ -43,7 +40,6 @@
   textarea {
     outline: none;
     font-family: inherit;
-    /* Better touch targets on mobile */
     touch-action: manipulation;
   }
 
@@ -54,15 +50,153 @@
   }
 }
 
-/* Custom JobBox Component Styling */
-.hover-up {
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+/* ─── Premium SaaS Component Helper Utility Classes ──────────────────── */
+
+.saas-card {
+  background-color: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 1rem; /* 16px */
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.02);
+  transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.hover-up:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 20px 40px rgba(50, 75, 130, 0.08) !important;
-  border-color: rgba(60, 101, 245, 0.4) !important;
+.saas-card-interactive {
+  background-color: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 1rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04);
+  transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.saas-card-interactive:hover {
+  border-color: #CBD5E1;
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.06), 0 8px 10px -6px rgba(15, 23, 42, 0.03);
+  transform: translateY(-2px);
+}
+
+.saas-badge {
+  display: inline-flex;
+  items-center: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.625rem;
+  border-radius: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.saas-badge-neutral {
+  background-color: #F1F5F9;
+  color: #475569;
+  border: 1px solid #E2E8F0;
+}
+
+.saas-badge-indigo {
+  background-color: #EEF2FF;
+  color: #4F46E5;
+  border: 1px solid #C7D2FE;
+}
+
+.saas-badge-emerald {
+  background-color: #ECFDF5;
+  color: #059669;
+  border: 1px solid #A7F3D0;
+}
+
+.saas-badge-amber {
+  background-color: #FFFBEB;
+  color: #D97706;
+  border: 1px solid #FDE68A;
+}
+
+.saas-badge-rose {
+  background-color: #FFF1F2;
+  color: #E11D48;
+  border: 1px solid #FECDD3;
+}
+
+.saas-input {
+  width: 100%;
+  height: 2.75rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  background-color: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #0F172A;
+  transition: all 150ms ease-in-out;
+}
+
+.saas-input::placeholder {
+  color: #94A3B8;
+}
+
+.saas-input:focus {
+  border-color: #6366F1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+}
+
+.saas-input:disabled {
+  background-color: #F8FAFC;
+  color: #94A3B8;
+  cursor: not-allowed;
+}
+
+.saas-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  height: 2.625rem;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+  background-color: #4F46E5;
+  color: #FFFFFF;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: 0.75rem;
+  border: 1px solid transparent;
+  box-shadow: 0 1px 2px 0 rgba(79, 70, 229, 0.2);
+  transition: all 150ms ease-in-out;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.saas-btn-primary:hover {
+  background-color: #4338CA;
+  box-shadow: 0 4px 12px 0 rgba(79, 70, 229, 0.25);
+}
+
+.saas-btn-primary:active {
+  transform: scale(0.98);
+}
+
+.saas-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  height: 2.625rem;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+  background-color: #FFFFFF;
+  color: #334155;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: 0.75rem;
+  border: 1px solid #E2E8F0;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+  transition: all 150ms ease-in-out;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.saas-btn-secondary:hover {
+  background-color: #F8FAFC;
+  border-color: #CBD5E1;
+  color: #0F172A;
 }
 
 /* Hide scrollbars cleanly when requested */
@@ -74,10 +208,10 @@
   scrollbar-width: none;
 }
 
-/* Sleek ultra-thin custom scrollbars for tables */
+/* Custom scrollbars */
 .custom-table-scrollbar::-webkit-scrollbar {
-  height: 4px;
-  width: 4px;
+  height: 5px;
+  width: 5px;
 }
 .custom-table-scrollbar::-webkit-scrollbar-track {
   background: transparent;
@@ -90,7 +224,7 @@
   background: #94A3B8;
 }
 
-/* Line clamps for clean snippets */
+/* Line clamps */
 .line-clamp-1 {
   display: -webkit-box;
   -webkit-line-clamp: 1;
@@ -112,12 +246,13 @@
   overflow: hidden;
 }
 
+/* Smooth subtle float */
 @keyframes floatAnimation {
   0%, 100% {
     transform: translateY(0px);
   }
   50% {
-    transform: translateY(-14px);
+    transform: translateY(-8px);
   }
 }
 
@@ -125,91 +260,8 @@
   animation: floatAnimation 4s ease-in-out infinite;
 }
 
-/* Hide scrollbars cleanly */
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-.no-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-/* Chat bubble appearance animation */
-@keyframes bubbleSlideIn {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.animate-bubble {
-  animation: bubbleSlideIn 0.2s ease-out forwards;
-}
-
-/* Custom subtle scrollbar for chat textarea and message log */
-.custom-scrollbar::-webkit-scrollbar {
-  width: 5px;
-}
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
-}
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #CBD5E1;
-  border-radius: 10px;
-}
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #94A3B8;
-}
-
-/* ─── Mobile Responsive Helpers ─────────────────────────────────────── */
-
-/* Ensure mobile menu drawer doesn't cause horizontal scroll */
-.mobile-menu-drawer {
-  max-width: 85vw;
-}
-
-/* Fluid typography helper: responsive headings without media queries */
-.fluid-heading-xl {
-  font-size: clamp(2rem, 5vw, 4rem);
-  line-height: 1.1;
-}
-
-.fluid-heading-lg {
-  font-size: clamp(1.5rem, 4vw, 2.5rem);
-  line-height: 1.15;
-}
-
-/* Touch-friendly minimum tap target size */
-.touch-target {
-  min-height: 44px;
-  min-width: 44px;
-}
-
-/* Card hover lift — only apply on non-touch devices */
-@media (hover: hover) and (pointer: fine) {
-  .card-lift:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 20px 40px rgba(50, 75, 130, 0.10);
-  }
-}
-
-/* ─── Responsive Table Helper ────────────────────────────────────────── */
+/* Responsive Table Helper */
 .table-responsive {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
-}
-
-/* ─── Very Small Screens (<375px) overrides ──────────────────────────── */
-@media (max-width: 374px) {
-  .text-xs {
-    font-size: 0.7rem;
-  }
-  .px-7 {
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
 }

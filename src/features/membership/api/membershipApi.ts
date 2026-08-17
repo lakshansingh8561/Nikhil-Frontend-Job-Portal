@@ -9,8 +9,8 @@ import type {
 export const membershipApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     // Job Seeker Endpoints
-    getMemberships: builder.query<IMembership[], void>({
-      query: () => "/memberships",
+    getMemberships: builder.query<IMembership[], "USD" | "INR" | void>({
+      query: (currency) => (currency ? `/memberships?currency=${currency}` : "/memberships"),
       transformResponse: (response: { data: IMembership[] }) => response.data,
       providesTags: ["Membership"],
     }),
@@ -52,8 +52,8 @@ export const membershipApi = apiSlice.injectEndpoints({
     }),
 
     // Recruiter Endpoints
-    getRecruiterPlans: builder.query<IMembership[], void>({
-      query: () => "/memberships/recruiter",
+    getRecruiterPlans: builder.query<IMembership[], "USD" | "INR" | void>({
+      query: (currency) => (currency ? `/memberships/recruiter?currency=${currency}` : "/memberships/recruiter"),
       transformResponse: (response: { data: IMembership[] }) => response.data,
       providesTags: ["Membership"],
     }),

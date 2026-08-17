@@ -29,10 +29,17 @@ export const ApplicantCard: React.FC<ApplicantCardProps> = ({
       ? application.applicantId
       : null;
 
+  const applicantProfile =
+    typeof (application as any).applicantProfile === "object" && (application as any).applicantProfile !== null
+      ? (application as any).applicantProfile
+      : null;
+
   const applicantUserId =
     applicant && typeof applicant.userId === "object" && applicant.userId !== null
       ? applicant.userId._id || (typeof applicant.userId === "string" ? applicant.userId : "")
-      : (typeof applicant?.userId === "string" ? applicant.userId : "");
+      : typeof (application as any).userId === "object" && (application as any).userId !== null
+      ? (application as any).userId._id
+      : (typeof applicant?.userId === "string" ? applicant.userId : typeof (application as any).userId === "string" ? (application as any).userId : "");
 
   const jobId =
     typeof application.jobId === "object" && application.jobId !== null
@@ -41,16 +48,25 @@ export const ApplicantCard: React.FC<ApplicantCardProps> = ({
       ? application.jobId
       : "";
 
+  const jobTitle =
+    typeof application.jobId === "object" && application.jobId !== null
+      ? application.jobId.title
+      : "";
+
   const applicantName = applicant
     ? `${applicant.firstName || ""} ${applicant.lastName || ""}`.trim() || "Applicant"
+    : applicantProfile
+    ? `${applicantProfile.firstName || ""} ${applicantProfile.lastName || ""}`.trim() || "Applicant"
     : "Applicant";
 
   const applicantEmail =
     applicant && typeof applicant.userId === "object" && applicant.userId !== null
       ? applicant.userId.email
+      : typeof (application as any).userId === "object" && (application as any).userId !== null
+      ? (application as any).userId.email
       : "No Email Provided";
 
-  const headline = applicant?.headline || "Job Candidate";
+  const headline = applicant?.headline || applicantProfile?.headline || "Job Candidate";
   const location = applicant?.currentLocation || "Location N/A";
   const experience = applicant?.yearsOfExperience
     ? `${applicant.yearsOfExperience} yrs exp`
@@ -76,6 +92,11 @@ export const ApplicantCard: React.FC<ApplicantCardProps> = ({
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-3 flex-wrap">
               <h3 className="text-lg font-bold text-[#05264E]">{applicantName}</h3>
+              {jobTitle && (
+                <span className="rounded-lg bg-indigo-50 text-indigo-700 border border-indigo-100 font-extrabold px-2.5 py-0.5 text-[11px]">
+                  Applied for: {jobTitle}
+                </span>
+              )}
               <StatusBadge status={application.status} size="sm" />
             </div>
 

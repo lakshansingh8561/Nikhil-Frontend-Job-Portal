@@ -1,6 +1,5 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
 import {
   FiBriefcase,
   FiCheckCircle,
@@ -21,21 +20,6 @@ import StatusBadge from "../../applications/components/StatusBadge";
 import ResumeViewer from "../../applications/components/ResumeViewer";
 import ApplicationSkeleton from "../../applications/components/ApplicationSkeleton";
 import { useAppSelector } from "../../../hooks/useAppSelector";
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.08,
-    },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 15 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.3 } },
-};
 
 export const Dashboard: React.FC = () => {
   const { user } = useAppSelector((state) => state.auth);
@@ -59,7 +43,6 @@ export const Dashboard: React.FC = () => {
     (app) => app.status === "SHORTLISTED" || app.status === "INTERVIEW" || app.status === "HIRED"
   ).length;
 
-  // Profile completion calculation
   let completionScore = 0;
   if (profile) {
     if (profile.firstName && profile.lastName) completionScore += 20;
@@ -78,154 +61,146 @@ export const Dashboard: React.FC = () => {
   const recentApps = allApplications.slice(0, 4);
 
   return (
-    <motion.div
-      variants={containerVariants}
-      initial="hidden"
-      animate="visible"
-      className="h-full overflow-y-auto overscroll-contain pr-1 pb-12 space-y-8 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-gray-200 [&::-webkit-scrollbar-thumb]:rounded-full"
-    >
+    <div className="space-y-6 pb-10">
       {/* Welcome Banner */}
-      <motion.div
-        variants={itemVariants}
-        className="rounded-3xl border border-[#EAEFF7] bg-white p-6 sm:p-8 text-[#05264E] shadow-xs relative overflow-hidden"
-      >
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div className="saas-card p-6 sm:p-8">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div>
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-3 py-1 text-xs font-bold text-[#3C65F5] mb-3 border border-blue-100">
-              <FiAward /> Job Seeker Dashboard
-            </span>
-            <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-[#05264E]">
-              Welcome Back, {candidateName}! 👋
+            <div className="inline-flex items-center gap-1.5 saas-badge saas-badge-indigo mb-3">
+              <FiAward /> Candidate Workspace
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
+              Welcome back, {candidateName}! 👋
             </h1>
-            <p className="mt-2 text-xs sm:text-sm font-medium text-[#66789C] max-w-xl">
+            <p className="mt-1 text-xs sm:text-sm font-medium text-slate-500 max-w-xl">
               {profile?.headline ||
-                "Keep your profile updated, track application statuses, and discover new matching job openings."}
+                "Track application statuses, manage profile qualifications, and discover matching job opportunities."}
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5 shrink-0">
             <Link
               to="/job-seeker/profile"
-              className="flex items-center gap-2 rounded-2xl bg-white border border-gray-200 px-5 py-3 text-xs font-bold text-[#05264E] shadow-2xs transition hover:bg-blue-50 hover:border-blue-300 hover:text-[#3C65F5] cursor-pointer"
+              className="saas-btn-secondary h-9 text-xs"
             >
               <FiUser /> Edit Profile
             </Link>
             <Link
               to="/job-seeker/jobs"
-              className="flex items-center gap-2 rounded-2xl bg-[#3C65F5] px-5 py-3 text-xs font-bold text-white shadow-md transition hover:bg-[#254BD6] cursor-pointer active:scale-98"
+              className="saas-btn-primary h-9 text-xs"
             >
               <FiSearch /> Browse Jobs
             </Link>
           </div>
         </div>
-      </motion.div>
+      </div>
 
       {/* Analytics Stats Grid */}
-      <motion.div variants={itemVariants} className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-5">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
         {/* Total Applications */}
-        <motion.div whileHover={{ y: -4 }} className="flex items-center justify-between rounded-3xl border border-[#EAEFF7] bg-white p-5 shadow-xs transition-shadow hover:shadow-md">
+        <div className="saas-card p-4 flex items-center justify-between">
           <div>
-            <p className="text-xs font-bold text-[#66789C] uppercase tracking-wider">
+            <p className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
               Applications
             </p>
-            <h3 className="mt-2 text-2xl font-extrabold text-[#05264E]">
+            <h3 className="mt-1 text-2xl font-extrabold text-slate-900">
               {totalSubmitted}
             </h3>
-            <p className="mt-1 text-[11px] text-[#66789C]">Total submitted</p>
+            <p className="mt-0.5 text-[11px] text-slate-400">Total submitted</p>
           </div>
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#E8F0FE] text-[#3C65F5] shrink-0">
-            <FiFileText className="text-xl" />
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600">
+            <FiFileText className="text-lg" />
           </div>
-        </motion.div>
+        </div>
 
         {/* Shortlisted / Interviewing */}
-        <motion.div whileHover={{ y: -4 }} className="flex items-center justify-between rounded-3xl border border-[#EAEFF7] bg-white p-5 shadow-xs transition-shadow hover:shadow-md">
+        <div className="saas-card p-4 flex items-center justify-between">
           <div>
-            <p className="text-xs font-bold text-[#66789C] uppercase tracking-wider">
+            <p className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
               Shortlisted
             </p>
-            <h3 className="mt-2 text-2xl font-extrabold text-[#05264E]">
+            <h3 className="mt-1 text-2xl font-extrabold text-slate-900">
               {shortlistedCount}
             </h3>
-            <p className="mt-1 text-[11px] text-emerald-600 font-bold">
-              Active candidates
+            <p className="mt-0.5 text-[11px] text-emerald-600 font-semibold">
+              Active candidate status
             </p>
           </div>
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600 shrink-0">
-            <FiCheckCircle className="text-xl" />
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+            <FiCheckCircle className="text-lg" />
           </div>
-        </motion.div>
+        </div>
 
-        {/* Active Membership Status & Days */}
-        <motion.div whileHover={{ y: -4 }} className="flex items-center justify-between rounded-3xl border border-[#EAEFF7] bg-white p-5 shadow-xs transition-shadow hover:shadow-md">
+        {/* Membership */}
+        <div className="saas-card p-4 flex items-center justify-between">
           <div>
-            <p className="text-xs font-bold text-[#66789C] uppercase tracking-wider">
+            <p className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
               Membership
             </p>
-            <h3 className="mt-2 text-lg font-extrabold text-[#05264E]">
+            <h3 className="mt-1 text-base font-extrabold text-slate-900 truncate max-w-[110px]">
               {currentSub?.subscription?.planName || currentSub?.plan?.name || "Free Tier"}
             </h3>
             {hasActiveSub ? (
-              <p className="mt-1 text-[11px] text-emerald-600 font-bold">
-                {daysRemaining} Active Days Left
+              <p className="mt-0.5 text-[11px] text-emerald-600 font-semibold">
+                {daysRemaining} Days Left
               </p>
             ) : (
-              <Link to="/job-seeker/membership" className="mt-1 text-[11px] text-[#3C65F5] font-bold hover:underline">
-                Upgrade Now →
+              <Link to="/job-seeker/membership" className="mt-0.5 text-[11px] text-indigo-600 font-semibold hover:underline">
+                Upgrade Plan →
               </Link>
             )}
           </div>
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-50 text-amber-600 shrink-0">
-            <FiZap className="text-xl fill-yellow-400" />
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-50 text-amber-600">
+            <FiZap className="text-lg" />
           </div>
-        </motion.div>
+        </div>
 
         {/* Profile Completion */}
-        <motion.div whileHover={{ y: -4 }} className="flex items-center justify-between rounded-3xl border border-[#EAEFF7] bg-white p-5 shadow-xs transition-shadow hover:shadow-md">
+        <div className="saas-card p-4 flex items-center justify-between">
           <div>
-            <p className="text-xs font-bold text-[#66789C] uppercase tracking-wider">
-              Profile Score
+            <p className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
+              Completeness
             </p>
-            <h3 className="mt-2 text-2xl font-extrabold text-[#05264E]">
+            <h3 className="mt-1 text-2xl font-extrabold text-slate-900">
               {isLoadingProfile ? "..." : `${completionScore}%`}
             </h3>
-            <p className="mt-1 text-[11px] text-[#66789C]">Completeness status</p>
+            <p className="mt-0.5 text-[11px] text-slate-400">Profile score</p>
           </div>
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-purple-50 text-purple-600 shrink-0">
-            <FiUser className="text-xl" />
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-purple-50 text-purple-600">
+            <FiUser className="text-lg" />
           </div>
-        </motion.div>
+        </div>
 
         {/* Matching Jobs */}
-        <motion.div whileHover={{ y: -4 }} className="flex items-center justify-between rounded-3xl border border-[#EAEFF7] bg-white p-5 shadow-xs transition-shadow hover:shadow-md">
+        <div className="saas-card p-4 flex items-center justify-between">
           <div>
-            <p className="text-xs font-bold text-[#66789C] uppercase tracking-wider">
-              Available Jobs
+            <p className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
+              Active Jobs
             </p>
-            <h3 className="mt-2 text-2xl font-extrabold text-[#05264E]">
+            <h3 className="mt-1 text-2xl font-extrabold text-slate-900">
               {jobsResponse?.pagination?.total || jobsResponse?.jobs?.length || 0}
             </h3>
-            <p className="mt-1 text-[11px] text-[#3C65F5] font-bold">Active openings</p>
+            <p className="mt-0.5 text-[11px] text-indigo-600 font-semibold">Open positions</p>
           </div>
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-[#3C65F5] shrink-0">
-            <FiBriefcase className="text-xl" />
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+            <FiBriefcase className="text-lg" />
           </div>
-        </motion.div>
-      </motion.div>
+        </div>
+      </div>
 
-      {/* Main Content Layout Grid */}
-      <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        {/* Left Column: Recent Applications */}
+      {/* Main Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* Left Column: Applications */}
         <div className="lg:col-span-8 space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-extrabold text-[#05264E]">
+            <h2 className="text-base font-bold text-slate-900">
               Recent Submitted Applications
             </h2>
             <Link
               to="/job-seeker/applications"
-              className="flex items-center gap-1 text-xs font-bold text-[#3C65F5] hover:underline"
+              className="saas-btn-secondary h-8 text-xs px-3"
             >
-              <span>View All Applications</span>
+              <span>View All</span>
               <FiArrowRight />
             </Link>
           </div>
@@ -233,100 +208,101 @@ export const Dashboard: React.FC = () => {
           {isLoadingApps ? (
             <ApplicationSkeleton count={3} />
           ) : recentApps.length === 0 ? (
-            <div className="rounded-3xl border border-[#EAEFF7] bg-white p-8 text-center shadow-xs">
-              <FiClock className="mx-auto text-3xl text-gray-300 mb-2" />
-              <h3 className="text-sm font-bold text-[#05264E]">
-                No Submitted Applications Yet
+            <div className="saas-card p-8 text-center">
+              <FiClock className="mx-auto text-2xl text-slate-400 mb-2" />
+              <h3 className="text-sm font-bold text-slate-900">
+                No Applications Submitted Yet
               </h3>
-              <p className="text-xs text-[#66789C] mt-1 mb-4">
-                Explore available job postings and apply with your uploaded resume.
+              <p className="text-xs text-slate-500 mt-1 mb-4">
+                Explore active job postings and submit your application.
               </p>
               <Link
                 to="/job-seeker/jobs"
-                className="inline-flex items-center gap-2 rounded-2xl bg-[#3C65F5] px-5 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-[#254BD6]"
+                className="saas-btn-primary"
               >
-                <FiSearch /> Browse Active Jobs
+                <FiSearch /> Browse Jobs
               </Link>
             </div>
           ) : (
-            <div className="overflow-x-auto no-scrollbar custom-table-scrollbar rounded-3xl border border-[#EAEFF7] bg-white shadow-xs">
-              <table className="w-full text-left border-collapse min-w-[580px]">
-                <thead>
-                  <tr className="border-b border-[#F0F4FC] bg-[#F8FAFC] text-[11px] font-bold uppercase tracking-wider text-[#66789C]">
-                    <th className="py-3 px-3.5 sm:px-4">Job Title & Company</th>
-                    <th className="py-3 px-3.5 sm:px-4">Resume</th>
-                    <th className="py-3 px-3.5 sm:px-4">Status</th>
-                    <th className="py-3 px-3.5 sm:px-4">Applied Date</th>
-                    <th className="py-3 px-3.5 sm:px-4 text-right">Action</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-[#F0F4FC] text-xs font-medium">
-                  {recentApps.map((app) => {
-                    const job = typeof app.jobId === "object" ? app.jobId : null;
-                    const jobId = job?._id || (typeof app.jobId === "string" ? app.jobId : "");
-                    const company =
-                      job && typeof job.companyId === "object" ? job.companyId : null;
+            <div className="saas-card p-0 overflow-hidden">
+              <div className="table-responsive">
+                <table className="w-full text-left border-collapse min-w-[540px]">
+                  <thead>
+                    <tr className="border-b border-slate-100 bg-slate-50/60 text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+                      <th className="py-2.5 px-4">Job Title & Company</th>
+                      <th className="py-2.5 px-4">Resume</th>
+                      <th className="py-2.5 px-4">Status</th>
+                      <th className="py-2.5 px-4">Applied Date</th>
+                      <th className="py-2.5 px-4 text-right">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100 text-xs font-medium">
+                    {recentApps.map((app) => {
+                      const job = typeof app.jobId === "object" ? app.jobId : null;
+                      const jobId = job?._id || (typeof app.jobId === "string" ? app.jobId : "");
+                      const company =
+                        job && typeof job.companyId === "object" ? job.companyId : null;
 
-                    return (
-                      <tr key={app._id} className="hover:bg-[#F8FAFC] transition">
-                        <td className="py-3 px-3.5 sm:px-4">
-                          <div>
-                            <p className="font-bold text-[#05264E] line-clamp-1">
-                              {job?.title || "Applied Job"}
-                            </p>
-                            <p className="text-[11px] font-semibold text-[#3C65F5] line-clamp-1">
-                              {company?.companyName || "Company"}
-                            </p>
-                          </div>
-                        </td>
-                        <td className="py-3 px-3.5 sm:px-4">
-                          <ResumeViewer resumeUrl={app.resume} applicantName={candidateName} variant="compact" />
-                        </td>
-                        <td className="py-3 px-3.5 sm:px-4">
-                          <StatusBadge status={app.status} size="sm" />
-                        </td>
-                        <td className="py-3 px-3.5 sm:px-4 text-[#66789C] whitespace-nowrap">
-                          {new Date(app.createdAt).toLocaleDateString()}
-                        </td>
-                        <td className="py-3 px-3.5 sm:px-4 text-right whitespace-nowrap">
-                          {jobId && (
-                            <Link
-                              to={`/job-seeker/messages?jobId=${jobId}`}
-                              className="inline-flex items-center gap-1 rounded-xl bg-[#3C65F5] px-3 py-1.5 text-[11px] font-bold text-white shadow-2xs hover:bg-blue-700"
-                            >
-                              <FiMessageSquare /> Chat
-                            </Link>
-                          )}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+                      return (
+                        <tr key={app._id} className="hover:bg-slate-50/80 transition-colors">
+                          <td className="py-3 px-4">
+                            <div>
+                              <p className="font-bold text-slate-900 line-clamp-1">
+                                {job?.title || "Applied Position"}
+                              </p>
+                              <p className="text-[11px] font-semibold text-indigo-600 line-clamp-1">
+                                {company?.companyName || "Hiring Company"}
+                              </p>
+                            </div>
+                          </td>
+                          <td className="py-3 px-4">
+                            <ResumeViewer resumeUrl={app.resume} applicantName={candidateName} variant="compact" />
+                          </td>
+                          <td className="py-3 px-4">
+                            <StatusBadge status={app.status} size="sm" />
+                          </td>
+                          <td className="py-3 px-4 text-slate-500 whitespace-nowrap">
+                            {new Date(app.createdAt).toLocaleDateString()}
+                          </td>
+                          <td className="py-3 px-4 text-right whitespace-nowrap">
+                            {jobId && (
+                              <Link
+                                to={`/job-seeker/messages?jobId=${jobId}`}
+                                className="saas-btn-primary h-7 text-[11px] px-2.5"
+                              >
+                                <FiMessageSquare /> Chat
+                              </Link>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
             </div>
           )}
         </div>
 
-        {/* Right Column: Profile Summary & Job Highlights */}
-        <div className="lg:col-span-4 space-y-6">
-          {/* Candidate Profile Widget */}
-          <div className="rounded-3xl border border-[#EAEFF7] bg-white p-6 shadow-xs">
-            <h3 className="text-sm font-bold text-[#05264E] border-b border-[#F0F4FC] pb-3 mb-4">
-              Profile Qualifications
+        {/* Right Column: Profile Summary */}
+        <div className="lg:col-span-4 space-y-4">
+          <div className="saas-card p-5">
+            <h3 className="text-sm font-bold text-slate-900 border-b border-slate-100 pb-3 mb-4">
+              Profile Summary
             </h3>
 
-            <div className="space-y-3.5">
+            <div className="space-y-3">
               <div>
-                <p className="text-[11px] font-bold text-[#66789C] uppercase">
+                <p className="text-[11px] font-semibold text-slate-500 uppercase">
                   Headline
                 </p>
-                <p className="text-xs font-semibold text-[#05264E] mt-0.5">
+                <p className="text-xs font-medium text-slate-900 mt-0.5">
                   {profile?.headline || "Add a professional headline"}
                 </p>
               </div>
 
               <div>
-                <p className="text-[11px] font-bold text-[#66789C] uppercase">
+                <p className="text-[11px] font-semibold text-slate-500 uppercase">
                   Uploaded Resume
                 </p>
                 <div className="mt-1">
@@ -334,46 +310,44 @@ export const Dashboard: React.FC = () => {
                     <ResumeViewer resumeUrl={profile.resume} applicantName={candidateName} />
                   ) : (
                     <span className="text-xs text-amber-600 font-medium">
-                      No resume uploaded yet
+                      No resume uploaded
                     </span>
                   )}
                 </div>
               </div>
 
               <div>
-                <p className="text-[11px] font-bold text-[#66789C] uppercase mb-1.5">
+                <p className="text-[11px] font-semibold text-slate-500 uppercase mb-1">
                   Top Skills
                 </p>
-                <div className="flex flex-wrap gap-1.5">
+                <div className="flex flex-wrap gap-1">
                   {profile?.skills && profile.skills.length > 0 ? (
                     profile.skills.slice(0, 5).map((s: string) => (
                       <span
                         key={s}
-                        className="rounded-lg bg-[#E8F0FE] px-2.5 py-1 text-[11px] font-bold text-[#3C65F5]"
+                        className="saas-badge saas-badge-indigo text-[10px]"
                       >
                         {s}
                       </span>
                     ))
                   ) : (
-                    <span className="text-xs text-gray-400">No skills added</span>
+                    <span className="text-xs text-slate-400">No skills added</span>
                   )}
                 </div>
               </div>
 
               <Link
                 to="/job-seeker/profile"
-                className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl bg-[#F8FAFC] py-2.5 text-xs font-bold text-[#3C65F5] border border-[#EAEFF7] hover:bg-[#E8F0FE] transition"
+                className="saas-btn-secondary w-full text-xs mt-3"
               >
-                <FiUser /> Manage Full Profile
+                <FiUser /> Manage Profile
               </Link>
             </div>
           </div>
         </div>
-      </motion.div>
-    </motion.div>
+      </div>
+    </div>
   );
 };
 
 export default Dashboard;
-
-

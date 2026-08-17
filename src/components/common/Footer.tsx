@@ -253,7 +253,6 @@ export const Footer: React.FC = () => {
 
             {/* App Store Buttons */}
             <div className="space-y-3">
-              {/* App Store Button */}
               <button
                 onClick={() => handleAppDownload("App Store")}
                 className="w-full flex items-center gap-3 rounded-xl bg-[#0066FF] hover:bg-[#0052CC] px-4 py-2.5 text-white transition shadow-sm cursor-pointer hover:shadow-md"
@@ -269,7 +268,6 @@ export const Footer: React.FC = () => {
                 </div>
               </button>
 
-              {/* Google Play Button */}
               <button
                 onClick={() => handleAppDownload("Google Play")}
                 className="w-full flex items-center gap-3 rounded-xl bg-[#0066FF] hover:bg-[#0052CC] px-4 py-2.5 text-white transition shadow-sm cursor-pointer hover:shadow-md"
@@ -291,7 +289,7 @@ export const Footer: React.FC = () => {
         {/* Sub-Footer Copyright & Bottom Links */}
         <div className="border-t border-[#F0F4FC] pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs font-semibold text-[#66789C]">
-            Copyright © 2026. <span className="text-[#05264E] font-bold">JobBox</span> all right reserved
+            Copyright © {new Date().getFullYear()}. <span className="text-[#05264E] font-bold">JobBox</span> all right reserved
           </p>
 
           <div className="flex items-center gap-6 text-xs font-semibold text-[#66789C]">

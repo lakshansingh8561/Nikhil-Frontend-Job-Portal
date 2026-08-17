@@ -6,9 +6,13 @@ import {
   FiAlertTriangle,
   FiRefreshCw,
   FiSearch,
+  FiLayers,
 } from "react-icons/fi";
 import ScrollToTop from "../../../components/common/ScrollToTop";
-import { useGetApplicationsForJobQuery } from "../api/applicationApi";
+import {
+  useGetApplicationsForJobQuery,
+  useGetRecruiterAllApplicationsQuery,
+} from "../api/applicationApi";
 import { useGetRecruiterJobsQuery } from "../../jobs/api/jobsApi";
 import ApplicantCard from "../components/ApplicantCard";
 import ApplicationSkeleton from "../components/ApplicationSkeleton";
@@ -25,7 +29,7 @@ export const RecruiterApplications: React.FC = () => {
 
   const jobsList = recruiterJobs || [];
 
-  // Active selected job state
+  // Active selected job state (empty string means All Jobs)
   const [selectedJobId, setSelectedJobId] = useState<string>(
     paramJobId || ""
   );
@@ -35,31 +39,67 @@ export const RecruiterApplications: React.FC = () => {
   useEffect(() => {
     if (paramJobId) {
       setSelectedJobId(paramJobId);
-    } else if (jobsList.length > 0 && !selectedJobId) {
-      setSelectedJobId(jobsList[0]._id);
     }
-  }, [paramJobId, jobsList, selectedJobId]);
+  }, [paramJobId]);
 
-  // Fetch applications for the selected job
+  // Query for all recruiter applications
   const {
-    data: applications,
-    isLoading: isLoadingApps,
-    isError,
-    error,
-    refetch,
+    data: allApplicationsData,
+    isLoading: isLoadingAllApps,
+    isError: isErrorAll,
+    error: errorAll,
+    refetch: refetchAll,
+  } = useGetRecruiterAllApplicationsQuery(undefined, {
+    skip: Boolean(selectedJobId),
+  });
+
+  // Query for job-specific applications
+  const {
+    data: jobApplicationsData,
+    isLoading: isLoadingJobApps,
+    isError: isErrorJob,
+    error: errorJob,
+    refetch: refetchJob,
   } = useGetApplicationsForJobQuery(selectedJobId, {
     skip: !selectedJobId,
   });
 
+  const applications = selectedJobId ? jobApplicationsData : allApplicationsData;
+  const isLoadingApps = selectedJobId ? isLoadingJobApps : isLoadingAllApps;
+  const isError = selectedJobId ? isErrorJob : isErrorAll;
+  const error = selectedJobId ? errorJob : errorAll;
+  const refetch = selectedJobId ? refetchJob : refetchAll;
+
   const allApplicants = applications || [];
 
-  // Active job details object
+  // Active job details object if a specific job is selected
   const activeJob = jobsList.find((j) => j._id === selectedJobId);
 
   // Filtering applicants
   const filteredApplicants = allApplicants.filter((app) => {
-    const matchesStatus =
-      statusFilter === "ALL" || app.status === statusFilter;
+    const rawStatus = (app.status || "").toUpperCase();
+
+    // Map backend status to filter tabs
+    let matchesStatus = false;
+    if (statusFilter === "ALL") {
+      matchesStatus = true;
+    } else if (statusFilter === "APPLIED") {
+      matchesStatus =
+        rawStatus === "APPLIED" ||
+        rawStatus === "SUBMITTED" ||
+        rawStatus === "UNDER_REVIEW";
+    } else if (statusFilter === "SHORTLISTED") {
+      matchesStatus = rawStatus === "SHORTLISTED";
+    } else if (statusFilter === "INTERVIEW") {
+      matchesStatus =
+        rawStatus === "INTERVIEW" || rawStatus === "INTERVIEW_SCHEDULED";
+    } else if (statusFilter === "REJECTED") {
+      matchesStatus = rawStatus === "REJECTED";
+    } else if (statusFilter === "HIRED") {
+      matchesStatus = rawStatus === "HIRED" || rawStatus === "OFFERED";
+    } else {
+      matchesStatus = rawStatus === statusFilter;
+    }
 
     const applicant =
       typeof app.applicantId === "object" && app.applicantId !== null
@@ -68,10 +108,20 @@ export const RecruiterApplications: React.FC = () => {
 
     const applicantName = applicant
       ? `${applicant.firstName || ""} ${applicant.lastName || ""}`
+      : typeof app.applicantProfile === "object" && app.applicantProfile !== null
+      ? `${app.applicantProfile.firstName || ""} ${app.applicantProfile.lastName || ""}`
       : "";
+
     const email =
       applicant && typeof applicant.userId === "object" && applicant.userId !== null
         ? applicant.userId.email
+        : typeof app.userId === "object" && app.userId !== null
+        ? (app.userId as any).email || ""
+        : "";
+
+    const jobTitle =
+      typeof app.jobId === "object" && app.jobId !== null
+        ? app.jobId.title || ""
         : "";
 
     const searchLower = searchTerm.toLowerCase();
@@ -79,6 +129,7 @@ export const RecruiterApplications: React.FC = () => {
       !searchTerm ||
       applicantName.toLowerCase().includes(searchLower) ||
       email.toLowerCase().includes(searchLower) ||
+      jobTitle.toLowerCase().includes(searchLower) ||
       (applicant?.headline && applicant.headline.toLowerCase().includes(searchLower));
 
     return matchesStatus && matchesSearch;
@@ -89,6 +140,8 @@ export const RecruiterApplications: React.FC = () => {
     setSelectedJobId(newJobId);
     if (newJobId) {
       navigate(`/recruiter/jobs/${newJobId}/applications`, { replace: true });
+    } else {
+      navigate(`/recruiter/applications`, { replace: true });
     }
   };
 
@@ -108,7 +161,7 @@ export const RecruiterApplications: React.FC = () => {
         {/* Job Selector Dropdown */}
         <div className="flex items-center gap-3">
           <label className="text-xs font-bold text-[#05264E] whitespace-nowrap flex items-center gap-1.5">
-            <FiBriefcase className="text-[#1D4ED8]" /> Select Job:
+            <FiBriefcase className="text-[#1D4ED8]" /> Filter by Job:
           </label>
           <select
             value={selectedJobId}
@@ -116,21 +169,18 @@ export const RecruiterApplications: React.FC = () => {
             disabled={isLoadingJobs}
             className="rounded-2xl border border-[#EAEFF7] bg-white px-4 py-2.5 text-xs font-bold text-[#05264E] shadow-sm outline-none focus:border-[#1D4ED8] cursor-pointer max-w-xs truncate"
           >
-            {jobsList.length === 0 ? (
-              <option value="">No Posted Jobs Found</option>
-            ) : (
-              jobsList.map((j) => (
-                <option key={j._id} value={j._id}>
-                  {j.title} ({j.location})
-                </option>
-              ))
-            )}
+            <option value="">All Posted Jobs (All Applications)</option>
+            {jobsList.map((j) => (
+              <option key={j._id} value={j._id}>
+                {j.title} ({j.location})
+              </option>
+            ))}
           </select>
         </div>
       </div>
 
       {/* Selected Job Meta Information Banner */}
-      {activeJob && (
+      {selectedJobId && activeJob ? (
         <div className="rounded-2xl border border-[#EAEFF7] bg-white p-4 shadow-sm flex flex-wrap items-center justify-between gap-4">
           <div>
             <h2 className="text-base font-bold text-[#05264E]">{activeJob.title}</h2>
@@ -138,6 +188,25 @@ export const RecruiterApplications: React.FC = () => {
               Location: <span className="font-semibold text-[#05264E]">{activeJob.location}</span> • 
               Vacancies: <span className="font-semibold text-[#05264E]">{activeJob.vacancies}</span>
             </p>
+          </div>
+
+          <div className="flex items-center gap-2 rounded-xl bg-[#E8F0FE] px-3.5 py-1.5 text-xs font-bold text-[#3C65F5]">
+            <FiUsers />
+            <span>{allApplicants.length} Total Applicants</span>
+          </div>
+        </div>
+      ) : (
+        <div className="rounded-2xl border border-[#EAEFF7] bg-white p-4 shadow-sm flex flex-wrap items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-[#1D4ED8] font-bold">
+              <FiLayers className="text-lg" />
+            </div>
+            <div>
+              <h2 className="text-base font-bold text-[#05264E]">All Posted Jobs Workspace</h2>
+              <p className="text-xs text-[#66789C] mt-0.5">
+                Showing candidate applications submitted across all your active job postings
+              </p>
+            </div>
           </div>
 
           <div className="flex items-center gap-2 rounded-xl bg-[#E8F0FE] px-3.5 py-1.5 text-xs font-bold text-[#3C65F5]">
@@ -156,7 +225,7 @@ export const RecruiterApplications: React.FC = () => {
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search by candidate name or email..."
+            placeholder="Search by candidate, job title..."
             className="w-full bg-transparent text-xs font-medium text-[#05264E] outline-none placeholder:text-gray-400"
           />
         </div>
@@ -192,12 +261,6 @@ export const RecruiterApplications: React.FC = () => {
       {/* Main Applicants List */}
       {isLoadingApps || isLoadingJobs ? (
         <ApplicationSkeleton count={4} />
-      ) : !selectedJobId ? (
-        <EmptyApplications
-          title="No Job Selected"
-          message="Please select a job from the dropdown menu above to view applicant submissions."
-          isRecruiter={true}
-        />
       ) : isError ? (
         <div className="flex flex-col items-center justify-center rounded-3xl border border-red-200 bg-red-50/50 p-12 text-center shadow-sm min-h-[360px]">
           <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-red-100 text-red-600 mb-4">
@@ -208,7 +271,7 @@ export const RecruiterApplications: React.FC = () => {
           </h3>
           <p className="mt-1 max-w-md text-xs font-medium text-gray-600">
             {(error as any)?.data?.message ||
-              "There was an error fetching candidates for this job."}
+              "There was an error fetching candidates for this view."}
           </p>
           <button
             onClick={() => refetch()}
@@ -227,7 +290,7 @@ export const RecruiterApplications: React.FC = () => {
           message={
             searchTerm || statusFilter !== "ALL"
               ? "Try adjusting your search query or status filter."
-              : "No candidates have applied to this job posting yet."
+              : "No candidates have applied to your job postings yet."
           }
           isRecruiter={true}
         />

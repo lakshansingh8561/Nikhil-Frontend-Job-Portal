@@ -24,7 +24,8 @@ const JOB_SEEKER_PLAN_LEVELS: Record<string, number> = {
 };
 
 export const Membership: React.FC = () => {
-  const { data: plans = [], isLoading: isLoadingPlans } = useGetMembershipsQuery();
+  const [currency, setCurrency] = useState<"USD" | "INR">("USD");
+  const { data: plans = [], isLoading: isLoadingPlans } = useGetMembershipsQuery(currency);
   const { data: currentSub, isLoading: isLoadingSub } = useGetCurrentSubscriptionQuery(undefined, {
     refetchOnMountOrArgChange: true,
   });
@@ -223,7 +224,7 @@ export const Membership: React.FC = () => {
 
       {/* Available Plans Section */}
       <div>
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
           <div>
             <h3 className="text-2xl font-black text-[#05264E] tracking-tight">
               Membership Plans & Upgrades
@@ -232,9 +233,36 @@ export const Membership: React.FC = () => {
               Select the plan that matches your career goals.
             </p>
           </div>
-          <span className="hidden sm:inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-3.5 py-1.5 text-xs font-bold text-[#3C65F5] border border-blue-100">
-            <FiShield /> Instant Activation
-          </span>
+
+          <div className="flex items-center gap-3">
+            <div className="inline-flex items-center bg-gray-100 p-1 rounded-xl border border-gray-200 shadow-xs">
+              <button
+                type="button"
+                onClick={() => setCurrency("USD")}
+                className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${
+                  currency === "USD"
+                    ? "bg-white text-[#05264E] shadow-xs"
+                    : "text-gray-500 hover:text-gray-900"
+                }`}
+              >
+                $ USD (Polar)
+              </button>
+              <button
+                type="button"
+                onClick={() => setCurrency("INR")}
+                className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${
+                  currency === "INR"
+                    ? "bg-emerald-600 text-white shadow-xs"
+                    : "text-gray-500 hover:text-gray-900"
+                }`}
+              >
+                ₹ INR (Razorpay)
+              </button>
+            </div>
+            <span className="hidden sm:inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-3.5 py-1.5 text-xs font-bold text-[#3C65F5] border border-blue-100">
+              <FiShield /> Instant Activation
+            </span>
+          </div>
         </div>
 
         {isLoadingPlans ? (

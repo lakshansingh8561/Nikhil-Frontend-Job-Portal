@@ -25,9 +25,18 @@ export const StatusDropdown: React.FC<StatusDropdownProps> = ({
 }) => {
   const [updateStatus, { isLoading }] = useUpdateStatusMutation();
 
+  const normalizedStatus =
+    currentStatus === ("SUBMITTED" as any) || (currentStatus as string) === "UNDER_REVIEW"
+      ? "APPLIED"
+      : (currentStatus as string) === "INTERVIEW_SCHEDULED"
+      ? "INTERVIEW"
+      : (currentStatus as string) === "OFFERED"
+      ? "HIRED"
+      : currentStatus;
+
   const handleSelect = async (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newStatus = e.target.value as ApplicationStatus;
-    if (newStatus === currentStatus) return;
+    if (newStatus === normalizedStatus) return;
 
     try {
       await updateStatus({ id: applicationId, status: newStatus }).unwrap();
@@ -43,7 +52,7 @@ export const StatusDropdown: React.FC<StatusDropdownProps> = ({
   return (
     <div className="relative inline-flex items-center">
       <select
-        value={currentStatus}
+        value={normalizedStatus}
         onChange={handleSelect}
         disabled={isLoading}
         className="appearance-none rounded-xl border border-[#EAEFF7] bg-[#F8FAFC] py-2 pl-3.5 pr-8 text-xs font-bold text-[#05264E] shadow-sm outline-none transition-all focus:border-[#3C65F5] focus:bg-white disabled:opacity-50 cursor-pointer"
