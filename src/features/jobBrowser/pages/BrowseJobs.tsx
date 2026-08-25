@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FiFilter, FiX } from "react-icons/fi";
 import { useLocation, useSearchParams } from "react-router-dom";
-import SearchBar from "../components/SearchBar";
+import JobHeroBanner from "../../../components/jobs/JobHeroBanner";
 import FilterSidebar from "../components/FilterSidebar";
 import JobList from "../components/JobList";
 import Pagination from "../components/Pagination";
@@ -124,53 +124,40 @@ const BrowseJobs: React.FC = () => {
 
   const renderIndependentContent = () => (
     <div className="flex flex-col w-full">
-      {/* Top Header & Search Control */}
-      <div className="shrink-0 mb-4">
-        <div className="flex items-center justify-between mb-3 gap-3">
-          <div>
-            <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
-              Explore Tech Positions
-            </h1>
-            <p className="text-xs font-medium text-slate-500">
-              Filter through verified engineering opportunities across modern software companies
-            </p>
-          </div>
-          <button
-            onClick={() => setMobileFilterOpen(true)}
-            className="lg:hidden saas-btn-secondary h-8 text-xs px-3"
-          >
-            <FiFilter /> Filters
-          </button>
-        </div>
-
-        <SearchBar
-          search={search}
-          setSearch={(val) => {
-            setSearch(val);
-            setPage(1);
-            setActiveParams((prev) => ({ ...prev, search: val }));
-          }}
-          location={location}
-          setLocation={(val) => {
-            setLocation(val);
-            setPage(1);
-            setActiveParams((prev) => ({ ...prev, location: val }));
-          }}
-          employmentType={employmentType}
-          setEmploymentType={(val) => {
-            setEmploymentType(val);
-            setPage(1);
-            setActiveParams((prev) => ({ ...prev, employmentType: val }));
-          }}
-          experienceLevel={experienceLevel}
-          setExperienceLevel={(val) => {
-            setExperienceLevel(val);
-            setPage(1);
-            setActiveParams((prev) => ({ ...prev, experienceLevel: val }));
-          }}
-          onSearchSubmit={handleSearchSubmit}
-        />
+      {/* Mobile Filter Button (Mobile View Only) */}
+      <div className="lg:hidden flex items-center justify-between mb-4">
+        <h2 className="text-lg font-extrabold text-[#05264E]">Browse Jobs</h2>
+        <button
+          onClick={() => setMobileFilterOpen(true)}
+          className="saas-btn-secondary h-9 text-xs px-3.5 flex items-center gap-1.5 font-bold"
+        >
+          <FiFilter /> Filters
+        </button>
       </div>
+
+      {/* Top Hero Banner with Hiring Assets & Embedded Search Bar */}
+      <JobHeroBanner
+        totalJobs={pagination.total}
+        industry={industry}
+        setIndustry={(val) => {
+          setIndustry(val);
+          setPage(1);
+          setActiveParams((prev) => ({ ...prev, industry: val }));
+        }}
+        location={location}
+        setLocation={(val) => {
+          setLocation(val);
+          setPage(1);
+          setActiveParams((prev) => ({ ...prev, location: val }));
+        }}
+        keyword={search}
+        setKeyword={(val) => {
+          setSearch(val);
+          setPage(1);
+          setActiveParams((prev) => ({ ...prev, search: val }));
+        }}
+        onSearch={handleSearchSubmit}
+      />
 
       {/* Mobile Filter Drawer Overlay */}
       {mobileFilterOpen && (
@@ -239,7 +226,7 @@ const BrowseJobs: React.FC = () => {
       {/* Main Grid Content */}
       <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Desktop Sidebar */}
-        <div className="hidden lg:block lg:col-span-3 xl:col-span-3 sticky top-4 self-start">
+        <div className="hidden lg:block lg:col-span-3 xl:col-span-3 sticky top-20 self-start">
           <FilterSidebar
             location={location}
             setLocation={(val) => {
@@ -314,7 +301,7 @@ const BrowseJobs: React.FC = () => {
   }
 
   return (
-    <div className="w-full min-h-screen bg-slate-50/50 pt-20 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+    <div className="w-full min-h-screen bg-slate-50/50 pt-6 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       {renderIndependentContent()}
     </div>
   );

@@ -64,9 +64,9 @@ export const FilterSidebar: React.FC<FilterSidebarProps> = ({
   };
 
   return (
-    <aside className="w-full rounded-2xl border border-slate-200/80 bg-white p-5 shadow-xs">
-      {/* Sidebar Header */}
-      <div className="sticky top-0 z-10 -mx-5 -mt-5 bg-white p-5 pb-3.5 mb-4 border-b border-slate-100 flex items-center justify-between">
+    <aside className="w-full rounded-2xl border border-slate-200/80 bg-white shadow-xs max-h-[calc(100vh-6rem)] overflow-y-auto custom-filter-scrollbar overscroll-contain p-5 pt-0">
+      {/* Sidebar Sticky Header */}
+      <div className="sticky top-0 z-20 -mx-5 bg-white/95 backdrop-blur-xs p-5 pb-3.5 mb-4 border-b border-slate-100 flex items-center justify-between shadow-2xs">
         <div className="flex items-center gap-2.5">
           <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#E8F0FE] text-[#3C65F5]">
             <FiFilter className="text-sm" />

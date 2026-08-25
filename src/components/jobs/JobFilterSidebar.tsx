@@ -52,9 +52,9 @@ const JobFilterSidebar = ({
   onReset,
 }: JobFilterSidebarProps) => {
   return (
-    <aside className="w-full rounded-2xl border border-[#EAEFF7] bg-white p-6 shadow-sm sticky top-28 max-h-[calc(100vh-130px)] overflow-y-auto overscroll-contain [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-gray-200 [&::-webkit-scrollbar-thumb]:rounded-full">
+    <aside className="w-full rounded-2xl border border-[#EAEFF7] bg-white shadow-sm sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto custom-filter-scrollbar overscroll-contain p-6 pt-0">
       {/* Header */}
-      <div className="sticky top-0 z-10 -mx-6 -mt-6 bg-white p-6 pb-4 border-b border-[#F0F4FC] flex items-center justify-between">
+      <div className="sticky top-0 z-20 -mx-6 bg-white/95 backdrop-blur-xs p-6 pb-4 border-b border-[#F0F4FC] flex items-center justify-between shadow-2xs">
         <h3 className="text-lg font-bold text-[#05264E]">Advance Filter</h3>
         <button
           onClick={onReset}
