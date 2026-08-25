@@ -17,16 +17,18 @@ import { PaymentStatusModal } from "../components/PaymentStatusModal";
 import { useRazorpayCheckout } from "../hooks/useRazorpayCheckout";
 import { FiClock, FiShield, FiAlertTriangle, FiRefreshCw, FiXCircle } from "react-icons/fi";
 
-const JOB_SEEKER_PLAN_LEVELS: Record<string, number> = {
-  Free: 1,
-  Pro: 2,
-  Premium: 3,
+const getPlanLevel = (name: string): number => {
+  const n = (name || "").toLowerCase();
+  if (n.includes("premium")) return 3;
+  if (n.includes("pro")) return 2;
+  return 1;
 };
 
 export const Membership: React.FC = () => {
   const [currency, setCurrency] = useState<"USD" | "INR">("USD");
-  const { data: plans = [], isLoading: isLoadingPlans } = useGetMembershipsQuery(currency);
-  const { data: currentSub, isLoading: isLoadingSub } = useGetCurrentSubscriptionQuery(undefined, {
+  const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("monthly");
+  const { data: plans = [], isLoading: isLoadingPlans } = useGetMembershipsQuery({ currency, billingCycle });
+  const { data: currentSub, isLoading: isLoadingSub, refetch: refetchSub } = useGetCurrentSubscriptionQuery(undefined, {
     refetchOnMountOrArgChange: true,
   });
   const { data: history = [], isLoading: isLoadingHistory } = useGetSubscriptionHistoryQuery(undefined, {
@@ -46,7 +48,7 @@ export const Membership: React.FC = () => {
   const sub = currentSub?.subscription;
   const currentPlanObj = currentSub?.plan;
   const currentPlanName = (sub?.planName || (currentPlanObj as any)?.name || "Free");
-  const currentLevel = JOB_SEEKER_PLAN_LEVELS[currentPlanName] || 1;
+  const currentLevel = getPlanLevel(currentPlanName);
 
   // ── Detect last expired subscription ──────────────────────────────────────
   const lastExpiredSub = !hasActiveSub
@@ -85,12 +87,13 @@ export const Membership: React.FC = () => {
     if (!selectedPlan) return;
     setIsUpgradeModalOpen(false);
 
+    const cycle = billingCycle === "yearly" ? "yearly" : "monthly";
     if (selectedPlan.price === 0 || gateway === "razorpay") {
-      startCheckout(selectedPlan);
+      startCheckout(selectedPlan, cycle);
     } else {
       const toastId = toast.loading("Creating Polar Sandbox Checkout...");
       try {
-        const res = await createPolarCheckout({ membershipId: planId }).unwrap();
+        const res = await createPolarCheckout({ membershipId: planId, billingCycle: cycle }).unwrap();
         toast.success("Redirecting to Polar Sandbox...", { id: toastId });
         if (res.checkoutUrl) {
           window.location.href = res.checkoutUrl;
@@ -107,6 +110,7 @@ export const Membership: React.FC = () => {
     if (!window.confirm("Are you sure you want to cancel your active subscription?")) return;
     try {
       await cancelSubscription().unwrap();
+      await refetchSub();
       toast.success("Subscription Cancelled Successfully.");
     } catch (err: any) {
       toast.error(err?.data?.message || "Failed to cancel subscription.");
@@ -116,6 +120,7 @@ export const Membership: React.FC = () => {
   const handleReactivateAutoPay = async () => {
     try {
       await reactivateAutopay().unwrap();
+      await refetchSub();
       toast.success("AutoPay reactivated! Your subscription will auto-renew 🎉");
     } catch (err: any) {
       toast.error(err?.data?.message || "Failed to reactivate AutoPay.");
@@ -124,7 +129,7 @@ export const Membership: React.FC = () => {
 
   const getUpgradePreview = (targetPlan: IMembership | null) => {
     if (!targetPlan || !hasActiveSub || !sub || targetPlan.price === 0) return null;
-    const targetLevel = JOB_SEEKER_PLAN_LEVELS[targetPlan.name] || 1;
+    const targetLevel = getPlanLevel(targetPlan.name);
     if (targetLevel <= currentLevel) return null;
 
     const now = new Date();
@@ -166,7 +171,7 @@ export const Membership: React.FC = () => {
         <CurrentPlanCard
           currentSubscription={currentSub}
           onUpgrade={() => {
-            const higherPlan = plans.find((p) => (JOB_SEEKER_PLAN_LEVELS[p.name] || 1) > currentLevel);
+            const higherPlan = plans.find((p) => getPlanLevel(p.name) > currentLevel);
             if (higherPlan) handleSelectPlan(higherPlan);
           }}
           onCancel={handleCancelSubscription}
@@ -234,7 +239,39 @@ export const Membership: React.FC = () => {
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
+            {/* Monthly / Yearly Toggle Button */}
+            <div className="inline-flex items-center bg-gray-100 p-1 rounded-xl border border-gray-200 shadow-xs">
+              <button
+                type="button"
+                onClick={() => setBillingCycle("monthly")}
+                className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+                  billingCycle === "monthly"
+                    ? "bg-[#3C65F5] text-white shadow-xs"
+                    : "text-gray-500 hover:text-gray-900"
+                }`}
+              >
+                Monthly
+              </button>
+              <button
+                type="button"
+                onClick={() => setBillingCycle("yearly")}
+                className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all flex items-center gap-1.5 cursor-pointer ${
+                  billingCycle === "yearly"
+                    ? "bg-purple-600 text-white shadow-xs"
+                    : "text-gray-500 hover:text-gray-900"
+                }`}
+              >
+                <span>Yearly</span>
+                <span className={`text-[10px] font-extrabold px-1.5 py-0.5 rounded-full ${
+                  billingCycle === "yearly" ? "bg-purple-800 text-purple-100" : "bg-emerald-100 text-emerald-700"
+                }`}>
+                  Save 20%
+                </span>
+              </button>
+            </div>
+
+            {/* Currency Toggle */}
             <div className="inline-flex items-center bg-gray-100 p-1 rounded-xl border border-gray-200 shadow-xs">
               <button
                 type="button"
@@ -274,10 +311,32 @@ export const Membership: React.FC = () => {
         ) : (
           <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
             {plans.map((planItem) => {
-              const planLevel = JOB_SEEKER_PLAN_LEVELS[planItem.name] || 1;
-              const isCurrent = Boolean(hasActiveSub && currentPlanName === planItem.name);
-              const isHigherPlanActive = Boolean(hasActiveSub && currentLevel > planLevel);
-              const isUpgrade = Boolean(hasActiveSub && planLevel > currentLevel);
+              const planLevel = getPlanLevel(planItem.name);
+              const currentSubLevel = hasActiveSub ? getPlanLevel(currentPlanName) : 1;
+              const currentSubCycle = sub?.billingCycle || (currentPlanObj as any)?.billingCycle || (currentPlanName.toLowerCase().includes("yearly") ? "yearly" : "monthly");
+              const planCycle = planItem.billingCycle || billingCycle || (planItem.name.toLowerCase().includes("yearly") ? "yearly" : "monthly");
+
+              let isCurrent = false;
+              let isHigherPlanActive = false;
+              let isUpgrade = false;
+
+              if (hasActiveSub && sub?.status === "ACTIVE" && currentSubLevel > 1) {
+                if (currentSubLevel === planLevel) {
+                  if (currentSubCycle === planCycle) {
+                    isCurrent = true;
+                  } else if (currentSubCycle === "monthly" && planCycle === "yearly") {
+                    isUpgrade = true;
+                  } else {
+                    isHigherPlanActive = true;
+                  }
+                } else if (currentSubLevel > planLevel) {
+                  isHigherPlanActive = true;
+                } else if (currentSubLevel < planLevel) {
+                  isUpgrade = true;
+                }
+              } else if (planItem.price === 0 || planItem.name === "Free") {
+                isCurrent = !hasActiveSub || !sub || sub.status !== "ACTIVE" || currentSubLevel === 1;
+              }
 
               return (
                 <MembershipCard
@@ -392,7 +451,7 @@ export const Membership: React.FC = () => {
         currency={currentPlan?.currency || "INR"}
         onClose={closeModal}
         onRetry={() => {
-          if (currentPlan) startCheckout(currentPlan);
+          if (currentPlan) startCheckout(currentPlan, billingCycle);
         }}
       />
     </motion.div>

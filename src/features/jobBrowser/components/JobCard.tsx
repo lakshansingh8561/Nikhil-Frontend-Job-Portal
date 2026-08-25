@@ -219,13 +219,13 @@ const JobCard: React.FC<JobCardProps> = ({ job, layout = "grid" }) => {
   return (
     <div
       onClick={handleViewDetails}
-      className="group relative flex flex-col justify-between rounded-2xl border border-[#EAEFF7] bg-white p-4.5 sm:p-5 shadow-xs transition-all duration-200 hover:-translate-y-1 hover:shadow-lg hover:border-[#3C65F5]/30 cursor-pointer min-h-[300px]"
+      className="group relative flex flex-col justify-between rounded-2xl border border-slate-200/80 bg-white p-5 sm:p-6 shadow-xs transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-[#3C65F5]/40 cursor-pointer min-h-[310px]"
     >
       <div>
-        {/* Header: Company Logo + Name + Zap Badge */}
+        {/* Header: Company Logo + Name + Active/Zap Badge */}
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0">
-            <div className="flex h-11 w-11 min-w-[44px] items-center justify-center rounded-xl bg-[#F8FAFC] p-1.5 border border-[#EAEFF7] overflow-hidden shrink-0">
+            <div className="flex h-12 w-12 min-w-[48px] items-center justify-center rounded-2xl bg-slate-50 p-2 border border-slate-200/80 overflow-hidden shrink-0 shadow-xs">
               <img
                 src={companyLogo}
                 alt={companyName}
@@ -236,87 +236,88 @@ const JobCard: React.FC<JobCardProps> = ({ job, layout = "grid" }) => {
               />
             </div>
             <div className="min-w-0 flex-1">
-              <h4 className="text-[13px] font-semibold text-[#05264E] truncate">
+              <h4 className="text-sm font-semibold text-slate-800 truncate">
                 {companyName}
               </h4>
-              <p className="text-[11px] text-[#66789C] flex items-center gap-1 mt-0.5 truncate">
-                <FiMapPin className="text-gray-400 shrink-0" />
+              <p className="text-xs font-medium text-slate-500 flex items-center gap-1 mt-0.5 truncate">
+                <FiMapPin className="text-slate-400 shrink-0" />
                 <span className="truncate">{job.location}</span>
               </p>
             </div>
           </div>
 
-          <div className="flex h-7 w-7 min-w-[28px] items-center justify-center rounded-lg bg-[#E6F9F0] text-[#00BA63] shrink-0">
-            <FiZap className="text-[11px]" />
+          <div className="flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 text-emerald-600 border border-emerald-200/60 shrink-0">
+            <FiZap className="text-xs" />
+            <span className="text-[11px] font-extrabold uppercase tracking-wide">Active</span>
           </div>
         </div>
 
         {/* Title */}
-        <h3 className="mt-3 text-[15px] font-bold text-[#05264E] leading-snug group-hover:text-[#3C65F5] transition-colors line-clamp-1">
+        <h3 className="mt-4 text-base sm:text-lg font-bold text-[#05264E] leading-snug group-hover:text-[#3C65F5] transition-colors line-clamp-1">
           {job.title}
         </h3>
 
         {/* Meta badges */}
-        <div className="mt-2.5 flex flex-wrap items-center gap-1.5 text-[11px] font-medium text-[#66789C]">
-          <span className="flex items-center gap-1 rounded-md bg-[#F8FAFC] px-2 py-0.5 border border-[#EAEFF7]">
-            <FiBriefcase className="text-[#3C65F5] text-[11px]" />
+        <div className="mt-3 flex flex-wrap items-center gap-2 text-xs font-semibold text-slate-600">
+          <span className="flex items-center gap-1.5 rounded-lg bg-slate-50 px-2.5 py-1 border border-slate-200/80">
+            <FiBriefcase className="text-[#3C65F5] text-xs" />
             {formatEmploymentType(job.employmentType)}
           </span>
-          <span className="flex items-center gap-1 rounded-md bg-[#F8FAFC] px-2 py-0.5 border border-[#EAEFF7]">
-            <FiAward className="text-[#3C65F5] text-[11px]" />
+          <span className="flex items-center gap-1.5 rounded-lg bg-slate-50 px-2.5 py-1 border border-slate-200/80">
+            <FiAward className="text-[#3C65F5] text-xs" />
             {formatExperienceLevel(job.experienceLevel)}
           </span>
-          <span className="flex items-center gap-1 text-gray-400 text-[10px] ml-auto">
+          <span className="flex items-center gap-1 text-slate-400 text-xs ml-auto">
             <FiClock /> {postedDate}
           </span>
         </div>
 
         {/* Description snippet */}
-        <p className="mt-2 text-xs text-[#66789C] line-clamp-2 leading-relaxed">
+        <p className="mt-2.5 text-xs text-slate-500 line-clamp-2 leading-relaxed font-normal">
           {job.description}
         </p>
 
         {/* Skills */}
-        <div className="mt-3 flex flex-wrap gap-1">
-          {job.skills && job.skills.length > 0
-            ? job.skills.slice(0, 3).map((skill) => (
-                <span
-                  key={skill}
-                  className="rounded-md bg-[#F2F5F9] px-2 py-0.5 text-[10px] font-medium text-[#66789C]"
-                >
-                  {skill}
-                </span>
-              ))
-            : null}
-          {job.skills && job.skills.length > 3 && (
-            <span className="rounded-md bg-[#F2F5F9] px-1.5 py-0.5 text-[10px] font-medium text-gray-400">
-              +{job.skills.length - 3}
-            </span>
-          )}
-        </div>
+        {job.skills && job.skills.length > 0 && (
+          <div className="mt-3.5 flex flex-wrap gap-1.5">
+            {job.skills.slice(0, 4).map((skill) => (
+              <span
+                key={skill}
+                className="rounded-lg bg-[#E8F0FE] px-2.5 py-0.5 text-xs font-semibold text-[#3C65F5]"
+              >
+                {skill}
+              </span>
+            ))}
+            {job.skills.length > 4 && (
+              <span className="rounded-lg bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-500">
+                +{job.skills.length - 4}
+              </span>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Footer: Salary & Actions */}
-      <div className="mt-4 border-t border-[#F0F4FC] pt-3 flex flex-col gap-2.5">
+      <div className="mt-5 border-t border-slate-100 pt-3.5 flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <div>
-            <span className="text-sm sm:text-base font-extrabold text-[#3C65F5]">
+            <span className="text-base sm:text-lg font-black text-[#3C65F5]">
               {formattedText}
             </span>
-            <span className="text-[11px] font-semibold text-[#66789C] ml-1">
+            <span className="text-xs font-semibold text-slate-500 ml-1">
               {period}
             </span>
           </div>
 
-          <span className="text-[11px] font-medium text-gray-500 flex items-center gap-1 bg-gray-50 px-2 py-0.5 rounded-md">
-            <FiUsers className="text-[#3C65F5]" /> {job.vacancies} Openings
+          <span className="text-xs font-semibold text-slate-600 flex items-center gap-1.5 bg-slate-100 px-2.5 py-1 rounded-lg">
+            <FiUsers className="text-[#3C65F5]" /> {job.vacancies} {job.vacancies === 1 ? "Vacancy" : "Vacancies"}
           </span>
         </div>
 
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-2 gap-2.5">
           <button
             onClick={handleViewDetails}
-            className="flex items-center justify-center gap-1 rounded-lg bg-[#F8FAFC] py-1.5 text-xs font-semibold text-[#05264E] border border-[#EAEFF7] transition hover:bg-[#E8F0FE] hover:text-[#3C65F5] cursor-pointer"
+            className="flex h-9 items-center justify-center gap-1.5 rounded-xl bg-slate-50 text-xs font-bold text-slate-700 border border-slate-200/80 transition hover:bg-[#E8F0FE] hover:text-[#3C65F5] cursor-pointer"
           >
             <FiExternalLink /> Details
           </button>
@@ -324,14 +325,14 @@ const JobCard: React.FC<JobCardProps> = ({ job, layout = "grid" }) => {
             <button
               disabled
               onClick={(e) => e.stopPropagation()}
-              className="flex items-center justify-center gap-1.5 rounded-lg bg-emerald-100 text-emerald-800 border border-emerald-200 py-1.5 text-xs font-extrabold cursor-not-allowed shadow-2xs"
+              className="flex h-9 items-center justify-center gap-1.5 rounded-xl bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs font-extrabold cursor-not-allowed shadow-2xs"
             >
               <FiCheckCircle className="text-emerald-700" /> Applied ✓
             </button>
           ) : (
             <button
               onClick={handleApplyClick}
-              className="rounded-lg bg-[#3C65F5] py-1.5 text-xs font-semibold text-white transition hover:bg-[#254BD6] shadow-2xs cursor-pointer"
+              className="flex h-9 items-center justify-center rounded-xl bg-[#3C65F5] text-xs font-bold text-white transition hover:bg-[#254BD6] shadow-sm cursor-pointer"
             >
               Apply Now
             </button>

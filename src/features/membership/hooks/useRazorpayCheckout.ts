@@ -30,7 +30,7 @@ export const useRazorpayCheckout = () => {
 
       // Free Plan Path
       if (plan.price === 0) {
-        const res = await createPaymentOrder({ membershipId: plan._id || plan.id || "" }).unwrap();
+        const res = await createPaymentOrder({ membershipId: plan._id || plan.id || "", billingCycle }).unwrap();
         if (res.isFree) {
           setModalStatus("SUCCESS");
           toast.success("Free plan activated successfully! 🎉");
@@ -62,7 +62,7 @@ export const useRazorpayCheckout = () => {
       } catch (subErr: any) {
         console.warn("[Razorpay] Subscription API fallback to Order API:", subErr);
         // Fallback to standard Order API if subscription creation failed
-        const orderRes = await createPaymentOrder({ membershipId: plan._id || plan.id || "" }).unwrap();
+        const orderRes = await createPaymentOrder({ membershipId: plan._id || plan.id || "", billingCycle }).unwrap();
         if (!orderRes.data) {
           throw new Error(subErr?.data?.message || subErr?.message || "Payment order creation failed.");
         }

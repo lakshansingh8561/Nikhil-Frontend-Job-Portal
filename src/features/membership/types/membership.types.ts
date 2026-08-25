@@ -16,6 +16,7 @@ export interface IMembership {
   id?: string;
   name: string;
   role: string;
+  billingCycle?: "monthly" | "yearly";
   price: number;
   currency: string;
   planId?: string;

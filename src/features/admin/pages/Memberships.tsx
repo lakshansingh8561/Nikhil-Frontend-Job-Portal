@@ -34,9 +34,9 @@ export const AdminMembershipsPage: React.FC = () => {
   const [formData, setFormData] = useState({
     name: "",
     role: "JOB_SEEKER",
+    billingCycle: "monthly" as "monthly" | "yearly",
     selectedCurrency: "USD" as "USD" | "INR",
     price: 0,
-    inrPrice: 0,
     planId: "",
     durationInDays: 30,
     description: "",
@@ -51,9 +51,9 @@ export const AdminMembershipsPage: React.FC = () => {
     setFormData({
       name: "",
       role: "JOB_SEEKER",
+      billingCycle: "monthly",
       selectedCurrency: "USD",
       price: 10,
-      inrPrice: 478,
       planId: "",
       durationInDays: 30,
       description: "",
@@ -68,14 +68,16 @@ export const AdminMembershipsPage: React.FC = () => {
   const openEditModal = (plan: IMembership) => {
     setEditingPlan(plan);
     const curr = (plan.currency as "USD" | "INR") || "USD";
+    const nameLower = (plan.name || "").toLowerCase();
+    const cycle = plan.billingCycle || (nameLower.includes("yearly") || nameLower.includes("annual") || (plan.durationInDays && plan.durationInDays >= 365) ? "yearly" : "monthly");
     setFormData({
       name: plan.name || "",
       role: plan.role || "JOB_SEEKER",
+      billingCycle: cycle,
       selectedCurrency: curr,
-      price: curr === "USD" ? plan.price : 10,
-      inrPrice: curr === "INR" ? plan.price : 478,
+      price: plan.price || 0,
       planId: plan.planId || "",
-      durationInDays: plan.durationInDays || 30,
+      durationInDays: plan.durationInDays || (cycle === "yearly" ? 365 : 30),
       description: plan.description || "",
       isPopular: !!plan.isPopular,
       isRecommended: !!plan.isRecommended,
@@ -130,13 +132,11 @@ export const AdminMembershipsPage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const isINR = formData.selectedCurrency === "INR";
-      const finalPrice = isINR ? Number(formData.inrPrice) : Number(formData.price);
-
       const payload = {
         name: formData.name,
         role: formData.role,
-        price: finalPrice,
+        billingCycle: formData.billingCycle,
+        price: Number(formData.price),
         currency: formData.selectedCurrency,
         planId: formData.planId.trim(),
         durationInDays: Number(formData.durationInDays),
@@ -272,10 +272,10 @@ export const AdminMembershipsPage: React.FC = () => {
               <thead>
                 <tr className="bg-slate-50/80 border-b border-slate-200/80 text-xs font-semibold text-slate-500 uppercase tracking-wider">
                   <th className="py-3.5 px-6">Plan Name</th>
-                  <th className="py-3.5 px-4">Target Role</th>
+                  <th className="py-3.5 px-4">Billing Cycle</th>
                   <th className="py-3.5 px-4">Currency Gateway</th>
                   <th className="py-3.5 px-4">Price</th>
-                  <th className="py-3.5 px-4">Razorpay Plan ID (`planId`)</th>
+                  <th className="py-3.5 px-4">Provider Plan ID (`planId`)</th>
                   <th className="py-3.5 px-4">Status</th>
                   <th className="py-3.5 px-6 text-right">Actions</th>
                 </tr>
@@ -283,6 +283,7 @@ export const AdminMembershipsPage: React.FC = () => {
               <tbody className="divide-y divide-slate-100 text-sm text-slate-700">
                 {filteredPlans.map((plan) => {
                   const isINR = plan.currency === "INR" || plan.currency === "₹";
+                  const isYearly = plan.billingCycle === "yearly";
                   return (
                     <tr key={plan._id} className="hover:bg-slate-50/50 transition-colors">
                       <td className="py-4 px-6 font-semibold text-slate-900">
@@ -315,6 +316,18 @@ export const AdminMembershipsPage: React.FC = () => {
                           }`}
                         >
                           {plan.role}
+                        </span>
+                      </td>
+
+                      <td className="py-4 px-4">
+                        <span
+                          className={`px-2.5 py-1 rounded text-xs font-bold uppercase ${
+                            isYearly
+                              ? "bg-purple-100 text-purple-800 border border-purple-200"
+                              : "bg-blue-100 text-blue-800 border border-blue-200"
+                          }`}
+                        >
+                          {isYearly ? "Yearly" : "Monthly"}
                         </span>
                       </td>
 
@@ -495,8 +508,8 @@ export const AdminMembershipsPage: React.FC = () => {
                       step="1"
                       required
                       placeholder="e.g. 478"
-                      value={formData.inrPrice}
-                      onChange={(e) => setFormData({ ...formData, inrPrice: Number(e.target.value) })}
+                      value={formData.price}
+                      onChange={(e) => setFormData({ ...formData, price: Number(e.target.value) })}
                       className="w-full px-3.5 py-2 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
                     />
                   </div>
@@ -530,18 +543,63 @@ export const AdminMembershipsPage: React.FC = () => {
                   </p>
                 </div>
 
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
-                    Duration (Days) *
-                  </label>
-                  <input
-                    type="number"
-                    min="1"
-                    required
-                    value={formData.durationInDays}
-                    onChange={(e) => setFormData({ ...formData, durationInDays: Number(e.target.value) })}
-                    className="w-full px-3.5 py-2 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-[#3C65F5]/20 focus:border-[#3C65F5]"
-                  />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+                      Duration (Days) *
+                    </label>
+                    <input
+                      type="number"
+                      min="1"
+                      required
+                      value={formData.durationInDays}
+                      onChange={(e) => setFormData({ ...formData, durationInDays: Number(e.target.value) })}
+                      className="w-full px-3.5 py-2 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-[#3C65F5]/20 focus:border-[#3C65F5]"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+                      Billing Cycle *
+                    </label>
+                    <div className="flex items-center gap-6 h-[42px] px-3 bg-slate-50 border border-slate-200 rounded-lg">
+                      <label className="inline-flex items-center gap-2 cursor-pointer text-xs font-bold text-slate-700">
+                        <input
+                          type="radio"
+                          name="billingCycle"
+                          value="monthly"
+                          checked={formData.billingCycle === "monthly"}
+                          onChange={() =>
+                            setFormData({
+                              ...formData,
+                              billingCycle: "monthly",
+                              durationInDays: formData.durationInDays >= 365 ? 30 : formData.durationInDays,
+                            })
+                          }
+                          className="w-4 h-4 text-[#3C65F5] focus:ring-[#3C65F5] border-slate-300"
+                        />
+                        Monthly
+                      </label>
+
+                      <label className="inline-flex items-center gap-2 cursor-pointer text-xs font-bold text-slate-700">
+                        <input
+                          type="radio"
+                          name="billingCycle"
+                          value="yearly"
+                          checked={formData.billingCycle === "yearly"}
+                          onChange={() =>
+                            setFormData({
+                              ...formData,
+                              billingCycle: "yearly",
+                              durationInDays: formData.durationInDays < 365 ? 365 : formData.durationInDays,
+                            })
+                          }
+                          className="w-4 h-4 text-purple-600 focus:ring-purple-500 border-slate-300"
+                        />
+                        Yearly
+                      </label>
+                    </div>
+                  </div>
                 </div>
               </div>
 
