@@ -14,11 +14,14 @@ import {
   FiMenu,
   FiZap,
   FiChevronRight,
+  FiGlobe,
+  FiUsers,
 } from "react-icons/fi";
 import { useAppDispatch } from "../../../hooks/useAppDispatch";
 import { logout } from "../../auth/authSlice";
 import { useGetUnreadCountQuery } from "../../chat/api/chatApi";
 import { UnreadBadge } from "../../chat/components/UnreadBadge";
+import { useGetNetworkStatsQuery } from "../../network/api/networkApi";
 import { useGetCurrentRecruiterPlanQuery } from "../../membership/api/membershipApi";
 import logo from "../../../assets/logo.svg";
 
@@ -31,6 +34,13 @@ interface RecruiterSidebarProps {
 
 const navItems = [
   { name: "Dashboard", path: "/recruiter/dashboard", icon: FiGrid },
+  { name: "Network Feed", path: "/recruiter/network", icon: FiGlobe },
+  {
+    name: "My Network",
+    path: "/recruiter/network/connections",
+    icon: FiUsers,
+    hasInviteBadge: true,
+  },
   { name: "Company Profile", path: "/recruiter/company", icon: FiLayers },
   { name: "Post a Job", path: "/recruiter/post-job", icon: FiPlusSquare },
   { name: "My Jobs", path: "/recruiter/my-jobs", icon: FiBriefcase },
@@ -47,6 +57,7 @@ export const RecruiterSidebar: React.FC<RecruiterSidebarProps> = ({
   onToggleSidebar,
 }) => {
   const { data: unreadData } = useGetUnreadCountQuery();
+  const { data: networkStats } = useGetNetworkStatsQuery();
   const { data: recSub } = useGetCurrentRecruiterPlanQuery();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -143,6 +154,12 @@ export const RecruiterSidebar: React.FC<RecruiterSidebarProps> = ({
                       {item.hasBadge && (
                         <div className={`${isDesktopCollapsed ? "lg:hidden" : ""}`}>
                           <UnreadBadge count={unreadData?.unreadCount || 0} />
+                        </div>
+                      )}
+
+                      {item.hasInviteBadge && (
+                        <div className={`${isDesktopCollapsed ? "lg:hidden" : ""}`}>
+                          <UnreadBadge count={networkStats?.pendingInvitesCount || 0} />
                         </div>
                       )}
                     </>

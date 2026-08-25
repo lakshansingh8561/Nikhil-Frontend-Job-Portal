@@ -9,8 +9,22 @@ import type {
 export const membershipApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     // Job Seeker Endpoints
-    getMemberships: builder.query<IMembership[], "USD" | "INR" | void>({
-      query: (currency) => (currency ? `/memberships?currency=${currency}` : "/memberships"),
+    getMemberships: builder.query<
+      IMembership[],
+      { currency?: string; billingCycle?: string } | "USD" | "INR" | void
+    >({
+      query: (arg) => {
+        if (typeof arg === "string") {
+          return `/memberships?currency=${arg}`;
+        }
+        if (arg && typeof arg === "object") {
+          const params = new URLSearchParams();
+          if (arg.currency) params.append("currency", arg.currency);
+          if (arg.billingCycle) params.append("billingCycle", arg.billingCycle);
+          return `/memberships?${params.toString()}`;
+        }
+        return "/memberships";
+      },
       transformResponse: (response: { data: IMembership[] }) => response.data,
       providesTags: ["Membership"],
     }),
@@ -52,8 +66,22 @@ export const membershipApi = apiSlice.injectEndpoints({
     }),
 
     // Recruiter Endpoints
-    getRecruiterPlans: builder.query<IMembership[], "USD" | "INR" | void>({
-      query: (currency) => (currency ? `/memberships/recruiter?currency=${currency}` : "/memberships/recruiter"),
+    getRecruiterPlans: builder.query<
+      IMembership[],
+      { currency?: string; billingCycle?: string } | "USD" | "INR" | void
+    >({
+      query: (arg) => {
+        if (typeof arg === "string") {
+          return `/memberships/recruiter/plans?currency=${arg}`;
+        }
+        if (arg && typeof arg === "object") {
+          const params = new URLSearchParams();
+          if (arg.currency) params.append("currency", arg.currency);
+          if (arg.billingCycle) params.append("billingCycle", arg.billingCycle);
+          return `/memberships/recruiter/plans?${params.toString()}`;
+        }
+        return "/memberships/recruiter/plans";
+      },
       transformResponse: (response: { data: IMembership[] }) => response.data,
       providesTags: ["Membership"],
     }),

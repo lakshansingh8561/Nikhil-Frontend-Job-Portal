@@ -10,7 +10,7 @@ import type {
 
 export const paymentApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    createPaymentOrder: builder.mutation<CreateOrderResponse, { membershipId: string }>({
+    createPaymentOrder: builder.mutation<CreateOrderResponse, { membershipId: string; billingCycle?: "monthly" | "yearly" }>({
       query: (body) => ({
         url: "/payments/create-order",
         method: "POST",

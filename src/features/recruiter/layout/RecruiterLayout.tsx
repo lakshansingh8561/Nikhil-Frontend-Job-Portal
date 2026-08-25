@@ -28,14 +28,14 @@ export const RecruiterLayout = () => {
       {/* Main Content Workspace */}
       <div
         className={`flex flex-1 flex-col min-w-0 h-screen overflow-hidden transition-all duration-300 ${
-          isDesktopCollapsed ? "lg:pl-20" : "lg:pl-72"
+          isDesktopCollapsed ? "lg:pl-20" : "lg:pl-64"
         }`}
       >
         {/* Sticky Top Header */}
         <RecruiterHeader onToggleSidebar={handleToggleSidebar} />
 
         {/* Dynamic Nested Route Content */}
-        <main className="flex-1 min-h-0 overflow-y-auto p-4 sm:p-6 lg:p-8">
+        <main className="flex-1 min-h-0 overflow-y-auto p-4 sm:p-5 lg:p-6">
           <Outlet />
         </main>
       </div>

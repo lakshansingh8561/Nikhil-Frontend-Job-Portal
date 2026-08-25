@@ -122,8 +122,8 @@ const BrowseJobs: React.FC = () => {
     setPage(newPage);
   };
 
-  const renderIndependentContent = (isPublicPage = false) => (
-    <div className={`flex flex-col w-full min-h-0 overflow-hidden ${isPublicPage ? "h-[calc(100vh-100px)]" : "h-full"}`}>
+  const renderIndependentContent = () => (
+    <div className="flex flex-col w-full">
       {/* Top Header & Search Control */}
       <div className="shrink-0 mb-4">
         <div className="flex items-center justify-between mb-3 gap-3">
@@ -237,9 +237,9 @@ const BrowseJobs: React.FC = () => {
       )}
 
       {/* Main Grid Content */}
-      <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-0 overflow-hidden">
+      <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Desktop Sidebar */}
-        <div className="hidden lg:block lg:col-span-4 xl:col-span-3 h-full overflow-y-auto overscroll-contain pr-1 custom-table-scrollbar">
+        <div className="hidden lg:block lg:col-span-3 xl:col-span-3 sticky top-4 self-start">
           <FilterSidebar
             location={location}
             setLocation={(val) => {
@@ -279,8 +279,8 @@ const BrowseJobs: React.FC = () => {
           />
         </div>
 
-        {/* Right Scrollable Job Grid */}
-        <div className="lg:col-span-8 xl:col-span-9 h-full overflow-y-auto overscroll-contain pr-1 pb-8 custom-table-scrollbar">
+        {/* Right Job Grid */}
+        <div className="lg:col-span-9 xl:col-span-9 pb-8">
           <JobList
             jobs={jobsList}
             pagination={pagination}
@@ -310,12 +310,12 @@ const BrowseJobs: React.FC = () => {
   );
 
   if (isDashboardMode) {
-    return renderIndependentContent(false);
+    return renderIndependentContent();
   }
 
   return (
-    <div className="h-screen w-full bg-slate-50/50 pt-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto overflow-hidden">
-      {renderIndependentContent(true)}
+    <div className="w-full min-h-screen bg-slate-50/50 pt-20 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      {renderIndependentContent()}
     </div>
   );
 };

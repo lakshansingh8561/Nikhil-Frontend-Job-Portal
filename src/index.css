@@ -224,6 +224,26 @@
   background: #94A3B8;
 }
 
+.custom-rail-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(10, 102, 194, 0.4) transparent;
+}
+.custom-rail-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+.custom-rail-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 9999px;
+}
+.custom-rail-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(10, 102, 194, 0.35);
+  border-radius: 9999px;
+}
+.custom-rail-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(10, 102, 194, 0.65);
+}
+
+
 /* Line clamps */
 .line-clamp-1 {
   display: -webkit-box;

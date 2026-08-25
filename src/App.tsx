@@ -57,6 +57,14 @@ import AdminMembershipsPage from "./features/admin/pages/Memberships";
 // Real-Time Chat Feature Page
 import { ChatPage } from "./features/chat";
 
+// Community Feed & Network Pages
+import CommunityFeed from "./features/network/pages/CommunityFeed";
+import PublicProfile from "./features/network/pages/PublicProfile";
+import NetworkDirectory from "./features/network/pages/NetworkDirectory";
+import PostDetail from "./features/network/pages/PostDetail";
+import MyNetwork from "./features/network/pages/MyNetwork";
+import SavedPosts from "./features/network/pages/SavedPosts";
+
 import { LocationDeniedBanner } from "./components/common/LocationDeniedBanner";
 
 function App() {
@@ -91,6 +99,13 @@ function App() {
           <Route path="/job-seeker" element={<JobSeekerLayout />}>
             <Route index element={<Navigate to="dashboard" replace />} />
             <Route path="dashboard" element={<JobSeekerDashboard />} />
+            <Route path="network" element={<CommunityFeed />} />
+            <Route path="network/directory" element={<NetworkDirectory />} />
+            <Route path="network/connections" element={<MyNetwork />} />
+            <Route path="network/saved" element={<SavedPosts />} />
+            <Route path="network/post/:postId" element={<PostDetail />} />
+            <Route path="network/profile" element={<PublicProfile />} />
+            <Route path="network/profile/:userId" element={<PublicProfile />} />
             <Route path="profile" element={<JobSeekerProfilePage />} />
             <Route path="applications" element={<MyApplications />} />
             <Route path="membership" element={<Membership />} />
@@ -107,6 +122,13 @@ function App() {
           <Route path="/recruiter" element={<RecruiterLayout />}>
             <Route index element={<Navigate to="dashboard" replace />} />
             <Route path="dashboard" element={<Dashboard />} />
+            <Route path="network" element={<CommunityFeed />} />
+            <Route path="network/directory" element={<NetworkDirectory />} />
+            <Route path="network/connections" element={<MyNetwork />} />
+            <Route path="network/saved" element={<SavedPosts />} />
+            <Route path="network/post/:postId" element={<PostDetail />} />
+            <Route path="network/profile" element={<PublicProfile />} />
+            <Route path="network/profile/:userId" element={<PublicProfile />} />
             <Route path="company" element={<Company />} />
             <Route path="membership" element={<RecruiterMembership />} />
             <Route path="billing" element={<PaymentHistoryPage />} />

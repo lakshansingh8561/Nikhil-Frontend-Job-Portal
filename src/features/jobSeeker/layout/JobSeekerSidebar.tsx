@@ -12,11 +12,14 @@ import {
   FiMenu,
   FiZap,
   FiChevronRight,
+  FiGlobe,
+  FiUsers,
 } from "react-icons/fi";
 import { useAppDispatch } from "../../../hooks/useAppDispatch";
 import { logout } from "../../auth/authSlice";
 import { useGetUnreadCountQuery } from "../../chat/api/chatApi";
 import { UnreadBadge } from "../../chat/components/UnreadBadge";
+import { useGetNetworkStatsQuery } from "../../network/api/networkApi";
 import logo from "../../../assets/logo.svg";
 
 interface JobSeekerSidebarProps {
@@ -28,6 +31,13 @@ interface JobSeekerSidebarProps {
 
 const navItems = [
   { name: "Dashboard", path: "/job-seeker/dashboard", icon: FiGrid },
+  { name: "Network Feed", path: "/job-seeker/network", icon: FiGlobe },
+  {
+    name: "My Network",
+    path: "/job-seeker/network/connections",
+    icon: FiUsers,
+    hasInviteBadge: true,
+  },
   { name: "My Profile", path: "/job-seeker/profile", icon: FiUser },
   { name: "My Applications", path: "/job-seeker/applications", icon: FiFileText },
   { name: "Messages", path: "/job-seeker/messages", icon: FiMessageSquare, hasBadge: true },
@@ -42,6 +52,7 @@ export const JobSeekerSidebar: React.FC<JobSeekerSidebarProps> = ({
   onToggleSidebar,
 }) => {
   const { data: unreadData } = useGetUnreadCountQuery();
+  const { data: networkStats } = useGetNetworkStatsQuery();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
@@ -133,6 +144,12 @@ export const JobSeekerSidebar: React.FC<JobSeekerSidebarProps> = ({
                       {item.hasBadge && (
                         <div className={`${isDesktopCollapsed ? "lg:hidden" : ""}`}>
                           <UnreadBadge count={unreadData?.unreadCount || 0} />
+                        </div>
+                      )}
+
+                      {item.hasInviteBadge && (
+                        <div className={`${isDesktopCollapsed ? "lg:hidden" : ""}`}>
+                          <UnreadBadge count={networkStats?.pendingInvitesCount || 0} />
                         </div>
                       )}
                     </>
