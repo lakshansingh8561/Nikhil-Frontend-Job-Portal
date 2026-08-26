@@ -27,9 +27,8 @@ export const AdminLayout: React.FC = () => {
 
       {/* Main Content Area — offset to clear the fixed sidebar */}
       <div
-        className={`flex flex-1 flex-col min-w-0 h-screen overflow-hidden transition-all duration-300 ${
-          isDesktopCollapsed ? "lg:pl-20" : "lg:pl-64"
-        }`}
+        className={`flex flex-1 flex-col min-w-0 h-screen overflow-hidden transition-all duration-300 ${isDesktopCollapsed ? "lg:pl-20" : "lg:pl-64"
+          }`}
       >
         <Header onToggleSidebar={handleToggleSidebar} />
 

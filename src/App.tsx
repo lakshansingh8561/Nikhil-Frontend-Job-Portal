@@ -4,6 +4,7 @@ import MainLayout from "./layouts/MainLayout";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import VerifyOtp from "./pages/auth/VerifyOtp";
+import ForgotPassword from "./pages/auth/ForgotPassword";
 import Home from "./pages/Home";
 import CandidatesPage from "./pages/candidates/CandidatesPage";
 import ProtectedRoute from "./components/common/ProtectedRoute";
@@ -77,6 +78,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/verify-otp" element={<VerifyOtp />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
         </Route>
 
         {/* Main Layout (Public Pages) */}

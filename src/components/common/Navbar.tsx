@@ -80,8 +80,8 @@ const Navbar = () => {
   const profilePath = isAdmin
     ? "/admin/dashboard"
     : isRecruiter
-    ? "/recruiter/dashboard"
-    : "/job-seeker/dashboard";
+      ? "/recruiter/dashboard"
+      : "/job-seeker/dashboard";
 
   const { data: unreadData } = useGetUnreadCountQuery(undefined, {
     skip: !user || user.role === "ADMIN",
@@ -108,10 +108,9 @@ const Navbar = () => {
                   key={item.name}
                   to={item.path}
                   className={({ isActive }) =>
-                    `px-3.5 py-2 rounded-lg text-sm font-semibold transition-all whitespace-nowrap ${
-                      isActive
-                        ? "bg-slate-100 text-indigo-600 font-bold"
-                        : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
+                    `px-3.5 py-2 rounded-lg text-sm font-semibold transition-all whitespace-nowrap ${isActive
+                      ? "bg-slate-100 text-indigo-600 font-bold"
+                      : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
                     }`
                   }
                 >
@@ -276,9 +275,8 @@ const Navbar = () => {
 
       <div
         ref={mobileMenuRef}
-        className={`fixed top-0 right-0 bottom-0 z-50 w-[280px] max-w-[85vw] bg-white shadow-xl transform transition-transform duration-200 ease-in-out lg:hidden flex flex-col ${
-          mobileMenuOpen ? "translate-x-0" : "translate-x-full"
-        }`}
+        className={`fixed top-0 right-0 bottom-0 z-50 w-[280px] max-w-[85vw] bg-white shadow-xl transform transition-transform duration-200 ease-in-out lg:hidden flex flex-col ${mobileMenuOpen ? "translate-x-0" : "translate-x-full"
+          }`}
       >
         <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
           <img src={Logo} alt="JobBox" className="h-7 w-auto" />
@@ -297,10 +295,9 @@ const Navbar = () => {
               to={item.path}
               onClick={() => setMobileMenuOpen(false)}
               className={({ isActive }) =>
-                `flex items-center px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all ${
-                  isActive
-                    ? "bg-indigo-50 text-indigo-600 font-bold"
-                    : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                `flex items-center px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all ${isActive
+                  ? "bg-indigo-50 text-indigo-600 font-bold"
+                  : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
                 }`
               }
             >

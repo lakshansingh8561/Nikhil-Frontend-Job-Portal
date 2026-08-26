@@ -257,6 +257,13 @@ const Register = () => {
             >
               Sign in
             </Link>
+            {" • "}
+            <Link
+              to="/forgot-password"
+              className="font-bold text-[#3C65F5] hover:underline"
+            >
+              Forgot Password?
+            </Link>
           </p>
         </>
       ) : (

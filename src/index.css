@@ -55,7 +55,8 @@
 .saas-card {
   background-color: #FFFFFF;
   border: 1px solid #E2E8F0;
-  border-radius: 1rem; /* 16px */
+  border-radius: 1rem;
+  /* 16px */
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.02);
   transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -203,6 +204,7 @@
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
@@ -213,13 +215,16 @@
   height: 5px;
   width: 5px;
 }
+
 .custom-table-scrollbar::-webkit-scrollbar-track {
   background: transparent;
 }
+
 .custom-table-scrollbar::-webkit-scrollbar-thumb {
   background: #CBD5E1;
   border-radius: 9999px;
 }
+
 .custom-table-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #94A3B8;
 }
@@ -228,17 +233,21 @@
   scrollbar-width: thin;
   scrollbar-color: rgba(10, 102, 194, 0.4) transparent;
 }
+
 .custom-rail-scrollbar::-webkit-scrollbar {
   width: 5px;
 }
+
 .custom-rail-scrollbar::-webkit-scrollbar-track {
   background: transparent;
   border-radius: 9999px;
 }
+
 .custom-rail-scrollbar::-webkit-scrollbar-thumb {
   background: rgba(10, 102, 194, 0.35);
   border-radius: 9999px;
 }
+
 .custom-rail-scrollbar::-webkit-scrollbar-thumb:hover {
   background: rgba(10, 102, 194, 0.65);
 }
@@ -248,17 +257,21 @@
   scrollbar-width: thin;
   scrollbar-color: #CBD5E1 transparent;
 }
+
 .custom-filter-scrollbar::-webkit-scrollbar {
   width: 5px;
 }
+
 .custom-filter-scrollbar::-webkit-scrollbar-track {
   background: transparent;
   border-radius: 9999px;
 }
+
 .custom-filter-scrollbar::-webkit-scrollbar-thumb {
   background: #CBD5E1;
   border-radius: 9999px;
 }
+
 .custom-filter-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #3C65F5;
 }
@@ -288,9 +301,12 @@
 
 /* Smooth subtle float */
 @keyframes floatAnimation {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0px);
   }
+
   50% {
     transform: translateY(-8px);
   }
