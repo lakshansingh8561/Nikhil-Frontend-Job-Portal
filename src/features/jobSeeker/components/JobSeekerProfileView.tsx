@@ -17,9 +17,12 @@ import {
   FiUploadCloud,
   FiDownload,
 } from "react-icons/fi";
+import { HiSparkles } from "react-icons/hi2";
 import toast from "react-hot-toast";
 import type { JobSeekerProfile } from "../types/jobSeeker.types";
 import EditProfileModal from "./EditProfileModal";
+import { ResumeParserModal } from "./ResumeParserModal";
+import type { ParsedResumeResponse } from "../../ai/api/aiApi";
 import { useGetCurrentSubscriptionQuery } from "../../membership/api/membershipApi";
 import { useUpdateProfileMutation } from "../api/jobSeekerApi";
 
@@ -29,6 +32,7 @@ interface JobSeekerProfileViewProps {
 
 const JobSeekerProfileView = ({ profile }: JobSeekerProfileViewProps) => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isAiModalOpen, setIsAiModalOpen] = useState(false);
   const [updateProfile] = useUpdateProfileMutation();
   const { data: currentSub } = useGetCurrentSubscriptionQuery();
 
@@ -110,8 +114,34 @@ const JobSeekerProfileView = ({ profile }: JobSeekerProfileViewProps) => {
     }
   };
 
+  const handleApplyParsedData = async (data: ParsedResumeResponse) => {
+    try {
+      const mergedSkills = Array.from(new Set([...(profile.skills || []), ...(data.skills || [])]));
+      await updateProfile({
+        headline: data.headline || profile.headline,
+        bio: data.summary || profile.bio,
+        skills: mergedSkills,
+        phone: data.phone || profile.phone,
+      }).unwrap();
+      toast.success("Profile updated with AI parsed resume data!");
+    } catch (err) {
+      console.error("Failed to save parsed profile:", err);
+      toast.error("Failed to auto-update profile.");
+    }
+  };
+
   return (
     <div className="space-y-8">
+      <ResumeParserModal
+        isOpen={isAiModalOpen}
+        onClose={() => setIsAiModalOpen(false)}
+        onApplyParsedData={handleApplyParsedData}
+      />
+      <EditProfileModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        existingProfile={profile}
+      />
       {/* Header Card */}
       <div className="relative overflow-hidden rounded-3xl bg-white shadow-md border border-[#EAEFF7]">
         {/* Rich Gradient Banner */}
@@ -212,14 +242,24 @@ const JobSeekerProfileView = ({ profile }: JobSeekerProfileViewProps) => {
               </div>
             </div>
 
-            {/* Edit Button */}
-            <button
-              onClick={() => setIsEditModalOpen(true)}
-              className="flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#1D4ED8] to-[#3C65F5] px-6 py-3 font-extrabold text-white text-sm transition-all hover:from-[#1E40AF] hover:to-[#254BD6] hover:shadow-lg shadow-md cursor-pointer shrink-0 self-start md:self-auto"
-            >
-              <FiEdit3 className="text-base" />
-              <span>Edit Profile</span>
-            </button>
+            {/* Action Buttons */}
+            <div className="flex items-center gap-3 shrink-0 self-start md:self-auto flex-wrap">
+              <button
+                onClick={() => setIsAiModalOpen(true)}
+                className="flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-600 px-5 py-3 font-extrabold text-white text-sm transition-all hover:from-purple-700 hover:to-indigo-700 hover:shadow-lg shadow-md cursor-pointer"
+              >
+                <HiSparkles className="text-base text-yellow-300 animate-pulse" />
+                <span>✨ AI Resume Auto-Fill</span>
+              </button>
+
+              <button
+                onClick={() => setIsEditModalOpen(true)}
+                className="flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#1D4ED8] to-[#3C65F5] px-6 py-3 font-extrabold text-white text-sm transition-all hover:from-[#1E40AF] hover:to-[#254BD6] hover:shadow-lg shadow-md cursor-pointer"
+              >
+                <FiEdit3 className="text-base" />
+                <span>Edit Profile</span>
+              </button>
+            </div>
           </div>
 
           {/* Bio Section */}

@@ -73,18 +73,15 @@ export const JobSeekerSidebar: React.FC<JobSeekerSidebarProps> = ({
       )}
 
       <aside
-        className={`fixed top-0 bottom-0 left-0 z-50 flex flex-col justify-between bg-white text-slate-900 border-r border-slate-200/80 transition-all duration-200 w-64 ${
-          isDesktopCollapsed ? "lg:w-20 p-3" : "lg:w-64 p-4"
-        } p-4 ${
-          isMobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
-        }`}
+        className={`fixed top-0 bottom-0 left-0 z-50 flex flex-col justify-between bg-white text-slate-900 border-r border-slate-200/80 transition-all duration-200 w-64 ${isDesktopCollapsed ? "lg:w-20 p-3" : "lg:w-64 p-4"
+          } p-4 ${isMobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+          }`}
       >
         <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar space-y-5">
           {/* Header Logo + Sidebar Toggle */}
           <div
-            className={`flex items-center ${
-              isDesktopCollapsed ? "lg:justify-center flex-col gap-3" : "justify-between"
-            } pb-3.5 border-b border-slate-100`}
+            className={`flex items-center ${isDesktopCollapsed ? "lg:justify-center flex-col gap-3" : "justify-between"
+              } pb-3.5 border-b border-slate-100`}
           >
             <Link to="/" className="flex items-center gap-2">
               <img src={logo} alt="JobBox" className="h-7 w-auto" />
@@ -123,14 +120,12 @@ export const JobSeekerSidebar: React.FC<JobSeekerSidebarProps> = ({
                   onClick={onCloseMobile}
                   title={isDesktopCollapsed ? item.name : undefined}
                   className={({ isActive }) =>
-                    `relative flex items-center ${
-                      isDesktopCollapsed
-                        ? "lg:justify-center lg:w-10 lg:h-10 lg:mx-auto lg:p-0"
-                        : "justify-between px-3 py-2.5"
-                    } gap-3 rounded-xl text-xs font-semibold transition-all duration-150 group ${
-                      isActive
-                        ? "bg-indigo-50 text-indigo-600 font-bold"
-                        : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
+                    `relative flex items-center ${isDesktopCollapsed
+                      ? "lg:justify-center lg:w-10 lg:h-10 lg:mx-auto lg:p-0"
+                      : "justify-between px-3 py-2.5"
+                    } gap-3 rounded-xl text-xs font-semibold transition-all duration-150 group ${isActive
+                      ? "bg-indigo-50 text-indigo-600 font-bold"
+                      : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
                     }`
                   }
                 >
@@ -188,9 +183,8 @@ export const JobSeekerSidebar: React.FC<JobSeekerSidebarProps> = ({
 
           <button
             onClick={handleLogout}
-            className={`w-full flex items-center ${
-              isDesktopCollapsed ? "lg:justify-center lg:p-2" : "px-3 py-2"
-            } gap-2.5 rounded-xl text-xs font-semibold text-rose-600 hover:bg-rose-50 transition cursor-pointer`}
+            className={`w-full flex items-center ${isDesktopCollapsed ? "lg:justify-center lg:p-2" : "px-3 py-2"
+              } gap-2.5 rounded-xl text-xs font-semibold text-rose-600 hover:bg-rose-50 transition cursor-pointer`}
             title="Sign Out"
           >
             <FiLogOut className="text-base shrink-0" />

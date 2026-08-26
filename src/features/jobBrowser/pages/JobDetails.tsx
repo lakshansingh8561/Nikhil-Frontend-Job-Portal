@@ -23,6 +23,7 @@ import { useAppSelector } from "../../../hooks/useAppSelector";
 
 import ApplyJobModal from "../../applications/components/ApplyJobModal";
 import { useGetMyApplicationsQuery } from "../../applications/api/applicationApi";
+import { AIMatchScoreCard } from "../components/AIMatchScoreCard";
 
 const defaultCompanyLogo = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
 
@@ -291,6 +292,9 @@ const JobDetails: React.FC = () => {
 
           {/* Right Sidebar Section: Meta Details & Recruiter Info */}
           <div className="lg:col-span-4 space-y-6">
+            {/* AI ATS Match Analyzer Widget */}
+            <AIMatchScoreCard jobId={job._id} jobData={job} />
+
             {/* Key Information Box */}
             <div className="rounded-3xl border border-[#EAEFF7] bg-white p-6 shadow-sm">
               <h3 className="text-base font-bold text-[#05264E] border-b border-[#EAEFF7] pb-4 mb-5">

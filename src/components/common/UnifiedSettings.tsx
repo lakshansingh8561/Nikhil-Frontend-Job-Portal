@@ -159,44 +159,40 @@ export const UnifiedSettings: React.FC<UnifiedSettingsProps> = ({
       <div className="flex items-center gap-2 border-b border-[#EAEFF7] pb-1 overflow-x-auto no-scrollbar">
         <button
           onClick={() => setActiveTab("security")}
-          className={`flex items-center gap-2 rounded-2xl px-5 py-3 text-xs font-extrabold transition cursor-pointer whitespace-nowrap ${
-            activeTab === "security"
+          className={`flex items-center gap-2 rounded-2xl px-5 py-3 text-xs font-extrabold transition cursor-pointer whitespace-nowrap ${activeTab === "security"
               ? "bg-[#1D4ED8] text-white shadow-md"
               : "bg-white text-[#66789C] hover:bg-[#F8FAFC] hover:text-[#05264E] border border-[#EAEFF7]"
-          }`}
+            }`}
         >
           <FiLock /> Security & Password
         </button>
 
         <button
           onClick={() => setActiveTab("notifications")}
-          className={`flex items-center gap-2 rounded-2xl px-5 py-3 text-xs font-extrabold transition cursor-pointer whitespace-nowrap ${
-            activeTab === "notifications"
+          className={`flex items-center gap-2 rounded-2xl px-5 py-3 text-xs font-extrabold transition cursor-pointer whitespace-nowrap ${activeTab === "notifications"
               ? "bg-[#1D4ED8] text-white shadow-md"
               : "bg-white text-[#66789C] hover:bg-[#F8FAFC] hover:text-[#05264E] border border-[#EAEFF7]"
-          }`}
+            }`}
         >
           <FiBell /> Notifications
         </button>
 
         <button
           onClick={() => setActiveTab("preferences")}
-          className={`flex items-center gap-2 rounded-2xl px-5 py-3 text-xs font-extrabold transition cursor-pointer whitespace-nowrap ${
-            activeTab === "preferences"
+          className={`flex items-center gap-2 rounded-2xl px-5 py-3 text-xs font-extrabold transition cursor-pointer whitespace-nowrap ${activeTab === "preferences"
               ? "bg-[#1D4ED8] text-white shadow-md"
               : "bg-white text-[#66789C] hover:bg-[#F8FAFC] hover:text-[#05264E] border border-[#EAEFF7]"
-          }`}
+            }`}
         >
           <FiSliders /> Preferences
         </button>
 
         <button
           onClick={() => setActiveTab("sessions")}
-          className={`flex items-center gap-2 rounded-2xl px-5 py-3 text-xs font-extrabold transition cursor-pointer whitespace-nowrap ${
-            activeTab === "sessions"
+          className={`flex items-center gap-2 rounded-2xl px-5 py-3 text-xs font-extrabold transition cursor-pointer whitespace-nowrap ${activeTab === "sessions"
               ? "bg-[#1D4ED8] text-white shadow-md"
               : "bg-white text-[#66789C] hover:bg-[#F8FAFC] hover:text-[#05264E] border border-[#EAEFF7]"
-          }`}
+            }`}
         >
           <FiKey /> Active Sessions & Danger Zone
         </button>

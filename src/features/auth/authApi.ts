@@ -99,6 +99,32 @@ export const authApi = apiSlice.injectEndpoints({
         response.data,
       invalidatesTags: ["Auth"],
     }),
+
+    sendForgotPasswordOtp: builder.mutation<
+      { message: string },
+      { email: string }
+    >({
+      query: (body) => ({
+        url: "/auth/forgot-password/send-otp",
+        method: "POST",
+        body,
+      }),
+      transformResponse: (response: ApiResponseWrapper<{ message: string }>) =>
+        response.data,
+    }),
+
+    resetPasswordWithOtp: builder.mutation<
+      { message: string },
+      { email: string; otp: string; newPassword: string }
+    >({
+      query: (body) => ({
+        url: "/auth/forgot-password/reset",
+        method: "POST",
+        body,
+      }),
+      transformResponse: (response: ApiResponseWrapper<{ message: string }>) =>
+        response.data,
+    }),
   }),
 });
 
@@ -111,4 +137,6 @@ export const {
   useMeQuery,
   useLogoutMutation,
   useChangePasswordMutation,
+  useSendForgotPasswordOtpMutation,
+  useResetPasswordWithOtpMutation,
 } = authApi;
