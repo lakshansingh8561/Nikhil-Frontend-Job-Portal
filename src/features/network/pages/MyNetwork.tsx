@@ -240,8 +240,8 @@ const ConnectionRow: React.FC<{ person: AuthorDTO }> = ({ person }) => {
       </div>
 
       <Link
-        to={paths.messages}
-        className="hidden items-center gap-1.5 rounded-full border border-[rgba(0,0,0,0.6)] px-3 py-1 text-sm font-semibold text-[rgba(0,0,0,0.6)] transition hover:bg-[rgba(0,0,0,0.08)] sm:inline-flex"
+        to={`${paths.messages}?recipientId=${person.userId}`}
+        className="inline-flex items-center gap-1.5 rounded-full border border-[#0a66c2] px-3.5 py-1 text-xs sm:text-sm font-semibold text-[#0a66c2] transition hover:bg-[#0a66c2]/10"
       >
         <FiMessageSquare /> Message
       </Link>

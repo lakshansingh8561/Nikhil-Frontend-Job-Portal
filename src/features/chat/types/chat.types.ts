@@ -69,8 +69,11 @@ export interface IConversation {
 }
 
 export interface CreateConversationPayload {
-  jobId: string;
+  recipientId?: string;
+  targetUserId?: string;
+  jobId?: string;
   applicantId?: string;
+  recruiterId?: string;
 }
 
 export interface SendMessagePayload {

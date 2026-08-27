@@ -160,8 +160,8 @@ export const ProfileHero: React.FC<ProfileHeroProps> = ({ profile }) => {
               variant="solid"
             />
             <Link
-              to={paths.messages}
-              className="inline-flex items-center gap-1.5 rounded-full border border-[rgba(0,0,0,0.6)] px-4 py-1.5 text-sm font-semibold text-[rgba(0,0,0,0.75)] transition hover:bg-[rgba(0,0,0,0.08)]"
+              to={`${paths.messages}?recipientId=${profile.userId}`}
+              className="inline-flex items-center gap-1.5 rounded-full border border-[#0a66c2] px-4 py-1.5 text-sm font-semibold text-[#0a66c2] transition hover:bg-[#0a66c2]/10"
             >
               <FiMessageSquare /> Message
             </Link>

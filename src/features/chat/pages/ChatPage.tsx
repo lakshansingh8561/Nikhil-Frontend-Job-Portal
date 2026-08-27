@@ -15,6 +15,10 @@ import toast from "react-hot-toast";
 export const ChatPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const targetConvId = searchParams.get("conversationId");
+  const targetRecipientId =
+    searchParams.get("recipientId") ||
+    searchParams.get("userId") ||
+    searchParams.get("targetUserId");
   const targetJobId = searchParams.get("jobId");
   const targetApplicantId = searchParams.get("applicantId");
 
@@ -30,8 +34,9 @@ export const ChatPage: React.FC = () => {
     useState<IConversation | null>(null);
 
   const handleStartChatFromModal = async (payload: {
-    jobId: string;
+    jobId?: string;
     applicantId?: string;
+    recipientId?: string;
   }) => {
     try {
       const conv = await createOrGetConversation(payload).unwrap();
@@ -49,26 +54,29 @@ export const ChatPage: React.FC = () => {
     }
   };
 
-  // If query params specify jobId & applicantId, attempt to create/get conversation automatically
+  // If query params specify recipientId or jobId, attempt to create/get conversation automatically
   useEffect(() => {
-    if (targetJobId) {
+    if (targetRecipientId || targetJobId) {
       createOrGetConversation({
-        jobId: targetJobId,
+        recipientId: targetRecipientId || undefined,
+        jobId: targetJobId || undefined,
         applicantId: targetApplicantId || undefined,
       })
         .unwrap()
         .then((conv) => {
-          const convId = conv.id || conv._id;
-          setSelectedConvId(convId);
-          setActiveConversation(conv);
-          setHasNavigatedBack(false);
+          const convId = conv ? (conv.id || conv._id) : null;
+          if (conv && convId) {
+            setSelectedConvId(convId);
+            setActiveConversation(conv);
+            setHasNavigatedBack(false);
+          }
           setSearchParams({}, { replace: true });
         })
         .catch((err) => {
           console.error("Failed to initialize conversation from params:", err);
         });
     }
-  }, [targetJobId, targetApplicantId, createOrGetConversation, setSearchParams]);
+  }, [targetRecipientId, targetJobId, targetApplicantId, createOrGetConversation, setSearchParams]);
 
   // Sync active conversation when conversations list updates
   useEffect(() => {

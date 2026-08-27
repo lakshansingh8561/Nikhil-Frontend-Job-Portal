@@ -1,6 +1,7 @@
 import React from "react";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
+import { FiMessageSquare } from "react-icons/fi";
 import Avatar from "../common/Avatar";
 import { useNetworkPaths } from "../../hooks/useNetworkPaths";
 import { timeAgo } from "../../utils/format";
@@ -28,6 +29,30 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ invitation, dire
   const [resolved, setResolved] = React.useState<string | null>(null);
   const busy = isAccepting || isIgnoring || isWithdrawing;
 
+  const handleAccept = async () => {
+    try {
+      await accept(invitation.connectionId).unwrap();
+      setResolved("You're now connected");
+      toast.success(
+        (t) => (
+          <div className="flex items-center justify-between gap-3">
+            <span>Connected with {person.fullName}!</span>
+            <Link
+              to={`${paths.messages}?recipientId=${person.userId}`}
+              onClick={() => toast.dismiss(t.id)}
+              className="inline-flex items-center gap-1 rounded bg-[#0a66c2] px-2.5 py-1 text-xs font-bold text-white hover:bg-[#004182]"
+            >
+              <FiMessageSquare /> Message
+            </Link>
+          </div>
+        ),
+        { duration: 6000 }
+      );
+    } catch (error: any) {
+      toast.error(error?.data?.message || "Could not accept the invitation.");
+    }
+  };
+
   const run = async (
     action: () => Promise<unknown>,
     doneLabel: string,
@@ -43,11 +68,20 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ invitation, dire
   };
 
   if (resolved) {
+    const isConnected = resolved.toLowerCase().includes("connected");
     return (
       <li className="flex items-center justify-between gap-3 px-4 py-3 text-sm text-[rgba(0,0,0,0.6)]">
         <span className="truncate">
           <span className="font-semibold text-[rgba(0,0,0,0.9)]">{person.fullName}</span> — {resolved}
         </span>
+        {isConnected && (
+          <Link
+            to={`${paths.messages}?recipientId=${person.userId}`}
+            className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-[#0a66c2] px-3.5 py-1 text-xs font-semibold text-white transition hover:bg-[#004182]"
+          >
+            <FiMessageSquare /> Message
+          </Link>
+        )}
       </li>
     );
   }
@@ -100,13 +134,7 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ invitation, dire
             <button
               type="button"
               disabled={busy}
-              onClick={() =>
-                run(
-                  () => accept(invitation.connectionId).unwrap(),
-                  "You're now connected",
-                  "Could not accept the invitation."
-                )
-              }
+              onClick={handleAccept}
               className="rounded-full border border-[#0a66c2] px-4 py-1 text-sm font-semibold text-[#0a66c2] transition hover:bg-[#0a66c2]/10 disabled:opacity-60 enabled:cursor-pointer"
             >
               Accept

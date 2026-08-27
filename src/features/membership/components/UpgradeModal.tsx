@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { FiX, FiCheckCircle, FiZap, FiTag } from "react-icons/fi";
 import type { IMembership } from "../types/membership.types";
 
@@ -26,15 +26,16 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
   onConfirm,
   isLoading = false,
 }) => {
-  const [gateway, setGateway] = useState<"razorpay" | "polar">("polar");
-
   if (!isOpen || !plan) return null;
 
   const isFree = plan.price === 0;
   const isUpgrade = Boolean(upgradePreview?.isUpgrade);
   const unusedCredit = upgradePreview?.unusedCredit || 0;
   const finalPrice = upgradePreview ? upgradePreview.finalUpgradePrice : plan.price;
-  const currencySymbol = plan.currency === "INR" ? "₹" : "$";
+
+  const isUSD = plan.currency === "USD" || plan.currency === "usd";
+  const currencySymbol = isUSD ? "$" : "₹";
+  const gateway: "razorpay" | "polar" = isUSD ? "polar" : "razorpay";
 
   const handleConfirm = () => {
     onConfirm(plan._id || plan.id || "", gateway);
@@ -108,32 +109,44 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
         {!isFree && (
           <div className="mb-6 space-y-2">
             <label className="block text-xs font-black uppercase tracking-wider text-gray-500">
-              Select Payment Gateway
+              Payment Gateway
             </label>
-            <div className="grid grid-cols-2 gap-3">
-              <button
-                type="button"
-                onClick={() => setGateway("polar")}
-                className={`flex flex-col items-center justify-center p-3 rounded-2xl border-2 transition-all cursor-pointer ${gateway === "polar"
-                    ? "border-indigo-600 bg-indigo-50/50 text-indigo-900 font-black shadow-xs"
-                    : "border-gray-200 hover:border-gray-300 bg-white text-gray-600 font-semibold"
-                  }`}
-              >
-                <span className="text-xs uppercase font-extrabold tracking-wider text-indigo-600">⚡ Polar ($ USD)</span>
-                <span className="text-[10px] text-gray-500 font-normal">Card / AutoPay</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setGateway("razorpay")}
-                className={`flex flex-col items-center justify-center p-3 rounded-2xl border-2 transition-all cursor-pointer ${gateway === "razorpay"
-                    ? "border-blue-600 bg-blue-50/50 text-blue-900 font-black shadow-xs"
-                    : "border-gray-200 hover:border-gray-300 bg-white text-gray-600 font-semibold"
-                  }`}
-              >
-                <span className="text-xs uppercase font-extrabold tracking-wider text-blue-600">💳 Razorpay (₹ INR)</span>
-                <span className="text-[10px] text-gray-500 font-normal">Cards, UPI, Netbanking</span>
-              </button>
+            <div className="flex">
+              {gateway === "razorpay" ? (
+                <div className="flex w-full items-center justify-between p-4 rounded-2xl border-2 border-blue-600 bg-blue-50/50 text-blue-900 font-black shadow-xs">
+                  <div className="flex items-center gap-3">
+                    <span className="text-xl">💳</span>
+                    <div>
+                      <p className="text-xs uppercase font-extrabold tracking-wider text-blue-600">
+                        Razorpay (₹ INR)
+                      </p>
+                      <p className="text-[11px] text-gray-500 font-normal">
+                        Cards, UPI, Netbanking & Wallets
+                      </p>
+                    </div>
+                  </div>
+                  <span className="rounded-full bg-blue-600 px-3 py-1 text-[10px] font-extrabold text-white">
+                    Selected
+                  </span>
+                </div>
+              ) : (
+                <div className="flex w-full items-center justify-between p-4 rounded-2xl border-2 border-indigo-600 bg-indigo-50/50 text-indigo-900 font-black shadow-xs">
+                  <div className="flex items-center gap-3">
+                    <span className="text-xl">⚡</span>
+                    <div>
+                      <p className="text-xs uppercase font-extrabold tracking-wider text-indigo-600">
+                        Polar ($ USD)
+                      </p>
+                      <p className="text-[11px] text-gray-500 font-normal">
+                        Credit Card / AutoPay Checkout
+                      </p>
+                    </div>
+                  </div>
+                  <span className="rounded-full bg-indigo-600 px-3 py-1 text-[10px] font-extrabold text-white">
+                    Selected
+                  </span>
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -161,10 +174,12 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
               : isFree
                 ? "Confirm Free Plan"
                 : isUpgrade
-                  ? `Upgrade for ${currencySymbol}${finalPrice}`
-                  : gateway === "polar"
-                    ? "Pay with Polar"
-                    : "Confirm & Subscribe"}
+                  ? gateway === "razorpay"
+                    ? `Upgrade with Razorpay (${currencySymbol}${finalPrice})`
+                    : `Upgrade with Polar (${currencySymbol}${finalPrice})`
+                  : gateway === "razorpay"
+                    ? `Pay with Razorpay (${currencySymbol}${finalPrice})`
+                    : `Pay with Polar (${currencySymbol}${finalPrice})`}
           </button>
         </div>
       </div>

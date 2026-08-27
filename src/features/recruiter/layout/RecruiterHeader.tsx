@@ -16,6 +16,9 @@ import { logout } from "../../auth/authSlice";
 import NotificationDropdown from "../../../components/common/NotificationDropdown";
 import { DetectLocationButton } from "../../../components/common/DetectLocationButton";
 
+import Avatar from "../../../features/network/components/common/Avatar";
+import { useGetMyNetworkProfileQuery } from "../../../features/network/api/networkApi";
+
 interface RecruiterHeaderProps {
   onToggleSidebar?: () => void;
 }
@@ -24,8 +27,12 @@ export const RecruiterHeader = ({ onToggleSidebar }: RecruiterHeaderProps) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { user } = useAppSelector((state) => state.auth);
+  const { data: networkProfile } = useGetMyNetworkProfileQuery(undefined, { skip: !user });
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+
+  const avatarUrl = networkProfile?.profilePicture || (user as any)?.profilePicture;
+  const displayName = networkProfile?.fullName || user?.email?.split("@")[0] || "Recruiter";
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -87,11 +94,15 @@ export const RecruiterHeader = ({ onToggleSidebar }: RecruiterHeaderProps) => {
             onClick={() => setDropdownOpen(!dropdownOpen)}
             className="flex items-center gap-2 rounded-xl bg-slate-50 p-1 pl-1.5 pr-2.5 border border-slate-200 hover:bg-slate-100 transition cursor-pointer"
           >
-            <div className="relative flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-600 font-black text-white text-xs">
-              {user?.email ? user.email.charAt(0).toUpperCase() : "R"}
-            </div>
+            <Avatar
+              src={avatarUrl}
+              name={displayName}
+              email={user?.email}
+              size="sm"
+              className="!h-7 !w-7"
+            />
             <span className="hidden sm:inline text-xs font-bold text-slate-900 max-w-[100px] truncate">
-              {user?.email?.split("@")[0] || "Recruiter"}
+              {displayName}
             </span>
             <FiChevronDown className="text-xs text-slate-400" />
           </button>

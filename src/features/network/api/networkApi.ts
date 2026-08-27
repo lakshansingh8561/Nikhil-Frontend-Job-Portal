@@ -41,8 +41,6 @@ export const networkApi = apiSlice.injectEndpoints({
           posts: [...existing.posts, ...incoming.posts.filter((p) => !seen.has(p._id))],
         };
       },
-      forceRefetch: ({ currentArg, previousArg }) =>
-        currentArg?.page !== previousArg?.page || currentArg?.tab !== previousArg?.tab,
       providesTags: ["Posts"],
     }),
 
