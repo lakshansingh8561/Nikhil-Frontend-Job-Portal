@@ -1,6 +1,8 @@
 import React from "react";
 import toast from "react-hot-toast";
 import { FiCheck, FiClock, FiMessageSquare, FiUserPlus } from "react-icons/fi";
+import { Link } from "react-router-dom";
+import { useNetworkPaths } from "../../hooks/useNetworkPaths";
 import {
   useAcceptInviteMutation,
   useSendInviteMutation,
@@ -31,6 +33,7 @@ export const ConnectionButton: React.FC<ConnectionButtonProps> = ({
   onChanged,
   fullWidth = false,
 }) => {
+  const paths = useNetworkPaths();
   const [local, setLocal] = React.useState<ViewerConnectionState>(status);
   const [sendInvite, { isLoading: isSending }] = useSendInviteMutation();
   const [acceptInvite, { isLoading: isAccepting }] = useAcceptInviteMutation();
@@ -77,9 +80,12 @@ export const ConnectionButton: React.FC<ConnectionButtonProps> = ({
 
   if (local === "CONNECTED") {
     return (
-      <span className={`${base} ${muted} cursor-default`}>
-        <FiCheck /> Connected
-      </span>
+      <Link
+        to={`${paths.messages}?recipientId=${userId}`}
+        className={`${base} ${variant === "solid" ? solid : outline}`}
+      >
+        <FiMessageSquare /> Message
+      </Link>
     );
   }
 

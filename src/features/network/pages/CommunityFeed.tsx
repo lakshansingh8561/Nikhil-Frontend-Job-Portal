@@ -10,8 +10,10 @@ import ProfileRailCard from "../components/rails/ProfileRailCard";
 import NetworkStatsRail from "../components/rails/NetworkStatsRail";
 import PeopleYouMayKnowRail from "../components/rails/PeopleYouMayKnowRail";
 import FooterRail from "../components/rails/FooterRail";
+import { useAppDispatch } from "../../../hooks/useAppDispatch";
 import { useFeedRealtime } from "../hooks/useFeedRealtime";
 import {
+  networkApi,
   useGetFeedQuery,
   useGetMyNetworkProfileQuery,
   useGetNetworkStatsQuery,
@@ -26,6 +28,8 @@ const TABS: Array<{ key: FeedTab; label: string }> = [
 ];
 
 const CommunityFeed: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const feedTopRef = React.useRef<HTMLDivElement>(null);
   const [tab, setTab] = React.useState<FeedTab>("for-you");
   const [page, setPage] = React.useState(1);
   const [composerOpen, setComposerOpen] = React.useState(false);
@@ -53,10 +57,30 @@ const CommunityFeed: React.FC = () => {
   };
 
   const showIncoming = () => {
+    if (incoming.length > 0) {
+      dispatch(
+        networkApi.util.updateQueryData("getFeed", { tab }, (draft) => {
+          if (!draft || !draft.posts) return;
+          const seen = new Set(draft.posts.map((p) => p._id));
+          const newPosts = incoming.filter((p) => !seen.has(p._id));
+          if (newPosts.length > 0) {
+            draft.posts.unshift(...newPosts);
+            if (draft.pagination) {
+              draft.pagination.total = (draft.pagination.total || 0) + newPosts.length;
+            }
+          }
+        })
+      );
+    }
     setIncoming([]);
     setPage(1);
     refetch();
-    window.scrollTo({ top: 0, behavior: "smooth" });
+
+    // Scroll directly to the top where the new post is placed
+    setTimeout(() => {
+      feedTopRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }, 50);
   };
 
   const me = {
@@ -85,6 +109,7 @@ const CommunityFeed: React.FC = () => {
         </>
       }
     >
+      <div ref={feedTopRef} className="scroll-mt-4" />
       <ComposerTrigger
         me={me}
         onOpen={(preset) => {

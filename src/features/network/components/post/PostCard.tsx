@@ -75,8 +75,35 @@ export const PostCard: React.FC<PostCardProps> = ({
   }, [post.myReaction, post.socialProof, post.reactionsCount, post.isSavedByMe]);
 
   const isRepost = Boolean(post.repostOf && post.repostOfPost);
-  const shown = isRepost ? (post.repostOfPost as PostDTO) : post;
-  const author = shown.author || ({} as PostDTO["author"]);
+  const originalPost = isRepost ? (post.repostOfPost as PostDTO) : null;
+  const hasThoughts = isRepost && Boolean(post.content?.trim());
+
+  // Determine what author and details to display in the main header:
+  // If it's a repost with thoughts, the main card header belongs to the reposter (post.author).
+  // If it's a simple repost (no thoughts), the main card header belongs to the original author.
+  const author =
+    (isRepost && !hasThoughts && originalPost ? originalPost.author : post.author) ||
+    ({} as PostDTO["author"]);
+
+  const mainCreatedAt =
+    isRepost && !hasThoughts && originalPost ? originalPost.createdAt : post.createdAt;
+  const mainEditedAt =
+    isRepost && !hasThoughts && originalPost ? originalPost.editedAt : post.editedAt;
+  const mainVisibility =
+    isRepost && !hasThoughts && originalPost ? originalPost.visibility : post.visibility;
+
+  const mainContentText = isRepost
+    ? hasThoughts
+      ? post.content
+      : originalPost?.content
+    : post.content;
+
+  const mainMedia = isRepost && !hasThoughts && originalPost ? originalPost.media : post.media;
+  const mainMediaUrls =
+    isRepost && !hasThoughts && originalPost ? originalPost.mediaUrls : post.mediaUrls;
+  const mainJobDetails =
+    isRepost && !hasThoughts && originalPost ? originalPost.jobDetails : post.jobDetails;
+
   const activeMeta = reactionMeta(reaction);
 
   const applyReaction = async (type: ReactionType) => {
@@ -194,10 +221,10 @@ export const PostCard: React.FC<PostCardProps> = ({
             </p>
           )}
           <p className="mt-0.5 flex items-center gap-1 text-xs text-[rgba(0,0,0,0.6)]">
-            <span>{timeAgo(shown.createdAt)}</span>
-            {shown.editedAt && <span>· Edited</span>}
+            <span>{timeAgo(mainCreatedAt)}</span>
+            {mainEditedAt && <span>· Edited</span>}
             <span>·</span>
-            {shown.visibility === "CONNECTIONS" ? (
+            {mainVisibility === "CONNECTIONS" ? (
               <FiUsers title="Connections only" />
             ) : (
               <FiGlobe title="Anyone" />
@@ -271,62 +298,86 @@ export const PostCard: React.FC<PostCardProps> = ({
           </div>
         </div>
       ) : (
-        <>
-          {isRepost && post.content?.trim() && (
-            <div className="px-4 pb-2 pt-2.5">
-              <SeeMoreText text={post.content} hashtagBasePath={paths.feed} />
-            </div>
-          )}
-          {shown.content?.trim() && (
-            <div className={`px-4 pb-2 ${isRepost ? "pt-0" : "pt-2.5"}`}>
-              <SeeMoreText text={shown.content} hashtagBasePath={paths.feed} />
-            </div>
-          )}
-        </>
+        mainContentText?.trim() && (
+          <div className="px-4 pb-2 pt-2.5">
+            <SeeMoreText text={mainContentText} hashtagBasePath={paths.feed} />
+          </div>
+        )
       )}
 
-      {isRepost ? (
-        <div className="mx-4 mb-2 overflow-hidden rounded-lg border border-[rgba(0,0,0,0.15)]">
-          <div className="flex items-center gap-2 px-3 pt-3">
+      {isRepost && originalPost && hasThoughts ? (
+        <div className="mx-4 mb-3 overflow-hidden rounded-lg border border-[rgba(0,0,0,0.15)] bg-white p-3">
+          <div className="flex items-center gap-2">
             <Avatar
-              src={author.profilePicture}
-              name={author.fullName}
-              email={author.email}
+              src={originalPost.author?.profilePicture}
+              name={originalPost.author?.fullName}
+              email={originalPost.author?.email}
               size="sm"
-              to={author.userId ? paths.profile(author.userId) : undefined}
+              to={originalPost.author?.userId ? paths.profile(originalPost.author.userId) : undefined}
             />
-            <div className="min-w-0">
-              <p className="truncate text-xs font-semibold text-[rgba(0,0,0,0.9)]">
-                {author.fullName}
-              </p>
+            <div className="min-w-0 flex-1">
+              <Link
+                to={originalPost.author?.userId ? paths.profile(originalPost.author.userId) : "#"}
+                className="block truncate text-xs font-semibold text-[rgba(0,0,0,0.9)] hover:text-[#0a66c2] hover:underline"
+              >
+                {originalPost.author?.fullName || "Member"}
+              </Link>
               <p className="truncate text-[11px] text-[rgba(0,0,0,0.6)]">
-                {timeAgo(shown.createdAt)}
+                {originalPost.author?.headline ? `${originalPost.author.headline} · ` : ""}
+                {timeAgo(originalPost.createdAt)}
               </p>
             </div>
           </div>
-          <div className="mt-2">
-            <PostMediaGrid media={shown.media} fallbackUrls={shown.mediaUrls} />
-          </div>
+
+          {originalPost.content?.trim() && (
+            <div className="mt-2 text-sm text-[rgba(0,0,0,0.9)]">
+              <SeeMoreText text={originalPost.content} hashtagBasePath={paths.feed} />
+            </div>
+          )}
+
+          {(originalPost.media?.length || originalPost.mediaUrls?.length) ? (
+            <div className="mt-2.5 -mx-3 -mb-3">
+              <PostMediaGrid media={originalPost.media} fallbackUrls={originalPost.mediaUrls} />
+            </div>
+          ) : null}
+
+          {originalPost.jobDetails && (
+            <Link
+              to={`/jobs/${originalPost.jobDetails._id}`}
+              className="mt-2.5 flex items-center gap-3 rounded-lg border border-[rgba(0,0,0,0.15)] p-2.5 transition hover:border-[#0a66c2] hover:bg-[#0a66c2]/5"
+            >
+              <span className="min-w-0 flex-1">
+                <span className="block truncate text-xs font-semibold text-[rgba(0,0,0,0.9)]">
+                  {originalPost.jobDetails.title}
+                </span>
+                <span className="block truncate text-[11px] text-[rgba(0,0,0,0.6)]">
+                  {originalPost.jobDetails.jobType || "View role"}
+                </span>
+              </span>
+              <span className="shrink-0 text-xs font-semibold text-[#0a66c2]">View job</span>
+            </Link>
+          )}
         </div>
       ) : (
-        <PostMediaGrid media={shown.media} fallbackUrls={shown.mediaUrls} />
-      )}
-
-      {shown.jobDetails && (
-        <Link
-          to={`/jobs/${shown.jobDetails._id}`}
-          className="mx-4 mb-2 flex items-center gap-3 rounded-lg border border-[rgba(0,0,0,0.15)] px-3 py-3 transition hover:border-[#0a66c2] hover:bg-[#0a66c2]/5"
-        >
-          <span className="min-w-0 flex-1">
-            <span className="block truncate text-sm font-semibold text-[rgba(0,0,0,0.9)]">
-              {shown.jobDetails.title}
-            </span>
-            <span className="block truncate text-xs text-[rgba(0,0,0,0.6)]">
-              {shown.jobDetails.jobType || "View role"}
-            </span>
-          </span>
-          <span className="shrink-0 text-xs font-semibold text-[#0a66c2]">View job</span>
-        </Link>
+        <>
+          <PostMediaGrid media={mainMedia} fallbackUrls={mainMediaUrls} />
+          {mainJobDetails && (
+            <Link
+              to={`/jobs/${mainJobDetails._id}`}
+              className="mx-4 mb-2 flex items-center gap-3 rounded-lg border border-[rgba(0,0,0,0.15)] px-3 py-3 transition hover:border-[#0a66c2] hover:bg-[#0a66c2]/5"
+            >
+              <span className="min-w-0 flex-1">
+                <span className="block truncate text-sm font-semibold text-[rgba(0,0,0,0.9)]">
+                  {mainJobDetails.title}
+                </span>
+                <span className="block truncate text-xs text-[rgba(0,0,0,0.6)]">
+                  {mainJobDetails.jobType || "View role"}
+                </span>
+              </span>
+              <span className="shrink-0 text-xs font-semibold text-[#0a66c2]">View job</span>
+            </Link>
+          )}
+        </>
       )}
 
       {(proof.total > 0 || post.commentsCount > 0 || post.repostCount > 0) && (

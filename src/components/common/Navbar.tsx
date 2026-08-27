@@ -15,6 +15,8 @@ import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { useAppSelector } from "../../hooks/useAppSelector";
 import { logout } from "../../features/auth/authSlice";
 import { useGetUnreadCountQuery } from "../../features/chat/api/chatApi";
+import { useGetMyNetworkProfileQuery } from "../../features/network/api/networkApi";
+import Avatar from "../../features/network/components/common/Avatar";
 import { UnreadBadge } from "../../features/chat/components/UnreadBadge";
 import NotificationDropdown from "./NotificationDropdown";
 
@@ -32,9 +34,13 @@ const Navbar = () => {
   const mobileMenuRef = useRef<HTMLDivElement>(null);
 
   const { user } = useAppSelector((state) => state.auth);
+  const { data: networkProfile } = useGetMyNetworkProfileQuery(undefined, { skip: !user });
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+
+  const avatarUrl = networkProfile?.profilePicture || (user as any)?.profilePicture;
+  const displayName = networkProfile?.fullName || user?.email?.split("@")[0] || "User";
 
   useEffect(() => {
     setMobileMenuOpen(false);
@@ -143,13 +149,17 @@ const Navbar = () => {
                   <div className="relative" ref={dropdownRef}>
                     <button
                       onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
-                      className="flex items-center gap-2 rounded-xl bg-slate-100 py-1.5 pl-2 pr-3 text-xs font-bold text-slate-800 hover:bg-slate-200/80 transition cursor-pointer"
+                      className="flex items-center gap-2 rounded-xl bg-slate-100 p-1 pl-1.5 pr-3 text-xs font-bold text-slate-800 hover:bg-slate-200/80 transition cursor-pointer"
                     >
-                      <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-600 text-white font-black text-xs">
-                        {user.email ? user.email.charAt(0).toUpperCase() : "U"}
-                      </div>
+                      <Avatar
+                        src={avatarUrl}
+                        name={displayName}
+                        email={user.email}
+                        size="sm"
+                        className="!h-7 !w-7"
+                      />
                       <span className="max-w-[120px] truncate">
-                        {user.email?.split("@")[0]}
+                        {displayName}
                       </span>
                       <FiChevronDown className="text-xs text-slate-400" />
                     </button>
