@@ -43,7 +43,7 @@ export const RepostModal: React.FC<RepostModalProps> = ({ post, open, onClose, m
             type="button"
             onClick={submit}
             disabled={isLoading}
-            className="rounded-full bg-[#0a66c2] px-5 py-1.5 text-sm font-semibold text-white transition hover:bg-[#004182] disabled:opacity-60 enabled:cursor-pointer"
+            className="rounded-full bg-[#3C65F5] px-5 py-1.5 text-sm font-semibold text-white transition hover:bg-[#2C52E0] disabled:opacity-60 enabled:cursor-pointer"
           >
             {isLoading ? "Posting…" : "Post"}
           </button>

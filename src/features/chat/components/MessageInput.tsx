@@ -250,7 +250,7 @@ export const MessageInput: React.FC<MessageInputProps> = ({
           type="button"
           onClick={() => fileInputRef.current?.click()}
           aria-label="Upload Image"
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-gray-500 hover:text-[#4F46E5] hover:bg-[#F3F4F6] transition-all duration-200 cursor-pointer"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-gray-500 hover:text-[#3C65F5] hover:bg-[#F3F4F6] transition-all duration-200 cursor-pointer"
           title="Upload Image"
         >
           <FiImage className="text-lg" />
@@ -261,7 +261,7 @@ export const MessageInput: React.FC<MessageInputProps> = ({
           type="button"
           onClick={() => setShowEmojiPicker(!showEmojiPicker)}
           aria-label="Toggle emoji picker"
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-gray-500 hover:text-[#4F46E5] hover:bg-[#F3F4F6] transition-all duration-200 cursor-pointer focus-visible:ring-2 focus-visible:ring-[#4F46E5]"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-gray-500 hover:text-[#3C65F5] hover:bg-[#F3F4F6] transition-all duration-200 cursor-pointer focus-visible:ring-2 focus-visible:ring-[#3C65F5]"
           title="Add Emoji"
         >
           <FiSmile className="text-lg" />
@@ -283,7 +283,7 @@ export const MessageInput: React.FC<MessageInputProps> = ({
                 : "Type a message..."
             }
             aria-label="Message text"
-            className="w-full min-h-[36px] max-h-[120px] resize-none rounded-xl border border-[#E5E7EB] bg-[#F8FAFC] px-3.5 py-1.5 text-xs sm:text-sm font-medium text-[#05264E] placeholder:text-gray-400 focus:border-[#4F46E5] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#4F46E5]/20 transition-all duration-200 custom-scrollbar leading-snug"
+            className="w-full min-h-[36px] max-h-[120px] resize-none rounded-xl border border-[#E5E7EB] bg-[#F8FAFC] px-3.5 py-1.5 text-xs sm:text-sm font-medium text-[#05264E] placeholder:text-gray-400 focus:border-[#3C65F5] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#3C65F5]/20 transition-all duration-200 custom-scrollbar leading-snug"
           />
         </div>
 
@@ -293,7 +293,7 @@ export const MessageInput: React.FC<MessageInputProps> = ({
           onClick={handleSubmitForm}
           disabled={!text.trim() && !selectedImage}
           aria-label="Send message"
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#4F46E5] text-white shadow-2xs transition-all duration-200 hover:bg-[#4338CA] hover:scale-[1.02] active:scale-95 disabled:opacity-40 disabled:hover:scale-100 disabled:hover:bg-[#4F46E5] cursor-pointer focus-visible:ring-2 focus-visible:ring-[#4F46E5]"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#3C65F5] text-white shadow-2xs transition-all duration-200 hover:bg-[#2C52E0] hover:scale-[1.02] active:scale-95 disabled:opacity-40 disabled:hover:scale-100 disabled:hover:bg-[#3C65F5] cursor-pointer focus-visible:ring-2 focus-visible:ring-[#3C65F5]"
         >
           <FiSend className="text-base" />
         </button>

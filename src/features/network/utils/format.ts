@@ -121,7 +121,7 @@ export const mediaUrl = (url?: string): string => {
 
 /** Deterministic pastel background for avatar monograms. */
 const AVATAR_COLORS = [
-  "#0a66c2",
+  "#3C65F5",
   "#7a3e9d",
   "#b24020",
   "#0e7c66",

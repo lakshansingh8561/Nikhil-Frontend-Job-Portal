@@ -9,6 +9,7 @@ import {
 } from "react-icons/fi";
 import Banner1 from "../../assets/images/banner1.png";
 import Banner2 from "../../assets/images/banner2.png";
+import iconBottomBanner from "../../assets/images/icon-bottom-banner.png";
 import JobCard from "../jobs/JobCard";
 import { useGetJobsQuery } from "../../features/jobs/api/jobsApi";
 
@@ -68,7 +69,7 @@ const Hero = () => {
   };
 
   return (
-    <section className="relative overflow-hidden w-full bg-[#F5F8FF] pt-6 sm:pt-8 lg:pt-10 pb-12">
+    <section className="relative overflow-hidden w-full bg-[#F5F8FF] pt-16 sm:pt-20 lg:pt-24 pb-16">
       <style>{`
         @keyframes floatVertical {
           0%, 100% { transform: translateY(0px); }
@@ -76,7 +77,7 @@ const Hero = () => {
         }
         @keyframes floatHorizontal {
           0%, 100% { transform: translateX(0px); }
-          50% { transform: translateX(16px); }
+          50% { transform: translateX(14px); }
         }
       `}</style>
 
@@ -94,11 +95,11 @@ const Hero = () => {
         }}
       />
 
-      <div className="mx-auto w-full max-w-[1240px] px-4 sm:px-6 relative z-10">
+      <div className="mx-auto w-full max-w-[1060px] px-6 sm:px-8 relative z-10">
         <div className="grid items-start gap-6 lg:gap-8 lg:grid-cols-12">
           {/* Left Column */}
-          <div className="lg:col-span-7 flex flex-col">
-            <h1 className="font-extrabold text-[#05264E] text-4xl sm:text-5xl lg:text-6xl leading-[1.12] tracking-tight">
+          <div className="lg:col-span-7 flex flex-col max-w-[490px]">
+            <h1 className="font-extrabold text-[#05264E] text-4xl sm:text-5xl lg:text-[52px] leading-[1.12] tracking-tight font-['Plus_Jakarta_Sans',sans-serif]">
               The{" "}
               <span className="inline-block font-extrabold text-[#3C65F5] bg-[#D5E4FF] px-3.5 py-1 rounded-2xl my-1 whitespace-nowrap">
                 Easiest Way
@@ -109,14 +110,14 @@ const Hero = () => {
               Job
             </h1>
 
-            <p className="font-medium text-[#66789C] text-base sm:text-lg leading-relaxed mt-4 mb-6 max-w-xl">
+            <p className="font-medium text-[#66789C] text-sm leading-relaxed mt-4 mb-6 max-w-md font-['Plus_Jakarta_Sans',sans-serif]">
               Each month, more than 3 million job seekers turn to website in their search for work, making over 140,000 applications every single day.
             </p>
 
             {/* Search Bar Form */}
             <form
               onSubmit={handleSearchSubmit}
-              className="flex flex-col sm:flex-row items-center gap-2 w-full max-w-[560px] bg-white rounded-2xl p-2 shadow-lg border border-[#EAEFF7]"
+              className="flex flex-col sm:flex-row items-center gap-2 w-full max-w-[500px] bg-white rounded-2xl p-2 shadow-lg border border-[#EAEFF7]"
             >
               {/* Industry Select */}
               <div className="flex items-center gap-2.5 px-3 py-2 w-full sm:flex-1 border-b sm:border-b-0 sm:border-r border-gray-100">
@@ -124,7 +125,7 @@ const Hero = () => {
                 <select
                   value={industry}
                   onChange={(e) => setIndustry(e.target.value)}
-                  className="w-full bg-transparent text-xs font-semibold text-[#05264E] outline-none cursor-pointer"
+                  className="w-full bg-transparent text-xs font-semibold text-[#05264E] outline-none cursor-pointer font-['Plus_Jakarta_Sans',sans-serif]"
                 >
                   <option value="">Industry</option>
                   <option value="Software">Software & Tech</option>
@@ -143,7 +144,7 @@ const Hero = () => {
                   placeholder="Location..."
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
-                  className="w-full bg-transparent text-xs font-medium text-[#05264E] placeholder-gray-400 outline-none"
+                  className="w-full bg-transparent text-xs font-medium text-[#05264E] placeholder-gray-400 outline-none font-['Plus_Jakarta_Sans',sans-serif]"
                 />
               </div>
 
@@ -155,14 +156,14 @@ const Hero = () => {
                   placeholder="Your keyword..."
                   value={keyword}
                   onChange={(e) => setKeyword(e.target.value)}
-                  className="w-full bg-transparent text-xs font-medium text-[#05264E] placeholder-gray-400 outline-none"
+                  className="w-full bg-transparent text-xs font-medium text-[#05264E] placeholder-gray-400 outline-none font-['Plus_Jakarta_Sans',sans-serif]"
                 />
               </div>
 
               {/* Search Button */}
               <button
                 type="submit"
-                className="w-full sm:w-auto h-11 px-6 text-xs font-semibold text-white bg-[#3C65F5] hover:bg-[#254BD6] rounded-xl shadow-md shadow-blue-500/20 transition flex items-center justify-center gap-2 shrink-0 cursor-pointer"
+                className="w-full sm:w-auto h-11 px-6 text-xs font-semibold text-white bg-[#3C65F5] hover:bg-[#254BD6] rounded-xl shadow-md shadow-blue-500/20 transition flex items-center justify-center gap-2 shrink-0 cursor-pointer font-['Plus_Jakarta_Sans',sans-serif]"
               >
                 <FiSearch className="text-base" />
                 <span>Search</span>
@@ -170,7 +171,7 @@ const Hero = () => {
             </form>
 
             {/* Popular Searches */}
-            <div className="mt-5 flex flex-wrap items-center gap-2 text-xs text-[#66789C]">
+            <div className="mt-5 flex flex-wrap items-center gap-2 text-xs text-[#66789C] font-['Plus_Jakarta_Sans',sans-serif]">
               <span className="font-bold text-[#05264E]">Popular Searches:</span>
               {popularSearches.map((item, idx) => (
                 <button
@@ -186,11 +187,23 @@ const Hero = () => {
             </div>
           </div>
 
-          {/* Right Column: Hero Banner Images Top-Aligned with Floating Animations */}
-          <div className="hidden lg:flex lg:col-span-5 flex-col items-end space-y-6">
-            {/* Top Banner Image Card (Up and Down floating animation) */}
+          {/* Right Column: Hero Banner Images Stacked from Exact Same Top Height Line */}
+          <div className="hidden lg:flex lg:col-span-5 flex-col relative w-full max-w-[420px] ml-auto">
+            {/* Top-Right Dotted Pattern Icon */}
             <div
-              className="w-full max-w-[360px] rounded-[32px] overflow-hidden shadow-lg border-[4px] border-[#3C65F5] bg-[#3C65F5]"
+              className="absolute -top-3 right-0 z-0 pointer-events-none select-none"
+              style={{ animation: "floatVertical 3.5s ease-in-out infinite" }}
+            >
+              <img
+                src={iconBottomBanner}
+                alt="Decorative Pattern"
+                className="w-auto h-auto opacity-75"
+              />
+            </div>
+
+            {/* Top Banner Image Card (Banner1: Starts at the same top height line as headline) */}
+            <div
+              className="w-full max-w-[340px] rounded-[28px] overflow-hidden shadow-lg border-[4px] border-[#3C65F5] bg-[#3C65F5] relative z-10 self-start -ml-4"
               style={{ animation: "floatVertical 4s ease-in-out infinite" }}
             >
               <img
@@ -200,16 +213,31 @@ const Hero = () => {
               />
             </div>
 
-            {/* Bottom Banner Image Card (Left and Right floating animation) */}
-            <div
-              className="w-full max-w-[320px] rounded-[28px] overflow-hidden shadow-lg border-[4px] border-[#3C65F5] bg-[#3C65F5] self-end"
-              style={{ animation: "floatHorizontal 5s ease-in-out infinite" }}
-            >
-              <img
-                src={Banner2}
-                alt="JobBox Candidate Banner 2"
-                className="w-full h-auto block object-cover"
-              />
+            {/* Bottom Section Wrapper: Houses Dotted Pattern directly under Banner 1, and Banner 2 on the right */}
+            <div className="relative mt-6 w-full flex items-center justify-between">
+              {/* Dotted Pattern Icon directly under Banner 1 */}
+              <div
+                className="pointer-events-none select-none pl-2"
+                style={{ animation: "floatVertical 3.5s ease-in-out infinite" }}
+              >
+                <img
+                  src={iconBottomBanner}
+                  alt="Decorative Pattern"
+                  className="w-auto h-auto opacity-75"
+                />
+              </div>
+
+              {/* Bottom Banner Image Card (Banner2: Shifted right) */}
+              <div
+                className="w-full max-w-[295px] rounded-[28px] overflow-hidden shadow-xl border-[4px] border-[#3C65F5] bg-[#3C65F5] relative z-10 self-end ml-auto"
+                style={{ animation: "floatHorizontal 5s ease-in-out infinite" }}
+              >
+                <img
+                  src={Banner2}
+                  alt="JobBox Candidate Banner 2"
+                  className="w-full h-auto block object-cover"
+                />
+              </div>
             </div>
           </div>
         </div>

@@ -101,7 +101,7 @@ export const CompanyHeader: React.FC<CompanyHeaderProps> = ({
                   className="h-full w-full object-contain rounded-xl"
                 />
               ) : (
-                <div className="flex h-full w-full items-center justify-center rounded-xl bg-gradient-to-br from-[#1D4ED8] to-[#05264E] font-black text-white text-3xl sm:text-4xl shadow-inner">
+                <div className="flex h-full w-full items-center justify-center rounded-xl bg-[#3C65F5] font-black text-white text-3xl sm:text-4xl shadow-inner">
                   {displayTitle.charAt(0).toUpperCase()}
                 </div>
               )}
@@ -114,7 +114,7 @@ export const CompanyHeader: React.FC<CompanyHeaderProps> = ({
                   {displayTitle}
                 </h2>
                 {isVerified && (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2.5 py-1 text-xs font-bold text-[#1D4ED8] border border-blue-200">
+                  <span className="inline-flex items-center gap-1 rounded-full bg-[#3C65F5]/10 px-2.5 py-1 text-xs font-bold text-[#3C65F5] border border-[#3C65F5]/20">
                     <FiCheckCircle className="text-sm" /> Verified Company
                   </span>
                 )}
@@ -127,17 +127,17 @@ export const CompanyHeader: React.FC<CompanyHeaderProps> = ({
               {/* Quick Info Badges */}
               <div className="mt-4 flex flex-wrap items-center gap-2.5 text-xs font-bold text-[#05264E]">
                 <span className="flex items-center gap-1.5 rounded-xl bg-[#F8FAFC] px-3.5 py-2 border border-[#EAEFF7] shadow-2xs">
-                  <FiBriefcase className="text-[#1D4ED8]" />
+                  <FiBriefcase className="text-[#3C65F5]" />
                   {industry || "Not Specified"}
                 </span>
 
                 <span className="flex items-center gap-1.5 rounded-xl bg-[#F8FAFC] px-3.5 py-2 border border-[#EAEFF7] shadow-2xs">
-                  <FiUsers className="text-[#1D4ED8]" />
+                  <FiUsers className="text-[#3C65F5]" />
                   {companySize || "Not Specified"}
                 </span>
 
                 <span className="flex items-center gap-1.5 rounded-xl bg-[#F8FAFC] px-3.5 py-2 border border-[#EAEFF7] shadow-2xs">
-                  <FiMapPin className="text-[#1D4ED8]" />
+                  <FiMapPin className="text-[#3C65F5]" />
                   {location || "Not Specified"}
                 </span>
 
@@ -146,7 +146,7 @@ export const CompanyHeader: React.FC<CompanyHeaderProps> = ({
                     href={website.startsWith("http") ? website : `https://${website}`}
                     target="_blank"
                     rel="noreferrer"
-                    className="flex items-center gap-1.5 rounded-xl bg-[#EBF2FF] px-4 py-2 text-xs font-bold text-[#1D4ED8] hover:bg-blue-100 transition border border-blue-200/60 shadow-2xs"
+                    className="flex items-center gap-1.5 rounded-xl bg-[#EBF2FF] px-4 py-2 text-xs font-bold text-[#3C65F5] hover:bg-blue-100 transition border border-blue-200/60 shadow-2xs"
                   >
                     <FiGlobe className="text-sm" />
                     <span>Visit Website</span>
@@ -158,7 +158,7 @@ export const CompanyHeader: React.FC<CompanyHeaderProps> = ({
 
           {/* Industry Category Pill */}
           <div className="self-start md:self-auto shrink-0">
-            <span className="inline-flex items-center gap-1.5 rounded-2xl bg-gradient-to-r from-blue-50 to-indigo-50 px-5 py-2.5 text-xs font-black text-[#1D4ED8] border border-blue-200/80 shadow-2xs">
+            <span className="inline-flex items-center gap-1.5 rounded-2xl bg-gradient-to-r from-blue-50 to-indigo-50 px-5 py-2.5 text-xs font-black text-[#3C65F5] border border-blue-200/80 shadow-2xs">
               <FiBriefcase /> {industry || "Not Specified"}
             </span>
           </div>

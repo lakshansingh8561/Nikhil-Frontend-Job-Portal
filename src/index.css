@@ -1,6 +1,40 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 @import "tailwindcss";
 
+@theme {
+  --color-brand: #3C65F5;
+  --color-brand-hover: #2C52E0;
+  --color-primary: #3C65F5;
+
+  --color-indigo-50: #EEF3FF;
+  --color-indigo-100: #D9E4FF;
+  --color-indigo-200: #BBD0FF;
+  --color-indigo-300: #8DB3FF;
+  --color-indigo-400: #608CFF;
+  --color-indigo-500: #3C65F5;
+  --color-indigo-600: #3C65F5;
+  --color-indigo-700: #2C52E0;
+  --color-indigo-800: #2241B8;
+  --color-indigo-900: #1B3594;
+
+  --color-blue-50: #EEF3FF;
+  --color-blue-100: #D9E4FF;
+  --color-blue-200: #BBD0FF;
+  --color-blue-300: #8DB3FF;
+  --color-blue-400: #608CFF;
+  --color-blue-500: #3C65F5;
+  --color-blue-600: #3C65F5;
+  --color-blue-700: #2C52E0;
+  --color-blue-800: #2241B8;
+  --color-blue-900: #1B3594;
+
+  --color-violet-50: #EEF3FF;
+  --color-violet-100: #D9E4FF;
+  --color-violet-500: #3C65F5;
+  --color-violet-600: #3C65F5;
+  --color-violet-700: #2C52E0;
+}
+
 @layer base {
   * {
     margin: 0;
@@ -93,9 +127,9 @@
 }
 
 .saas-badge-indigo {
-  background-color: #EEF2FF;
-  color: #4F46E5;
-  border: 1px solid #C7D2FE;
+  background-color: #EEF3FF;
+  color: #3C65F5;
+  border: 1px solid #D9E4FF;
 }
 
 .saas-badge-emerald {
@@ -135,8 +169,8 @@
 }
 
 .saas-input:focus {
-  border-color: #6366F1;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+  border-color: #3C65F5;
+  box-shadow: 0 0 0 3px rgba(60, 101, 245, 0.12);
 }
 
 .saas-input:disabled {
@@ -153,21 +187,25 @@
   height: 2.625rem;
   padding-left: 1.25rem;
   padding-right: 1.25rem;
-  background-color: #4F46E5;
+  background-color: #3C65F5;
   color: #FFFFFF;
   font-size: 0.875rem;
   font-weight: 600;
   border-radius: 0.75rem;
   border: 1px solid transparent;
-  box-shadow: 0 1px 2px 0 rgba(79, 70, 229, 0.2);
+  box-shadow: 0 1px 2px 0 rgba(60, 101, 245, 0.2);
   transition: all 150ms ease-in-out;
   cursor: pointer;
   white-space: nowrap;
 }
 
 .saas-btn-primary:hover {
-  background-color: #4338CA;
-  box-shadow: 0 4px 12px 0 rgba(79, 70, 229, 0.25);
+  background-color: #2C52E0;
+  box-shadow: 0 4px 12px 0 rgba(60, 101, 245, 0.25);
+}
+
+.saas-btn-primary:active {
+  transform: scale(0.98);
 }
 
 .saas-btn-primary:active {

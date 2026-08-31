@@ -93,7 +93,7 @@ export const CommentComposer: React.FC<CommentComposerProps> = ({
               type="button"
               onClick={submit}
               disabled={!text.trim() || isLoading}
-              className="rounded-full bg-[#0a66c2] px-4 py-1 text-sm font-semibold text-white transition hover:bg-[#004182] disabled:cursor-not-allowed disabled:bg-[rgba(0,0,0,0.08)] disabled:text-[rgba(0,0,0,0.3)] enabled:cursor-pointer"
+              className="rounded-full bg-[#3C65F5] px-4 py-1 text-sm font-semibold text-white transition hover:bg-[#2C52E0] disabled:cursor-not-allowed disabled:bg-[rgba(0,0,0,0.08)] disabled:text-[rgba(0,0,0,0.3)] enabled:cursor-pointer"
             >
               {isLoading ? "Posting…" : parentCommentId ? "Reply" : "Comment"}
             </button>

@@ -91,7 +91,7 @@ export const EditSectionModal: React.FC<EditSectionModalProps> = ({
             type="button"
             onClick={save}
             disabled={isLoading}
-            className="rounded-full bg-[#0a66c2] px-5 py-1.5 text-sm font-semibold text-white transition hover:bg-[#004182] disabled:opacity-60 enabled:cursor-pointer"
+            className="rounded-full bg-[#3C65F5] px-5 py-1.5 text-sm font-semibold text-white transition hover:bg-[#2C52E0] disabled:opacity-60 enabled:cursor-pointer"
           >
             {isLoading ? "Saving…" : "Save"}
           </button>
@@ -125,7 +125,7 @@ export const EditSectionModal: React.FC<EditSectionModalProps> = ({
 };
 
 const inputClass =
-  "w-full rounded border border-[rgba(0,0,0,0.3)] px-3 py-2 text-sm text-[rgba(0,0,0,0.9)] outline-none transition focus:border-[#0a66c2] focus:ring-1 focus:ring-[#0a66c2]";
+  "w-full rounded border border-[rgba(0,0,0,0.3)] px-3 py-2 text-sm text-[rgba(0,0,0,0.9)] outline-none transition focus:border-[#3C65F5] focus:ring-1 focus:ring-[#3C65F5]";
 
 const FieldControl: React.FC<{
   field: FieldDef;
@@ -145,7 +145,7 @@ const FieldControl: React.FC<{
           type="checkbox"
           checked={Boolean(value)}
           onChange={(event) => onChange(event.target.checked)}
-          className="h-4 w-4 cursor-pointer accent-[#0a66c2]"
+          className="h-4 w-4 cursor-pointer accent-[#3C65F5]"
         />
         {field.label}
       </label>

@@ -187,14 +187,14 @@ const JobSeekerProfileView = ({ profile }: JobSeekerProfileViewProps) => {
                     className="h-20 w-20 sm:h-24 sm:w-24 rounded-3xl object-cover shadow-xl ring-4 ring-blue-50"
                   />
                 ) : (
-                  <div className="flex h-20 w-20 sm:h-24 sm:w-24 items-center justify-center rounded-3xl bg-gradient-to-tr from-[#1E40AF] via-[#1D4ED8] to-[#3C65F5] text-3xl sm:text-4xl font-black text-white shadow-xl ring-4 ring-blue-50">
+                  <div className="flex h-20 w-20 sm:h-24 sm:w-24 items-center justify-center rounded-3xl bg-[#3C65F5] text-3xl sm:text-4xl font-black text-white shadow-xl ring-4 ring-blue-50">
                     {profile.firstName ? profile.firstName.charAt(0).toUpperCase() : "J"}
                   </div>
                 )}
 
                 {/* Cloudinary Camera Icon Button */}
                 <label
-                  className="absolute -bottom-1 -right-1 flex h-8 w-8 items-center justify-center rounded-full bg-[#3C65F5] text-white shadow-md hover:bg-[#254BD6] transition cursor-pointer border-2 border-white"
+                  className="absolute -bottom-1 -right-1 flex h-8 w-8 items-center justify-center rounded-full bg-[#3C65F5] text-white shadow-md hover:bg-[#2C52E0] transition cursor-pointer border-2 border-white"
                   title="Upload photo to Cloudinary (Job-portal/Profile-Images)"
                 >
                   <FiCamera className="text-sm" />
@@ -214,7 +214,7 @@ const JobSeekerProfileView = ({ profile }: JobSeekerProfileViewProps) => {
                   <h1 className="text-2xl sm:text-3xl font-black text-[#05264E] tracking-tight">
                     {profile.firstName} {profile.lastName}
                   </h1>
-                  <span className="rounded-full bg-blue-50 px-3.5 py-1 text-xs font-extrabold text-[#1D4ED8] border border-blue-100">
+                  <span className="rounded-full bg-[#3C65F5]/10 px-3.5 py-1 text-xs font-extrabold text-[#3C65F5] border border-[#3C65F5]/20">
                     {profile.headline || "Job Seeker"}
                   </span>
                 </div>
@@ -222,19 +222,19 @@ const JobSeekerProfileView = ({ profile }: JobSeekerProfileViewProps) => {
                 <div className="flex flex-wrap items-center gap-3 text-xs font-semibold text-[#66789C] pt-1">
                   {profile.currentLocation && (
                     <span className="flex items-center gap-1.5 bg-[#F8FAFC] px-3 py-1.5 rounded-xl border border-gray-100">
-                      <FiMapPin className="text-[#1D4ED8]" />
+                      <FiMapPin className="text-[#3C65F5]" />
                       {profile.currentLocation}
                     </span>
                   )}
                   {profile.userId?.email && (
                     <span className="flex items-center gap-1.5 bg-[#F8FAFC] px-3 py-1.5 rounded-xl border border-gray-100">
-                      <FiMail className="text-[#1D4ED8]" />
+                      <FiMail className="text-[#3C65F5]" />
                       {profile.userId.email}
                     </span>
                   )}
                   {profile.phone && (
                     <span className="flex items-center gap-1.5 bg-[#F8FAFC] px-3 py-1.5 rounded-xl border border-gray-100">
-                      <FiPhone className="text-[#1D4ED8]" />
+                      <FiPhone className="text-[#3C65F5]" />
                       {profile.phone}
                     </span>
                   )}
@@ -246,7 +246,7 @@ const JobSeekerProfileView = ({ profile }: JobSeekerProfileViewProps) => {
             <div className="flex items-center gap-3 shrink-0 self-start md:self-auto flex-wrap">
               <button
                 onClick={() => setIsAiModalOpen(true)}
-                className="flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-600 px-5 py-3 font-extrabold text-white text-sm transition-all hover:from-purple-700 hover:to-indigo-700 hover:shadow-lg shadow-md cursor-pointer"
+                className="flex items-center justify-center gap-2 rounded-2xl bg-[#3C65F5] px-5 py-3 font-extrabold text-white text-sm transition-all hover:bg-[#2C52E0] hover:shadow-lg shadow-md cursor-pointer"
               >
                 <HiSparkles className="text-base text-yellow-300 animate-pulse" />
                 <span>✨ AI Resume Auto-Fill</span>
@@ -254,7 +254,7 @@ const JobSeekerProfileView = ({ profile }: JobSeekerProfileViewProps) => {
 
               <button
                 onClick={() => setIsEditModalOpen(true)}
-                className="flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#1D4ED8] to-[#3C65F5] px-6 py-3 font-extrabold text-white text-sm transition-all hover:from-[#1E40AF] hover:to-[#254BD6] hover:shadow-lg shadow-md cursor-pointer"
+                className="flex items-center justify-center gap-2 rounded-2xl bg-[#3C65F5] px-6 py-3 font-extrabold text-white text-sm transition-all hover:bg-[#2C52E0] hover:shadow-lg shadow-md cursor-pointer"
               >
                 <FiEdit3 className="text-base" />
                 <span>Edit Profile</span>

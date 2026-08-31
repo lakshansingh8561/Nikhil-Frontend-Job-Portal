@@ -124,7 +124,7 @@ export const ProfileHero: React.FC<ProfileHeroProps> = ({ profile }) => {
             <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-sm">
               <Link
                 to={paths.connections}
-                className="font-semibold text-[#0a66c2] hover:underline"
+                className="font-semibold text-[#3C65F5] hover:underline"
               >
                 {formatCount(profile.connectionsCount)} connections
               </Link>
@@ -161,7 +161,7 @@ export const ProfileHero: React.FC<ProfileHeroProps> = ({ profile }) => {
             />
             <Link
               to={`${paths.messages}?recipientId=${profile.userId}`}
-              className="inline-flex items-center gap-1.5 rounded-full border border-[#0a66c2] px-4 py-1.5 text-sm font-semibold text-[#0a66c2] transition hover:bg-[#0a66c2]/10"
+              className="inline-flex items-center gap-1.5 rounded-full border border-[#3C65F5] px-4 py-1.5 text-sm font-semibold text-[#3C65F5] transition hover:bg-[#3C65F5]/10"
             >
               <FiMessageSquare /> Message
             </Link>
@@ -272,10 +272,10 @@ const ImagePickerButton: React.FC<{
         title={label}
         disabled={busy}
         onClick={() => inputRef.current?.click()}
-        className={`grid h-9 w-9 place-items-center rounded-full bg-white text-[#0a66c2] shadow-md ring-1 ring-[rgba(0,0,0,0.1)] transition hover:bg-[#eef3f8] disabled:opacity-60 enabled:cursor-pointer ${className}`}
+        className={`grid h-9 w-9 place-items-center rounded-full bg-white text-[#3C65F5] shadow-md ring-1 ring-[rgba(0,0,0,0.1)] transition hover:bg-[#eef3f8] disabled:opacity-60 enabled:cursor-pointer ${className}`}
       >
         {busy ? (
-          <span className="h-4 w-4 animate-spin rounded-full border-2 border-[#0a66c2] border-t-transparent" />
+          <span className="h-4 w-4 animate-spin rounded-full border-2 border-[#3C65F5] border-t-transparent" />
         ) : (
           children
         )}

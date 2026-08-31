@@ -204,7 +204,7 @@ const JobCard: React.FC<JobCardProps> = ({ job, layout = "grid" }) => {
             ) : (
               <button
                 onClick={handleApplyClick}
-                className="rounded-xl bg-[#3C65F5] px-4 py-2 text-xs font-semibold text-white transition hover:bg-[#254BD6] shadow-sm cursor-pointer"
+                className="rounded-xl bg-[#EEF3FF] text-[#3C65F5] px-4 py-2 text-xs font-bold border border-[#D9E4FF] transition-all duration-200 group-hover:bg-[#3C65F5] group-hover:text-white group-hover:border-transparent hover:bg-[#3C65F5] hover:text-white hover:border-transparent cursor-pointer shadow-2xs"
               >
                 Apply Now
               </button>
@@ -332,7 +332,7 @@ const JobCard: React.FC<JobCardProps> = ({ job, layout = "grid" }) => {
           ) : (
             <button
               onClick={handleApplyClick}
-              className="flex h-9 items-center justify-center rounded-xl bg-[#3C65F5] text-xs font-bold text-white transition hover:bg-[#254BD6] shadow-sm cursor-pointer"
+              className="flex h-9 items-center justify-center rounded-xl bg-[#EEF3FF] text-[#3C65F5] text-xs font-bold border border-[#D9E4FF] transition-all duration-200 group-hover:bg-[#3C65F5] group-hover:text-white group-hover:border-transparent hover:bg-[#3C65F5] hover:text-white hover:border-transparent cursor-pointer shadow-2xs"
             >
               Apply Now
             </button>

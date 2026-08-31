@@ -69,7 +69,7 @@ const MyNetwork: React.FC = () => {
           <h2 className="text-base font-semibold text-[rgba(0,0,0,0.9)]">
             Invitations
             {receivedList.length > 0 && (
-              <span className="ml-1.5 rounded-full bg-[#0a66c2] px-2 py-0.5 text-xs font-bold text-white">
+              <span className="ml-1.5 rounded-full bg-[#3C65F5] px-2 py-0.5 text-xs font-bold text-white">
                 {receivedList.length}
               </span>
             )}
@@ -77,7 +77,7 @@ const MyNetwork: React.FC = () => {
           <button
             type="button"
             onClick={() => setShowSent((value) => !value)}
-            className="text-sm font-semibold text-[#0a66c2] hover:underline cursor-pointer"
+            className="text-sm font-semibold text-[#3C65F5] hover:underline cursor-pointer"
           >
             {showSent ? "Hide sent" : `Sent (${formatCount(stats?.sentInvitesCount ?? 0)})`}
           </button>
@@ -148,7 +148,7 @@ const MyNetwork: React.FC = () => {
           ) : suggestionList.length === 0 ? (
             <p className="py-4 text-center text-sm text-[rgba(0,0,0,0.6)]">
               No suggestions right now.{" "}
-              <Link to={paths.directory} className="font-semibold text-[#0a66c2] hover:underline">
+              <Link to={paths.directory} className="font-semibold text-[#3C65F5] hover:underline">
                 Browse the directory
               </Link>
             </p>
@@ -166,7 +166,7 @@ const MyNetwork: React.FC = () => {
       <section className={CARD_CLASS}>
         <header className="flex flex-wrap items-center justify-between gap-2 px-4 py-3">
           <h2 className="flex items-center gap-2 text-base font-semibold text-[rgba(0,0,0,0.9)]">
-            <FiUsers className="text-[#0a66c2]" />
+            <FiUsers className="text-[#3C65F5]" />
             {formatCount(connections?.pagination?.total ?? connectionList.length)} connections
           </h2>
           <label className="relative flex items-center">
@@ -175,7 +175,7 @@ const MyNetwork: React.FC = () => {
               value={search}
               onChange={(event) => setSearch(event.target.value)}
               placeholder="Search by name"
-              className="h-9 w-56 rounded border border-[rgba(0,0,0,0.3)] pl-8 pr-3 text-sm outline-none focus:border-[#0a66c2]"
+              className="h-9 w-56 rounded border border-[rgba(0,0,0,0.3)] pl-8 pr-3 text-sm outline-none focus:border-[#3C65F5]"
             />
           </label>
         </header>
@@ -232,7 +232,7 @@ const ConnectionRow: React.FC<{ person: AuthorDTO }> = ({ person }) => {
       <div className="min-w-0 flex-1">
         <Link
           to={paths.profile(person.userId)}
-          className="block truncate text-sm font-semibold text-[rgba(0,0,0,0.9)] hover:text-[#0a66c2] hover:underline"
+          className="block truncate text-sm font-semibold text-[rgba(0,0,0,0.9)] hover:text-[#3C65F5] hover:underline"
         >
           {person.fullName}
         </Link>
@@ -241,7 +241,7 @@ const ConnectionRow: React.FC<{ person: AuthorDTO }> = ({ person }) => {
 
       <Link
         to={`${paths.messages}?recipientId=${person.userId}`}
-        className="inline-flex items-center gap-1.5 rounded-full border border-[#0a66c2] px-3.5 py-1 text-xs sm:text-sm font-semibold text-[#0a66c2] transition hover:bg-[#0a66c2]/10"
+        className="inline-flex items-center gap-1.5 rounded-full border border-[#3C65F5] px-3.5 py-1 text-xs sm:text-sm font-semibold text-[#3C65F5] transition hover:bg-[#3C65F5]/10"
       >
         <FiMessageSquare /> Message
       </Link>

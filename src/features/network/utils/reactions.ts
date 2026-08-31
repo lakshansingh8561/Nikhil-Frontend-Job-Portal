@@ -12,7 +12,7 @@ export interface ReactionMeta {
 }
 
 export const REACTIONS: ReactionMeta[] = [
-  { key: "LIKE", label: "Like", emoji: "👍", color: "#0a66c2", badgeBg: "#378fe9" },
+  { key: "LIKE", label: "Like", emoji: "👍", color: "#3C65F5", badgeBg: "#378fe9" },
   { key: "CELEBRATE", label: "Celebrate", emoji: "👏", color: "#44712e", badgeBg: "#6dae4f" },
   { key: "SUPPORT", label: "Support", emoji: "🤝", color: "#715e86", badgeBg: "#b39ac5" },
   { key: "LOVE", label: "Love", emoji: "❤️", color: "#b24020", badgeBg: "#df704d" },

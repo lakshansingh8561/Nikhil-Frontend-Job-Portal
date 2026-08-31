@@ -73,7 +73,7 @@ const PublicProfile: React.FC = () => {
           </p>
           <Link
             to={paths.directory}
-            className="mt-4 inline-block rounded-full bg-[#0a66c2] px-5 py-1.5 text-sm font-semibold text-white transition hover:bg-[#004182]"
+            className="mt-4 inline-block rounded-full bg-[#3C65F5] px-5 py-1.5 text-sm font-semibold text-white transition hover:bg-[#2C52E0]"
           >
             Browse members
           </Link>
@@ -134,7 +134,7 @@ const ContactCard: React.FC<{ profile: PublicProfileDTO; editable: boolean }> = 
         {canSeeContact && profile.email && (
           <li className="flex items-center gap-2 text-[rgba(0,0,0,0.75)]">
             <FiMail className="shrink-0 text-[rgba(0,0,0,0.6)]" />
-            <a href={`mailto:${profile.email}`} className="truncate hover:text-[#0a66c2] hover:underline">
+            <a href={`mailto:${profile.email}`} className="truncate hover:text-[#3C65F5] hover:underline">
               {profile.email}
             </a>
           </li>
@@ -152,7 +152,7 @@ const ContactCard: React.FC<{ profile: PublicProfileDTO; editable: boolean }> = 
               href={entry.url as string}
               target="_blank"
               rel="noreferrer noopener"
-              className="truncate hover:text-[#0a66c2] hover:underline"
+              className="truncate hover:text-[#3C65F5] hover:underline"
             >
               {entry.label}
             </a>
@@ -165,7 +165,7 @@ const ContactCard: React.FC<{ profile: PublicProfileDTO; editable: boolean }> = 
               href={resume}
               target="_blank"
               rel="noreferrer noopener"
-              className="truncate font-semibold text-[#0a66c2] hover:underline"
+              className="truncate font-semibold text-[#3C65F5] hover:underline"
             >
               View résumé
             </a>

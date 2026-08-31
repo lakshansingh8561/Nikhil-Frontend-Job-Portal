@@ -43,7 +43,7 @@ export const Activity: React.FC<ActivityProps> = ({ profile, me }) => {
             {profile.isSelf ? (
               <>
                 You haven't posted yet.{" "}
-                <Link to={paths.feed} className="font-semibold text-[#0a66c2] hover:underline">
+                <Link to={paths.feed} className="font-semibold text-[#3C65F5] hover:underline">
                   Share your first post
                 </Link>
               </>

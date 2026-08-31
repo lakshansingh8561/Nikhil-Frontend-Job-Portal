@@ -144,7 +144,7 @@ export const ChatPage: React.FC = () => {
           />
         ) : (
           <div className="flex h-full w-full flex-col items-center justify-center bg-[#F8FAFC] p-8 text-center">
-            <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-indigo-50 text-[#4F46E5] font-bold text-4xl mb-4 shadow-2xs border border-indigo-100/60 animate-bounce" style={{ animationDuration: '3s' }}>
+            <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-[#3C65F5]/10 text-[#3C65F5] font-bold text-4xl mb-4 shadow-2xs border border-[#3C65F5]/20 animate-bounce" style={{ animationDuration: '3s' }}>
               💬
             </div>
             <h3 className="text-xl font-extrabold text-[#05264E] tracking-tight">
@@ -155,7 +155,7 @@ export const ChatPage: React.FC = () => {
             </p>
             <button
               onClick={() => setIsModalOpen(true)}
-              className="inline-flex items-center gap-2 rounded-xl bg-[#4F46E5] px-5 py-2.5 text-xs sm:text-sm font-bold text-white shadow-md hover:bg-[#4338CA] hover:scale-[1.03] transition-all duration-200 cursor-pointer focus-visible:ring-2 focus-visible:ring-[#4F46E5]"
+              className="inline-flex items-center gap-2 rounded-xl bg-[#3C65F5] px-5 py-2.5 text-xs sm:text-sm font-bold text-white shadow-md hover:bg-[#2C52E0] hover:scale-[1.03] transition-all duration-200 cursor-pointer focus-visible:ring-2 focus-visible:ring-[#3C65F5]"
             >
               Start New Chat
             </button>

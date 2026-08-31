@@ -55,7 +55,7 @@ export const ProfileRailCard: React.FC<ProfileRailCardProps> = ({ profile, stats
           className="-mx-1 flex items-center justify-between rounded px-1 py-1 transition hover:bg-[rgba(0,0,0,0.04)]"
         >
           <span className="text-xs font-semibold text-[rgba(0,0,0,0.6)]">Connections</span>
-          <span className="text-xs font-bold text-[#0a66c2]">
+          <span className="text-xs font-bold text-[#3C65F5]">
             {formatCount(stats?.connectionsCount ?? profile?.connectionsCount ?? 0)}
           </span>
         </Link>
@@ -64,7 +64,7 @@ export const ProfileRailCard: React.FC<ProfileRailCardProps> = ({ profile, stats
           className="-mx-1 flex items-center justify-between rounded px-1 py-1 transition hover:bg-[rgba(0,0,0,0.04)]"
         >
           <span className="text-xs font-semibold text-[rgba(0,0,0,0.6)]">Followers</span>
-          <span className="text-xs font-bold text-[#0a66c2]">
+          <span className="text-xs font-bold text-[#3C65F5]">
             {formatCount(stats?.followersCount ?? profile?.followersCount ?? 0)}
           </span>
         </Link>

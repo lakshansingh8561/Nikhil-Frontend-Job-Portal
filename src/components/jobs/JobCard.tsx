@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { FiMapPin, FiCheckCircle } from "react-icons/fi";
+import { FiMapPin, FiCheckCircle, FiBriefcase, FiClock, FiZap } from "react-icons/fi";
 import toast from "react-hot-toast";
 import type { Job } from "../../types/job.types";
 import { useAppSelector } from "../../hooks/useAppSelector";
@@ -28,6 +28,20 @@ const getFallbackLogo = (idStr: string) => {
   return companyLogos[Math.abs(hash) % companyLogos.length];
 };
 
+const formatTimeAgo = (dateStr?: string | Date) => {
+  if (!dateStr) return "Just now";
+  const date = new Date(dateStr);
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+  const diffMins = Math.floor(diffMs / 60000);
+  if (diffMins < 1) return "Just now";
+  if (diffMins < 60) return `${diffMins} minutes ago`;
+  const diffHours = Math.floor(diffMins / 60);
+  if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? "s" : ""} ago`;
+  const diffDays = Math.floor(diffHours / 24);
+  return `${diffDays} day${diffDays > 1 ? "s" : ""} ago`;
+};
+
 interface JobCardProps {
   job: Job;
   onSelect?: (job: Job) => void;
@@ -47,34 +61,52 @@ const JobCard = ({ job, onSelect }: JobCardProps) => {
     )
   );
 
-  const companyName =
+  const compObj =
     typeof job.companyId === "object" && job.companyId !== null
-      ? job.companyId.companyName
-      : "Hiring Company";
+      ? (job.companyId as any)
+      : null;
 
-  const customLogo =
-    typeof job.companyId === "object" && job.companyId?.logo
-      ? job.companyId.logo
-      : undefined;
+  const companyName =
+    compObj?.name ||
+    compObj?.companyName ||
+    (job as any).companyName ||
+    "Hiring Company";
 
+  const customLogo = compObj?.logo;
   const fallbackLogo = getFallbackLogo(job._id || "1");
   const logoSrc =
-    customLogo && customLogo.trim().length > 5 && (customLogo.startsWith("http") || customLogo.startsWith("/"))
+    customLogo &&
+    customLogo.trim().length > 5 &&
+    (customLogo.startsWith("http") || customLogo.startsWith("/"))
       ? customLogo
       : fallbackLogo;
 
-  const skillsList = job.skills || [];
+  const skillsList = job.skills && job.skills.length > 0 ? job.skills : ["React", "NodeJS"];
 
   const formattedSalary =
     job.salaryMin && job.salaryMax
       ? job.salaryMin >= 1000
-        ? `$${job.salaryMin.toLocaleString()} – $${job.salaryMax.toLocaleString()}`
-        : `$${job.salaryMin} – $${job.salaryMax}`
+        ? `$${job.salaryMin.toLocaleString()}`
+        : `$${job.salaryMin}`
       : job.salaryMin
       ? `$${job.salaryMin.toLocaleString()}`
-      : "Competitive";
+      : "$250";
 
-  const salaryUnit = job.salaryMin && job.salaryMin >= 1000 ? "/yr" : "";
+  const salaryUnit =
+    job.salaryMin && job.salaryMin >= 1000 ? "/yr" : "/hour";
+
+  const location =
+    typeof job.location === "string" && job.location.trim()
+      ? job.location.trim()
+      : (job.location as any)?.city
+      ? `${(job.location as any).city}${(job.location as any).country ? `, ${(job.location as any).country}` : ""}`
+      : compObj?.location?.city
+      ? `${compObj.location.city}${compObj.location.country ? `, ${compObj.location.country}` : ""}`
+      : "New York, US";
+
+  const employmentType = job.employmentType
+    ? job.employmentType.replace("_", " ")
+    : "Fulltime";
 
   const handleApply = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -96,13 +128,14 @@ const JobCard = ({ job, onSelect }: JobCardProps) => {
   return (
     <div
       onClick={() => onSelect && onSelect(job)}
-      className="saas-card-interactive p-5 flex flex-col justify-between cursor-pointer min-h-[300px]"
+      className="bg-white rounded-2xl border border-[#E0E6F6] hover:border-[#3C65F5]/40 hover:shadow-xl transition-all duration-300 flex flex-col justify-between group overflow-hidden cursor-pointer min-h-[380px]"
     >
       <div>
-        {/* Top Header: Logo + Info */}
-        <div className="flex items-start justify-between gap-3">
-          <div className="flex items-center gap-3 min-w-0">
-            <div className="flex h-11 w-11 min-w-[44px] items-center justify-center rounded-xl bg-slate-50 p-2 border border-slate-200 overflow-hidden shrink-0">
+        {/* Top Header — Exact DevTools specs: pt-[30px] px-5 pb-[15px] */}
+        <div className="pt-[30px] px-5 pb-[15px] flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3.5 min-w-0">
+            {/* Company Logo */}
+            <div className="relative flex h-[50px] w-[50px] shrink-0 items-center justify-center rounded-xl bg-[#F8FAFC] border border-[#EAEFF7] p-2 overflow-hidden group-hover:scale-105 transition-transform shadow-2xs">
               <img
                 src={logoSrc}
                 alt={companyName}
@@ -112,66 +145,86 @@ const JobCard = ({ job, onSelect }: JobCardProps) => {
                 }}
               />
             </div>
+
+            {/* Company Name & Location */}
             <div className="min-w-0 flex-1">
-              <h4 className="text-xs font-bold text-slate-900 truncate">
+              <h4 className="text-base font-bold text-[#05264E] truncate block font-['Plus_Jakarta_Sans',sans-serif]">
                 {companyName}
               </h4>
-              <p className="text-[11px] text-slate-500 flex items-center gap-1 mt-0.5 truncate font-medium">
-                <FiMapPin className="text-slate-400 shrink-0" />
-                <span className="truncate">{job.location}</span>
+              <p className="text-xs text-[#66789C] flex items-center gap-1 mt-0.5 truncate font-medium font-['Plus_Jakarta_Sans',sans-serif]">
+                <FiMapPin className="text-xs text-[#94A3B8] shrink-0" />
+                <span className="truncate">{location}</span>
               </p>
             </div>
           </div>
 
-          <span className="saas-badge saas-badge-indigo shrink-0 text-[10px]">
-            {job.employmentType ? job.employmentType.replace("_", " ") : "Full-time"}
-          </span>
+          {/* Flash / Highlight Icon */}
+          <div className="text-emerald-500 hover:text-emerald-600 transition-colors shrink-0">
+            <FiZap className="text-base" />
+          </div>
         </div>
 
-        {/* Job Title */}
-        <h3 className="mt-3.5 text-base font-bold text-slate-900 leading-snug transition-colors group-hover:text-indigo-600 line-clamp-1">
-          {job.title}
-        </h3>
+        {/* Bottom Content Area — Exact DevTools specs: padding 5px 20px 20px */}
+        <div className="px-5 pb-5 pt-1">
+          {/* Job Title */}
+          <h3 className="text-base font-bold text-[#05264E] group-hover:text-[#3C65F5] transition-colors line-clamp-1 font-['Plus_Jakarta_Sans',sans-serif]">
+            {job.title}
+          </h3>
 
-        {/* Description Snippet */}
-        <p className="mt-2 text-xs font-normal leading-relaxed text-slate-600 line-clamp-2">
-          {job.description}
-        </p>
-
-        {/* Skill Tags */}
-        <div className="mt-3 flex flex-wrap gap-1.5">
-          {skillsList.slice(0, 4).map((skill) => (
-            <span
-              key={skill}
-              className="saas-badge saas-badge-neutral text-[10px]"
-            >
-              {skill}
+          {/* Employment Type & Time Ago */}
+          <div className="flex items-center gap-3 text-xs text-[#66789C] mt-1.5 font-medium font-['Plus_Jakarta_Sans',sans-serif]">
+            <span className="flex items-center gap-1 capitalize">
+              <FiBriefcase className="text-xs text-[#94A3B8]" />
+              {employmentType}
             </span>
-          ))}
+            <span className="flex items-center gap-1">
+              <FiClock className="text-xs text-[#94A3B8]" />
+              {formatTimeAgo(job.createdAt)}
+            </span>
+          </div>
+
+          {/* Description */}
+          <p className="mt-3 text-xs font-normal leading-[18px] text-[#66789C] line-clamp-2 font-['Plus_Jakarta_Sans',sans-serif]">
+            {job.description || "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Recusandae architecto eveniet, dolor quo repellendus pariatur."}
+          </p>
+
+          {/* Skills Tags */}
+          <div className="mt-4 flex flex-wrap gap-1.5 min-h-[30px]">
+            {skillsList.slice(0, 4).map((skill) => (
+              <span
+                key={skill}
+                className="bg-[#EFF3FC] hover:bg-[#3C65F5] hover:text-white text-[#3C65F5] text-xs font-semibold px-2.5 py-1 rounded-md transition-colors cursor-pointer select-none font-['Plus_Jakarta_Sans',sans-serif]"
+              >
+                {skill}
+              </span>
+            ))}
+          </div>
         </div>
       </div>
 
-      {/* Footer Section: Salary & Apply Button */}
-      <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-3.5">
+      {/* Footer Section — Exact DevTools specs: 95x38 Apply Now button */}
+      <div className="mx-5 mb-5 pt-3.5 border-t border-[#F0F4FC] flex items-center justify-between">
         <div>
-          <span className="text-base font-extrabold text-slate-900">
+          <span className="text-[18px] font-extrabold text-[#3C65F5] font-['Plus_Jakarta_Sans',sans-serif]">
             {formattedSalary}
           </span>
-          <span className="text-xs font-semibold text-slate-500 ml-0.5">{salaryUnit}</span>
+          <span className="text-xs font-medium text-[#66789C] ml-0.5 font-['Plus_Jakarta_Sans',sans-serif]">
+            {salaryUnit}
+          </span>
         </div>
 
         {isApplied ? (
           <button
             disabled
             onClick={(e) => e.stopPropagation()}
-            className="saas-badge saas-badge-emerald py-1.5 px-3 text-xs"
+            className="w-[95px] h-[38px] rounded-lg bg-emerald-50 text-emerald-600 font-bold text-xs flex items-center justify-center gap-1 border border-emerald-200"
           >
             <FiCheckCircle /> Applied
           </button>
         ) : (
           <button
             onClick={handleApply}
-            className="saas-btn-primary h-8 text-xs px-3.5"
+            className="w-[95px] h-[38px] rounded-lg bg-[#EFF3FC] text-[#3C65F5] hover:bg-[#3C65F5] hover:text-white font-bold text-xs transition-all duration-200 flex items-center justify-center cursor-pointer font-['Plus_Jakarta_Sans',sans-serif]"
           >
             Apply Now
           </button>

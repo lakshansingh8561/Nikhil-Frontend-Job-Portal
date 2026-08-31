@@ -191,7 +191,7 @@ export const PostCard: React.FC<PostCardProps> = ({
           <FiRepeat className="shrink-0" />
           <Link
             to={paths.profile(post.author?.userId || "")}
-            className="font-semibold text-[rgba(0,0,0,0.9)] hover:text-[#0a66c2] hover:underline"
+            className="font-semibold text-[rgba(0,0,0,0.9)] hover:text-[#3C65F5] hover:underline"
           >
             {post.author?.fullName}
           </Link>
@@ -211,7 +211,7 @@ export const PostCard: React.FC<PostCardProps> = ({
         <div className="min-w-0 flex-1">
           <Link
             to={author.userId ? paths.profile(author.userId) : "#"}
-            className="block truncate text-sm font-semibold leading-tight text-[rgba(0,0,0,0.9)] hover:text-[#0a66c2] hover:underline"
+            className="block truncate text-sm font-semibold leading-tight text-[rgba(0,0,0,0.9)] hover:text-[#3C65F5] hover:underline"
           >
             {author.fullName || "Member"}
           </Link>
@@ -277,7 +277,7 @@ export const PostCard: React.FC<PostCardProps> = ({
             value={editText}
             onChange={(event) => setEditText(event.target.value.slice(0, 3000))}
             rows={5}
-            className="w-full resize-none rounded border border-[rgba(0,0,0,0.3)] px-3 py-2 text-sm outline-none focus:border-[#0a66c2]"
+            className="w-full resize-none rounded border border-[rgba(0,0,0,0.3)] px-3 py-2 text-sm outline-none focus:border-[#3C65F5]"
           />
           <div className="mt-2 flex justify-end gap-2">
             <button
@@ -291,7 +291,7 @@ export const PostCard: React.FC<PostCardProps> = ({
               type="button"
               onClick={saveEdit}
               disabled={isSavingEdit}
-              className="rounded-full bg-[#0a66c2] px-4 py-1 text-sm font-semibold text-white hover:bg-[#004182] disabled:opacity-60 enabled:cursor-pointer"
+              className="rounded-full bg-[#3C65F5] px-4 py-1 text-sm font-semibold text-white hover:bg-[#2C52E0] disabled:opacity-60 enabled:cursor-pointer"
             >
               Save
             </button>
@@ -318,7 +318,7 @@ export const PostCard: React.FC<PostCardProps> = ({
             <div className="min-w-0 flex-1">
               <Link
                 to={originalPost.author?.userId ? paths.profile(originalPost.author.userId) : "#"}
-                className="block truncate text-xs font-semibold text-[rgba(0,0,0,0.9)] hover:text-[#0a66c2] hover:underline"
+                className="block truncate text-xs font-semibold text-[rgba(0,0,0,0.9)] hover:text-[#3C65F5] hover:underline"
               >
                 {originalPost.author?.fullName || "Member"}
               </Link>
@@ -344,7 +344,7 @@ export const PostCard: React.FC<PostCardProps> = ({
           {originalPost.jobDetails && (
             <Link
               to={`/jobs/${originalPost.jobDetails._id}`}
-              className="mt-2.5 flex items-center gap-3 rounded-lg border border-[rgba(0,0,0,0.15)] p-2.5 transition hover:border-[#0a66c2] hover:bg-[#0a66c2]/5"
+              className="mt-2.5 flex items-center gap-3 rounded-lg border border-[rgba(0,0,0,0.15)] p-2.5 transition hover:border-[#3C65F5] hover:bg-[#3C65F5]/5"
             >
               <span className="min-w-0 flex-1">
                 <span className="block truncate text-xs font-semibold text-[rgba(0,0,0,0.9)]">
@@ -354,7 +354,7 @@ export const PostCard: React.FC<PostCardProps> = ({
                   {originalPost.jobDetails.jobType || "View role"}
                 </span>
               </span>
-              <span className="shrink-0 text-xs font-semibold text-[#0a66c2]">View job</span>
+              <span className="shrink-0 text-xs font-semibold text-[#3C65F5]">View job</span>
             </Link>
           )}
         </div>
@@ -364,7 +364,7 @@ export const PostCard: React.FC<PostCardProps> = ({
           {mainJobDetails && (
             <Link
               to={`/jobs/${mainJobDetails._id}`}
-              className="mx-4 mb-2 flex items-center gap-3 rounded-lg border border-[rgba(0,0,0,0.15)] px-3 py-3 transition hover:border-[#0a66c2] hover:bg-[#0a66c2]/5"
+              className="mx-4 mb-2 flex items-center gap-3 rounded-lg border border-[rgba(0,0,0,0.15)] px-3 py-3 transition hover:border-[#3C65F5] hover:bg-[#3C65F5]/5"
             >
               <span className="min-w-0 flex-1">
                 <span className="block truncate text-sm font-semibold text-[rgba(0,0,0,0.9)]">
@@ -374,7 +374,7 @@ export const PostCard: React.FC<PostCardProps> = ({
                   {mainJobDetails.jobType || "View role"}
                 </span>
               </span>
-              <span className="shrink-0 text-xs font-semibold text-[#0a66c2]">View job</span>
+              <span className="shrink-0 text-xs font-semibold text-[#3C65F5]">View job</span>
             </Link>
           )}
         </>
@@ -386,7 +386,7 @@ export const PostCard: React.FC<PostCardProps> = ({
             <button
               type="button"
               onClick={() => setReactorsOpen(true)}
-              className="flex items-center gap-1 rounded text-xs text-[rgba(0,0,0,0.6)] transition hover:text-[#0a66c2] hover:underline cursor-pointer"
+              className="flex items-center gap-1 rounded text-xs text-[rgba(0,0,0,0.6)] transition hover:text-[#3C65F5] hover:underline cursor-pointer"
             >
               <ReactionBadges types={proof.topTypes} />
               <span>{formatCount(proof.total)}</span>
@@ -400,7 +400,7 @@ export const PostCard: React.FC<PostCardProps> = ({
               <button
                 type="button"
                 onClick={() => setCommentsOpen(true)}
-                className="hover:text-[#0a66c2] hover:underline cursor-pointer"
+                className="hover:text-[#3C65F5] hover:underline cursor-pointer"
               >
                 {formatCount(post.commentsCount)}{" "}
                 {post.commentsCount === 1 ? "comment" : "comments"}
@@ -460,7 +460,7 @@ export const PostCard: React.FC<PostCardProps> = ({
         <ActionButton
           icon={saved ? <FiBookmark className="text-lg fill-current" /> : <FiSend className="text-lg" />}
           label={saved ? "Saved" : "Save"}
-          color={saved ? "#0a66c2" : undefined}
+          color={saved ? "#3C65F5" : undefined}
           onClick={handleSave}
         />
       </div>

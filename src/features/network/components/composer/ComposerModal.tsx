@@ -193,7 +193,7 @@ export const ComposerModal: React.FC<ComposerModalProps> = ({
                         setVisibilityOpen(false);
                       }}
                       className={`flex w-full items-start gap-2.5 px-3 py-2 text-left transition hover:bg-[rgba(0,0,0,0.04)] cursor-pointer ${
-                        visibility === option.key ? "bg-[#0a66c2]/5" : ""
+                        visibility === option.key ? "bg-[#3C65F5]/5" : ""
                       }`}
                     >
                       <span className="mt-0.5 text-[rgba(0,0,0,0.6)]">{option.icon}</span>
@@ -256,7 +256,7 @@ export const ComposerModal: React.FC<ComposerModalProps> = ({
               type="button"
               onClick={handlePublish}
               disabled={!canPublish}
-              className="rounded-full bg-[#0a66c2] px-5 py-1.5 text-sm font-semibold text-white transition hover:bg-[#004182] disabled:cursor-not-allowed disabled:bg-[rgba(0,0,0,0.08)] disabled:text-[rgba(0,0,0,0.3)] enabled:cursor-pointer"
+              className="rounded-full bg-[#3C65F5] px-5 py-1.5 text-sm font-semibold text-white transition hover:bg-[#2C52E0] disabled:cursor-not-allowed disabled:bg-[rgba(0,0,0,0.08)] disabled:text-[rgba(0,0,0,0.3)] enabled:cursor-pointer"
             >
               {media.isUploading ? "Uploading…" : isPublishing ? "Posting…" : "Post"}
             </button>
@@ -265,7 +265,7 @@ export const ComposerModal: React.FC<ComposerModalProps> = ({
       }
     >
       <div
-        className={`px-4 pb-4 pt-2 sm:px-6 ${dragging ? "bg-[#0a66c2]/5" : ""}`}
+        className={`px-4 pb-4 pt-2 sm:px-6 ${dragging ? "bg-[#3C65F5]/5" : ""}`}
         onDragOver={(event) => {
           event.preventDefault();
           setDragging(true);
@@ -332,7 +332,7 @@ export const ComposerModal: React.FC<ComposerModalProps> = ({
         </div>
 
         {dragging && (
-          <p className="mt-3 rounded-lg border-2 border-dashed border-[#0a66c2] bg-white/60 py-6 text-center text-sm font-semibold text-[#0a66c2]">
+          <p className="mt-3 rounded-lg border-2 border-dashed border-[#3C65F5] bg-white/60 py-6 text-center text-sm font-semibold text-[#3C65F5]">
             Drop files to attach
           </p>
         )}

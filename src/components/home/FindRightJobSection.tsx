@@ -1,72 +1,56 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { FiShield, FiArrowRight } from "react-icons/fi";
+import { FiArrowRight } from "react-icons/fi";
 import Container from "../common/Container";
 
+import imgChart from "../../assets/images/img-chart.png";
+import controlCard from "../../assets/images/controlcard.png";
 import familyImage from "../../assets/images/family-image1.png";
 
 const FindRightJobSection: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <section className="py-16 sm:py-20 bg-[#F5F7FC] overflow-hidden">
+    <section className="py-20 bg-[#F5F7FC] overflow-x-clip">
       <Container>
         <div className="grid grid-cols-1 lg:grid-cols-12 items-center gap-10 lg:gap-16">
-          {/* Left Column: Overlapping Card Illustration - Hidden on mobile for cleaner layout */}
+          {/* Left Column: Overlapping Card Illustration - Exact JobBox Template Structure */}
           <div className="hidden lg:flex lg:col-span-6 relative justify-center items-center py-6">
-            <div className="relative w-full max-w-[520px]">
-              {/* Top Left Floating Card */}
-              <div className="absolute -top-6 -left-8 z-0 bg-white rounded-3xl p-5 border border-[#EAEFF7] shadow-xl w-64 transform -rotate-1 hover:rotate-0 transition-transform duration-300">
-                <div className="inline-flex items-center gap-1.5 bg-[#EBF2FF] text-[#3C65F5] text-[11px] font-bold px-3 py-1 rounded-full mb-3">
-                  <span className="h-1.5 w-1.5 rounded-full bg-[#3C65F5] animate-pulse" />
-                  Market Static
-                </div>
-                <h4 className="text-xs font-extrabold text-[#05264E] mb-2">
-                  Course overview
-                </h4>
-                {/* SVG Curve Line Graph */}
-                <div className="h-16 w-full flex flex-col justify-end">
-                  <svg className="w-full h-12 overflow-visible" viewBox="0 0 100 40">
-                    <path
-                      d="M0 35 Q 25 10, 50 25 T 100 10"
-                      fill="none"
-                      stroke="#05264E"
-                      strokeWidth="3"
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                  <div className="flex justify-between text-[9px] font-bold text-gray-400 mt-1">
-                    <span>Jan</span>
-                    <span>Feb</span>
-                    <span>Mar</span>
-                  </div>
-                </div>
-              </div>
+            <div className="relative w-full max-w-[580px] text-center">
+              {/* Top Left Floating Chart Card — Exact JobBox specs */}
+              <img
+                src={imgChart}
+                alt="Course overview"
+                className="absolute z-0 pointer-events-none select-none drop-shadow-md"
+                style={{
+                  top: '-45px',
+                  left: '-40px',
+                  width: '270px',
+                  maxWidth: 'none',
+                }}
+              />
 
-              {/* Central Main Family Image Card */}
-              <div className="relative z-10 mx-auto w-[90%] rounded-[32px] overflow-hidden bg-white shadow-2xl border-4 border-white transition-transform duration-300 hover:scale-[1.01]">
+              {/* Central Main Family Image — Exact JobBox specs: max-width: 80%, width: ~520px, height: ~470px (1.108 aspect ratio) */}
+              <div className="relative z-10 mx-auto rounded-[32px] overflow-hidden shadow-2xl border-4 border-white transition-transform duration-300 hover:scale-[1.01] max-w-[80%] aspect-[520.78/470.05]">
                 <img
                   src={familyImage}
                   alt="Find the right job for you"
-                  className="w-full h-[400px] object-cover object-center"
+                  className="w-full h-full object-cover object-center"
                 />
               </div>
 
-              {/* Bottom Right Floating Card */}
-              <div className="absolute -bottom-6 -right-6 z-20 bg-white rounded-3xl p-5 border border-[#EAEFF7] shadow-xl w-60 transform rotate-1 hover:rotate-0 transition-transform duration-300">
-                <div className="flex items-center gap-2 mb-3">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-blue-50 text-[#3C65F5]">
-                    <FiShield className="text-sm" />
-                  </div>
-                  <span className="text-xs font-extrabold text-[#05264E]">Security</span>
-                </div>
-                <button
-                  onClick={() => navigate("/jobs")}
-                  className="w-full bg-[#05264E] hover:bg-[#0A366F] text-white text-xs font-extrabold py-3 rounded-xl shadow-md transition-colors cursor-pointer"
-                >
-                  Learn More
-                </button>
-              </div>
+              {/* Bottom Right Floating Control Card — Shifted right and down so 'urity' and 'Learn More' button are clearly visible */}
+              <img
+                src={controlCard}
+                alt="Security"
+                className="absolute z-0 pointer-events-none drop-shadow-xl select-none"
+                style={{
+                  width: '351px',
+                  height: '384px',
+                  right: '-95px',
+                  bottom: '-165px',
+                }}
+              />
             </div>
           </div>
 

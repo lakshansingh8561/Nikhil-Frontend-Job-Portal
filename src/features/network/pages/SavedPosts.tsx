@@ -45,7 +45,7 @@ const SavedPosts: React.FC = () => {
     >
       <header className={`${CARD_CLASS} px-4 py-3`}>
         <h1 className="flex items-center gap-2 text-lg font-semibold text-[rgba(0,0,0,0.9)]">
-          <FiBookmark className="text-[#0a66c2]" /> Saved posts
+          <FiBookmark className="text-[#3C65F5]" /> Saved posts
         </h1>
         <p className="text-sm text-[rgba(0,0,0,0.6)]">
           Only you can see what you've saved.
@@ -62,7 +62,7 @@ const SavedPosts: React.FC = () => {
           </p>
           <Link
             to={paths.feed}
-            className="mt-4 inline-block rounded-full bg-[#0a66c2] px-5 py-1.5 text-sm font-semibold text-white transition hover:bg-[#004182]"
+            className="mt-4 inline-block rounded-full bg-[#3C65F5] px-5 py-1.5 text-sm font-semibold text-white transition hover:bg-[#2C52E0]"
           >
             Browse the feed
           </Link>

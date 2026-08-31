@@ -153,7 +153,7 @@ export const CommentItem: React.FC<CommentItemProps> = ({
               <div className="min-w-0">
                 <Link
                   to={author.userId ? paths.profile(author.userId) : "#"}
-                  className="block truncate text-sm font-semibold text-[rgba(0,0,0,0.9)] hover:text-[#0a66c2] hover:underline"
+                  className="block truncate text-sm font-semibold text-[rgba(0,0,0,0.9)] hover:text-[#3C65F5] hover:underline"
                 >
                   {author.fullName || "Member"}
                 </Link>
@@ -212,7 +212,7 @@ export const CommentItem: React.FC<CommentItemProps> = ({
                   value={editText}
                   onChange={(event) => setEditText(event.target.value.slice(0, 1500))}
                   rows={3}
-                  className="w-full resize-none rounded border border-[rgba(0,0,0,0.3)] bg-white px-2 py-1.5 text-sm outline-none focus:border-[#0a66c2]"
+                  className="w-full resize-none rounded border border-[rgba(0,0,0,0.3)] bg-white px-2 py-1.5 text-sm outline-none focus:border-[#3C65F5]"
                 />
                 <div className="mt-1.5 flex justify-end gap-2">
                   <button
@@ -229,7 +229,7 @@ export const CommentItem: React.FC<CommentItemProps> = ({
                     type="button"
                     onClick={saveEdit}
                     disabled={isSaving}
-                    className="rounded-full bg-[#0a66c2] px-3 py-1 text-xs font-semibold text-white hover:bg-[#004182] disabled:opacity-60 enabled:cursor-pointer"
+                    className="rounded-full bg-[#3C65F5] px-3 py-1 text-xs font-semibold text-white hover:bg-[#2C52E0] disabled:opacity-60 enabled:cursor-pointer"
                   >
                     Save
                   </button>
@@ -319,7 +319,7 @@ export const CommentItem: React.FC<CommentItemProps> = ({
             <button
               type="button"
               onClick={() => setShowReplies(true)}
-              className="mt-1.5 rounded px-1.5 py-0.5 text-xs font-semibold text-[rgba(0,0,0,0.6)] transition hover:bg-[rgba(0,0,0,0.08)] hover:text-[#0a66c2] cursor-pointer"
+              className="mt-1.5 rounded px-1.5 py-0.5 text-xs font-semibold text-[rgba(0,0,0,0.6)] transition hover:bg-[rgba(0,0,0,0.08)] hover:text-[#3C65F5] cursor-pointer"
             >
               {totalReplies === 1 ? "1 reply" : `${formatCount(totalReplies)} replies`}
             </button>
@@ -346,7 +346,7 @@ export const CommentItem: React.FC<CommentItemProps> = ({
                   <button
                     type="button"
                     onClick={() => setRepliesPage((page) => page + 1)}
-                    className="ml-10 rounded px-1.5 py-0.5 text-xs font-semibold text-[rgba(0,0,0,0.6)] hover:text-[#0a66c2] cursor-pointer"
+                    className="ml-10 rounded px-1.5 py-0.5 text-xs font-semibold text-[rgba(0,0,0,0.6)] hover:text-[#3C65F5] cursor-pointer"
                   >
                     Load more replies
                   </button>

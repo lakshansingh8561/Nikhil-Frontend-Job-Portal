@@ -107,16 +107,17 @@ const Navbar = () => {
               </Link>
             </div>
 
-            {/* Desktop Navigation Links */}
-            <nav className="hidden items-center justify-center gap-1 lg:flex flex-1 max-w-md mx-auto">
+            {/* Desktop Navigation Links — Exact Plus Jakarta Sans Medium (500) */}
+            <nav className="hidden items-center justify-center gap-1.5 lg:flex flex-1 max-w-md mx-auto font-['Plus_Jakarta_Sans',sans-serif]">
               {links.map((item) => (
                 <NavLink
                   key={item.name}
                   to={item.path}
                   className={({ isActive }) =>
-                    `px-3.5 py-2 rounded-lg text-sm font-semibold transition-all whitespace-nowrap ${isActive
-                      ? "bg-slate-100 text-indigo-600 font-bold"
-                      : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
+                    `px-3.5 py-2 text-[14px] leading-[18px] transition-all whitespace-nowrap font-medium font-['Plus_Jakarta_Sans',sans-serif] ${
+                      isActive
+                        ? "text-[#3C65F5]"
+                        : "text-[#05264E] hover:text-[#3C65F5]"
                     }`
                   }
                 >
@@ -126,7 +127,7 @@ const Navbar = () => {
             </nav>
 
             {/* Desktop Right Action Bar */}
-            <div className="hidden lg:flex items-center gap-3 shrink-0">
+            <div className="hidden lg:flex items-center gap-3 shrink-0 font-['Plus_Jakarta_Sans',sans-serif]">
               {user ? (
                 <div className="flex items-center gap-2.5">
                   <NotificationDropdown />
@@ -135,7 +136,7 @@ const Navbar = () => {
                     <Link
                       to={chatPath}
                       title="Messages"
-                      className="relative flex h-9.5 w-9.5 items-center justify-center rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200/80 hover:text-indigo-600 transition"
+                      className="relative flex h-9.5 w-9.5 items-center justify-center rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200/80 hover:text-[#3C65F5] transition"
                     >
                       <FiMessageSquare className="text-base" />
                       {unreadData && unreadData.unreadCount > 0 && (
@@ -149,7 +150,7 @@ const Navbar = () => {
                   <div className="relative" ref={dropdownRef}>
                     <button
                       onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
-                      className="flex items-center gap-2 rounded-xl bg-slate-100 p-1 pl-1.5 pr-3 text-xs font-bold text-slate-800 hover:bg-slate-200/80 transition cursor-pointer"
+                      className="flex items-center gap-2 rounded-xl bg-slate-100 p-1 pl-1.5 pr-3 text-[13px] font-medium text-[#05264E] hover:bg-slate-200/80 transition cursor-pointer font-['Plus_Jakarta_Sans',sans-serif]"
                     >
                       <Avatar
                         src={avatarUrl}
@@ -165,16 +166,16 @@ const Navbar = () => {
                     </button>
 
                     {profileDropdownOpen && (
-                      <div className="absolute right-0 mt-2 w-56 rounded-2xl border border-slate-200 bg-white py-1.5 shadow-lg z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+                      <div className="absolute right-0 mt-2 w-56 rounded-2xl border border-slate-200 bg-white py-1.5 shadow-lg z-50 animate-in fade-in slide-in-from-top-2 duration-150 font-['Plus_Jakarta_Sans',sans-serif]">
                         <div className="px-4 py-2 border-b border-slate-100">
-                          <p className="text-xs font-bold text-slate-900 truncate">{user.email}</p>
-                          <p className="text-[11px] font-semibold text-indigo-600 uppercase tracking-wider mt-0.5">{user.role}</p>
+                          <p className="text-xs font-medium text-slate-900 truncate">{user.email}</p>
+                          <p className="text-[11px] font-medium text-[#3C65F5] uppercase tracking-wider mt-0.5">{user.role}</p>
                         </div>
 
                         <Link
                           to={profilePath}
                           onClick={() => setProfileDropdownOpen(false)}
-                          className="flex items-center gap-2.5 px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-indigo-600 transition"
+                          className="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 hover:text-[#3C65F5] transition"
                         >
                           <FiUser /> {isAdmin ? "Admin Dashboard" : isRecruiter ? "Recruiter Suite" : "Candidate Dashboard"}
                         </Link>
@@ -183,7 +184,7 @@ const Navbar = () => {
                           <Link
                             to={chatPath}
                             onClick={() => setProfileDropdownOpen(false)}
-                            className="flex items-center justify-between px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-indigo-600 transition"
+                            className="flex items-center justify-between px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 hover:text-[#3C65F5] transition"
                           >
                             <div className="flex items-center gap-2.5">
                               <FiMessageSquare /> Messages
@@ -198,7 +199,7 @@ const Navbar = () => {
                           <Link
                             to="/job-seeker/applications"
                             onClick={() => setProfileDropdownOpen(false)}
-                            className="flex items-center gap-2.5 px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-indigo-600 transition"
+                            className="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 hover:text-[#3C65F5] transition"
                           >
                             <FiFileText /> My Applications
                           </Link>
@@ -208,7 +209,7 @@ const Navbar = () => {
                           <Link
                             to="/recruiter/post-job"
                             onClick={() => setProfileDropdownOpen(false)}
-                            className="flex items-center gap-2.5 px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-indigo-600 transition"
+                            className="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 hover:text-[#3C65F5] transition"
                           >
                             <FiBriefcase /> Post a Job
                           </Link>
@@ -217,7 +218,7 @@ const Navbar = () => {
                         <div className="my-1 border-t border-slate-100" />
                         <button
                           onClick={handleLogout}
-                          className="flex w-full items-center gap-2.5 px-4 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50 transition cursor-pointer"
+                          className="flex w-full items-center gap-2.5 px-4 py-2 text-xs font-medium text-rose-600 hover:bg-rose-50 transition cursor-pointer"
                         >
                           <FiLogOut /> Sign Out
                         </button>
@@ -226,16 +227,16 @@ const Navbar = () => {
                   </div>
                 </div>
               ) : (
-                <div className="flex items-center gap-2.5">
+                <div className="flex items-center gap-2.5 font-['Plus_Jakarta_Sans',sans-serif]">
                   <Link
                     to="/login"
-                    className="saas-btn-secondary h-9 text-xs px-4"
+                    className="text-[14px] font-medium text-[#05264E] hover:text-[#3C65F5] px-3.5 py-2 transition font-['Plus_Jakarta_Sans',sans-serif]"
                   >
                     Sign in
                   </Link>
                   <Link
                     to="/register"
-                    className="saas-btn-primary h-9 text-xs px-4"
+                    className="rounded-xl bg-[#3C65F5] hover:bg-[#2C52E0] text-white text-[14px] font-medium px-5 py-2.5 shadow-sm transition font-['Plus_Jakarta_Sans',sans-serif]"
                   >
                     Get Started
                   </Link>
