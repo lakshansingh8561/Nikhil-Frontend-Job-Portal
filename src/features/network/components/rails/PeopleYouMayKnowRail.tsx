@@ -37,7 +37,7 @@ export const PeopleYouMayKnowRail: React.FC = () => {
             <div className="min-w-0 flex-1">
               <Link
                 to={paths.profile(person.userId)}
-                className="block truncate text-sm font-semibold leading-tight text-[rgba(0,0,0,0.9)] hover:text-[#0a66c2] hover:underline"
+                className="block truncate text-sm font-semibold leading-tight text-[rgba(0,0,0,0.9)] hover:text-[#3C65F5] hover:underline"
               >
                 {person.fullName}
               </Link>

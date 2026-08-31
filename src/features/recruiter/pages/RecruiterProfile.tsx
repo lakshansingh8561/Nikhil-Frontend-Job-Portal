@@ -168,7 +168,7 @@ const RecruiterProfile = () => {
 
         <Link
           to="/recruiter/membership"
-          className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#1D4ED8] px-6 py-3 text-xs font-extrabold text-white hover:bg-[#1E40AF] transition shadow-md shrink-0 cursor-pointer"
+          className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#3C65F5] px-6 py-3 text-xs font-extrabold text-white hover:bg-[#2C52E0] transition shadow-md shrink-0 cursor-pointer"
         >
           {recHasActiveSub ? "Manage Plan" : "Upgrade Plan"}
         </Link>
@@ -176,7 +176,7 @@ const RecruiterProfile = () => {
 
       {isFetching ? (
         <div className="flex h-64 items-center justify-center rounded-2xl bg-white border border-[#EAEFF7]">
-          <div className="h-10 w-10 animate-spin rounded-full border-4 border-[#1D4ED8] border-t-transparent" />
+          <div className="h-10 w-10 animate-spin rounded-full border-4 border-[#3C65F5] border-t-transparent" />
         </div>
       ) : (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -215,7 +215,7 @@ const RecruiterProfile = () => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="rounded-xl bg-[#1D4ED8] px-8 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-[#1E40AF] disabled:opacity-50 cursor-pointer"
+              className="rounded-xl bg-[#3C65F5] px-8 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-[#2C52E0] disabled:opacity-50 cursor-pointer"
             >
               {isSubmitting ? "Saving..." : "Save Profile"}
             </button>

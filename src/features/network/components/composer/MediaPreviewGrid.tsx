@@ -106,7 +106,7 @@ export const MediaPreviewGrid: React.FC<MediaPreviewGridProps> = ({
             <button
               type="button"
               onClick={() => onRetry(item.id)}
-              className="shrink-0 rounded px-2 py-1 text-xs font-semibold text-[#0a66c2] hover:bg-[#0a66c2]/10 cursor-pointer"
+              className="shrink-0 rounded px-2 py-1 text-xs font-semibold text-[#3C65F5] hover:bg-[#3C65F5]/10 cursor-pointer"
             >
               Retry
             </button>

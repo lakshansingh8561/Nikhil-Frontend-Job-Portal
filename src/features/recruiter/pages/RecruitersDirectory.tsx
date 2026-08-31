@@ -123,48 +123,39 @@ const RecruitersDirectory = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F5F7FC] pt-28 pb-16">
+    <div className="min-h-screen bg-slate-50/50 pt-8 pb-20">
       <Container>
-        {/* Hero Header Banner */}
-        <div className="mb-10 text-center max-w-3xl mx-auto rounded-3xl bg-white p-8 border border-[#EAEFF7] shadow-sm">
-          <h1 className="text-3xl font-extrabold text-[#05264E] sm:text-4xl">
+        {/* Hero Header Banner — Compact & Balanced Height */}
+        <div className="bg-[#F2F6FD] rounded-2xl pt-7 px-5 pb-8 mb-8 text-center border border-[#E0E6F6]/60">
+          <h3 className="text-[28px] leading-[34px] font-bold text-[#05264E] font-['Plus_Jakarta_Sans',sans-serif] tracking-tight">
             Browse Companies
-          </h1>
-          <p className="mt-3 text-sm text-[#66789C]">
-            Find top employers and hiring teams to take your career to the next level.
-          </p>
+          </h3>
+          <div className="text-[14px] leading-[20px] text-[#66789C] font-['Plus_Jakarta_Sans',sans-serif] max-w-xl mx-auto mt-2 mb-5 font-normal">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero repellendus magni,
+            atque delectus molestias quis?
+          </div>
 
-          {/* Alphabet Letter Selector Bar */}
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-1.5 rounded-2xl bg-[#F8FAFC] p-3 border border-[#EAEFF7]">
-            <button
-              onClick={() => {
-                setSelectedLetter("");
-                setPage(1);
-              }}
-              className={`h-8 px-2.5 text-xs font-bold rounded-lg transition cursor-pointer ${
-                selectedLetter === ""
-                  ? "bg-[#3C65F5] text-white"
-                  : "text-[#05264E] hover:bg-gray-200"
-              }`}
-            >
-              All
-            </button>
-            {alphabet.map((char) => (
-              <button
-                key={char}
-                onClick={() => {
-                  setSelectedLetter(char);
-                  setPage(1);
-                }}
-                className={`h-8 w-8 text-xs font-bold rounded-lg transition cursor-pointer ${
-                  selectedLetter === char
-                    ? "bg-[#3C65F5] text-white"
-                    : "text-[#05264E] hover:bg-gray-200"
-                }`}
-              >
-                {char}
-              </button>
-            ))}
+          {/* Alphabet Letter Selector Bar — Single Line A-Z */}
+          <div className="bg-white rounded-xl shadow-xs border border-[#E0E6F6] py-2 px-3 sm:px-6 mx-auto max-w-[850px] flex items-center justify-between overflow-x-auto gap-1 sm:gap-2 flex-nowrap select-none scrollbar-none">
+            {alphabet.map((char) => {
+              const isActive = selectedLetter === char;
+              return (
+                <button
+                  key={char}
+                  onClick={() => {
+                    setSelectedLetter(isActive ? "" : char);
+                    setPage(1);
+                  }}
+                  className={`text-[14px] font-semibold rounded-lg px-2 sm:px-2.5 py-1 transition-all cursor-pointer shrink-0 font-['Plus_Jakarta_Sans',sans-serif] ${
+                    isActive
+                      ? "bg-[#3C65F5] text-white shadow-xs font-bold"
+                      : "text-[#66789C] hover:text-[#3C65F5] hover:bg-[#EFF3FC]"
+                  }`}
+                >
+                  {char}
+                </button>
+              );
+            })}
           </div>
         </div>
 

@@ -144,7 +144,7 @@ const SkillsEditor: React.FC<{
           }}
           onBlur={() => commit(draft)}
           placeholder="Add a skill and press Enter"
-          className="mt-3 w-full rounded border border-[rgba(0,0,0,0.3)] px-3 py-2 text-sm outline-none transition focus:border-[#0a66c2]"
+          className="mt-3 w-full rounded border border-[rgba(0,0,0,0.3)] px-3 py-2 text-sm outline-none transition focus:border-[#3C65F5]"
         />
       </div>
     </EditSectionModal>

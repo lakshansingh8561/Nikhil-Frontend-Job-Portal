@@ -69,7 +69,7 @@ const NetworkDirectory: React.FC = () => {
               value={search}
               onChange={(event) => setSearch(event.target.value)}
               placeholder="Search people"
-              className="h-10 w-full rounded border border-[rgba(0,0,0,0.3)] pl-9 pr-3 text-sm outline-none transition focus:border-[#0a66c2]"
+              className="h-10 w-full rounded border border-[rgba(0,0,0,0.3)] pl-9 pr-3 text-sm outline-none transition focus:border-[#3C65F5]"
             />
           </label>
 
@@ -84,7 +84,7 @@ const NetworkDirectory: React.FC = () => {
                 }}
                 className={`rounded-full px-3 py-1.5 text-xs font-semibold transition cursor-pointer ${
                   role === filter.key
-                    ? "bg-[#0a66c2] text-white"
+                    ? "bg-[#3C65F5] text-white"
                     : "border border-[rgba(0,0,0,0.3)] text-[rgba(0,0,0,0.6)] hover:bg-[rgba(0,0,0,0.08)]"
                 }`}
               >

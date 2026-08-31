@@ -65,7 +65,7 @@ const ConversationCard: React.FC<ConversationCardProps> = React.memo(
         aria-label={`Conversation with ${conv.recipient?.name || 'User'}`}
         className={`group relative flex w-full items-center gap-2.5 px-3 py-2 text-left transition-all duration-200 cursor-pointer ${
           isActive
-            ? "bg-indigo-50/90 border-l-3 border-[#4F46E5] shadow-2xs"
+            ? "bg-[#3C65F5]/10 border-l-3 border-[#3C65F5] shadow-2xs"
             : "hover:bg-[#F3F4F6] border-l-3 border-transparent"
         }`}
       >
@@ -78,7 +78,7 @@ const ConversationCard: React.FC<ConversationCardProps> = React.memo(
               className="h-9 w-9 rounded-full object-cover border border-gray-200 shadow-2xs"
             />
           ) : (
-            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#4F46E5] font-bold text-white text-xs shadow-2xs">
+            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#3C65F5] font-bold text-white text-xs shadow-2xs">
               {conv.recipient?.name?.charAt(0).toUpperCase() || "U"}
             </div>
           )}

@@ -37,7 +37,7 @@ export const SuggestionCard: React.FC<SuggestionCardProps> = ({ person }) => {
 
         <Link
           to={paths.profile(person.userId)}
-          className="mt-2 line-clamp-1 text-base font-semibold text-[rgba(0,0,0,0.9)] hover:text-[#0a66c2] hover:underline"
+          className="mt-2 line-clamp-1 text-base font-semibold text-[rgba(0,0,0,0.9)] hover:text-[#3C65F5] hover:underline"
         >
           {person.fullName}
         </Link>

@@ -67,10 +67,12 @@ import MyNetwork from "./features/network/pages/MyNetwork";
 import SavedPosts from "./features/network/pages/SavedPosts";
 
 import { LocationDeniedBanner } from "./components/common/LocationDeniedBanner";
+import ScrollToTopOnRoute from "./components/common/ScrollToTopOnRoute";
 
 function App() {
   return (
     <>
+      <ScrollToTopOnRoute />
       <LocationDeniedBanner />
       <Routes>
         {/* Public Auth Routes (Redirects to dashboard if already logged in) */}

@@ -46,8 +46,8 @@ export const ConnectionButton: React.FC<ConnectionButtonProps> = ({
   const width = fullWidth ? "w-full justify-center" : "";
 
   const outline =
-    "border border-[#0a66c2] text-[#0a66c2] hover:bg-[#0a66c2]/10 font-semibold";
-  const solid = "bg-[#0a66c2] text-white hover:bg-[#004182] font-semibold";
+    "border border-[#3C65F5] text-[#3C65F5] hover:bg-[#3C65F5]/10 font-semibold";
+  const solid = "bg-[#3C65F5] text-white hover:bg-[#2C52E0] font-semibold";
   const muted =
     "border border-[rgba(0,0,0,0.6)] text-[rgba(0,0,0,0.6)] hover:bg-[rgba(0,0,0,0.08)] font-semibold";
 

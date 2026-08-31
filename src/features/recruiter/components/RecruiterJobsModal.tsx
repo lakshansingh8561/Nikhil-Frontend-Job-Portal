@@ -171,7 +171,7 @@ export const RecruiterJobsModal: React.FC<RecruiterJobsModalProps> = ({
                               title: job.title,
                             })
                           }
-                          className="flex items-center gap-1.5 rounded-xl bg-[#3C65F5] px-4 py-2 text-xs font-bold text-white shadow-sm hover:bg-[#254BD6] transition cursor-pointer"
+                          className="flex items-center gap-1.5 rounded-xl bg-[#EEF3FF] text-[#3C65F5] px-4 py-2 text-xs font-bold border border-[#D9E4FF] transition-all duration-200 hover:bg-[#3C65F5] hover:text-white hover:border-transparent cursor-pointer shadow-2xs"
                         >
                           <FiSend /> Apply Now
                         </button>

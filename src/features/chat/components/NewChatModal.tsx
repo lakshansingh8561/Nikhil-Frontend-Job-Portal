@@ -63,7 +63,7 @@ export const NewChatModal: React.FC<NewChatModalProps> = ({
         <div className="flex items-center justify-between border-b border-[#E5E7EB] pb-4">
           <div>
             <h3 className="text-base sm:text-lg font-extrabold text-[#05264E] flex items-center gap-2">
-              <FiPlus className="text-[#4F46E5]" />
+              <FiPlus className="text-[#3C65F5]" />
               {isRecruiter ? "Start Chat with Applicant" : "Start Chat with Recruiter"}
             </h3>
             <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
@@ -94,7 +94,7 @@ export const NewChatModal: React.FC<NewChatModalProps> = ({
                 : "Search job title or company..."
             }
             aria-label="Search candidates or jobs"
-            className="w-full h-[44px] rounded-xl border border-[#E5E7EB] bg-[#F8FAFC] pl-10 pr-4 text-xs sm:text-sm font-medium text-[#05264E] placeholder:text-gray-400 focus:border-[#4F46E5] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#4F46E5]/20 transition-all duration-200"
+            className="w-full h-[44px] rounded-xl border border-[#E5E7EB] bg-[#F8FAFC] pl-10 pr-4 text-xs sm:text-sm font-medium text-[#05264E] placeholder:text-gray-400 focus:border-[#3C65F5] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#3C65F5]/20 transition-all duration-200"
           />
         </div>
 
@@ -137,23 +137,23 @@ export const NewChatModal: React.FC<NewChatModalProps> = ({
                       onSelect({ jobId, applicantId: candidateUserId });
                       onClose();
                     }}
-                    className="flex w-full items-center justify-between p-3.5 text-left rounded-xl hover:bg-indigo-50/70 transition-all duration-200 cursor-pointer border border-transparent hover:border-indigo-100"
+                    className="flex w-full items-center justify-between p-3.5 text-left rounded-xl hover:bg-blue-50/70 transition-all duration-200 cursor-pointer border border-transparent hover:border-blue-100"
                   >
                     <div className="flex items-center gap-3 min-w-0">
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#4F46E5] font-bold text-white text-sm">
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#3C65F5] font-bold text-white text-sm">
                         {candidateName.charAt(0).toUpperCase()}
                       </div>
                       <div className="min-w-0">
                         <h4 className="text-sm font-bold text-[#05264E] truncate">
                           {candidateName}
                         </h4>
-                        <p className="text-xs text-[#4F46E5] font-semibold flex items-center gap-1 truncate">
+                        <p className="text-xs text-[#3C65F5] font-semibold flex items-center gap-1 truncate">
                           <FiBriefcase className="text-[11px]" />
                           <span>{(app.jobId as any)?.title || "Job Posting"}</span>
                         </p>
                       </div>
                     </div>
-                    <span className="rounded-xl bg-[#4F46E5] px-3.5 py-1.5 text-xs font-bold text-white shadow-2xs hover:bg-[#4338CA] transition-all">
+                    <span className="rounded-xl bg-[#3C65F5] px-3.5 py-1.5 text-xs font-bold text-white shadow-2xs hover:bg-[#2C52E0] transition-all">
                       Chat
                     </span>
                   </button>
@@ -199,10 +199,10 @@ export const NewChatModal: React.FC<NewChatModalProps> = ({
                       });
                       onClose();
                     }}
-                  className="flex w-full items-center justify-between p-3.5 text-left rounded-xl hover:bg-indigo-50/70 transition-all duration-200 cursor-pointer border border-transparent hover:border-indigo-100"
+                  className="flex w-full items-center justify-between p-3.5 text-left rounded-xl hover:bg-blue-50/70 transition-all duration-200 cursor-pointer border border-transparent hover:border-blue-100"
                 >
                   <div className="flex items-center gap-3 min-w-0">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-indigo-100 text-[#4F46E5] font-bold text-base">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-100 text-[#3C65F5] font-bold text-base">
                       <FiBriefcase />
                     </div>
                     <div className="min-w-0">
@@ -214,7 +214,7 @@ export const NewChatModal: React.FC<NewChatModalProps> = ({
                       </p>
                     </div>
                   </div>
-                  <span className="rounded-xl bg-[#4F46E5] px-3.5 py-1.5 text-xs font-bold text-white shadow-2xs hover:bg-[#4338CA] transition-all">
+                  <span className="rounded-xl bg-[#3C65F5] px-3.5 py-1.5 text-xs font-bold text-white shadow-2xs hover:bg-[#2C52E0] transition-all">
                     Chat
                   </span>
                 </button>

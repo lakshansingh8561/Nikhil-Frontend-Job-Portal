@@ -25,6 +25,8 @@ import hiringImage1 from "../assets/images/hiring-image1.png";
 import hiringImage2 from "../assets/images/hiring-image2.png";
 import FindRightJobSection from "../components/home/FindRightJobSection";
 import TopRecruitersSection from "../components/home/TopRecruitersSection";
+import JobsByLocationSection from "../components/home/JobsByLocationSection";
+import NewsAndBlogSection from "../components/home/NewsAndBlogSection";
 import NewsletterSection from "../components/home/NewsletterSection";
 
 const categories = [
@@ -135,92 +137,88 @@ const Home = () => {
         </Container>
       </section>
 
-      {/* 2. WE ARE HIRING Banner Section */}
-      <section className="py-12 bg-slate-50/50">
+      {/* 2. WE ARE HIRING Banner Section — Exact JobBox Template Structure */}
+      <section className="py-8 bg-slate-50/50">
         <Container>
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-10 shadow-xs flex flex-col md:flex-row items-center justify-between gap-8">
-            <div className="w-full md:w-1/3 flex justify-center shrink-0">
-              <img
-                src={hiringImage1}
-                alt="We Are Hiring"
-                className="max-h-44 object-contain"
-              />
+          <div className="relative bg-white border border-[#E0E6F6] rounded-2xl shadow-xs py-8 sm:py-10 px-6 sm:px-10 lg:pl-[190px] lg:pr-[250px] flex flex-col lg:flex-row items-center justify-between gap-6 overflow-hidden">
+            {/* Left Illustration (hiringImage1: 150px x 120px) */}
+            <img
+              src={hiringImage1}
+              alt="We Are Hiring"
+              className="hidden lg:block absolute bottom-0 left-0 w-[150px] h-[120px] object-contain object-left-bottom pointer-events-none select-none"
+            />
+
+            {/* text-1: WE ARE HIRING */}
+            <div className="text-center lg:text-left shrink-0">
+              <span className="text-[#66789C] text-xs sm:text-[14px] font-bold tracking-[2px] uppercase block mb-1">
+                WE ARE
+              </span>
+              <span className="text-[#05264E] text-3xl sm:text-[46px] lg:text-[49px] font-extrabold sm:leading-[51px] tracking-[1px] uppercase block">
+                HIRING
+              </span>
             </div>
 
-            <div className="flex flex-col md:flex-row items-center justify-center gap-6 text-center md:text-left flex-1">
-              <div>
-                <span className="text-[11px] font-bold text-indigo-600 tracking-wider uppercase block mb-1">
-                  CAREER MOBILITY
-                </span>
-                <h2 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
-                  We are hiring
-                </h2>
-              </div>
-
-              <div className="max-w-xs">
-                <p className="text-sm font-medium text-slate-600 leading-relaxed">
-                  Join innovative engineering teams building the next era of enterprise SaaS.
-                </p>
-              </div>
-
-              <div>
-                <button
-                  onClick={() => navigate("/jobs")}
-                  className="saas-btn-primary"
-                >
-                  <FiCheckCircle /> View Open Positions
-                </button>
-              </div>
+            {/* text-2: Description */}
+            <div className="text-center lg:text-left text-[#66789C] text-sm sm:text-[18px] font-medium leading-[23px]">
+              Let’s <span className="text-[#05264E] font-bold">Work</span> Together<br className="hidden sm:inline" />
+              {" "}&amp; <span className="text-[#05264E] font-bold">Explore</span> Opportunities
             </div>
 
-            <div className="w-full md:w-1/3 flex justify-center shrink-0 hidden lg:flex">
-              <img
-                src={hiringImage2}
-                alt="Explore Opportunities"
-                className="max-h-44 object-contain"
-              />
+            {/* text-3: Apply now button */}
+            <div className="shrink-0">
+              <button
+                onClick={() => navigate("/jobs")}
+                className="rounded-xl bg-[#3C65F5] hover:bg-[#2C52E0] text-white font-extrabold text-sm px-7 py-3.5 shadow-md hover:shadow-lg transition-all duration-200 cursor-pointer inline-flex items-center gap-2"
+              >
+                <FiCheckCircle className="text-base" />
+                <span>Apply now</span>
+              </button>
             </div>
+
+            {/* Right Illustration (hiringImage2: 250px x 120px) */}
+            <img
+              src={hiringImage2}
+              alt="Explore Opportunities"
+              className="hidden lg:block absolute bottom-0 right-0 w-[250px] h-[120px] object-contain object-right-bottom pointer-events-none select-none"
+            />
           </div>
         </Container>
       </section>
 
-      {/* 3. Featured Open Positions Section */}
+      {/* 3. Featured Open Positions Section — Jobs of the Day */}
       <section className="py-16 bg-white border-t border-slate-200/80">
         <Container>
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
             <div>
-              <span className="text-xs font-bold text-indigo-600 uppercase tracking-wider mb-1 block">
-                FEATURED OPPORTUNITIES
-              </span>
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-                Jobs of the Day
+              <h2 className="text-3xl sm:text-4xl font-bold text-[#05264E] font-['Plus_Jakarta_Sans',sans-serif] tracking-tight">
+                Jobs of the day
               </h2>
-              <p className="mt-1 text-xs sm:text-sm font-medium text-slate-500">
-                Explore handpicked engineering, product, and leadership roles
+              <p className="mt-1 text-sm font-medium text-[#66789C] font-['Plus_Jakarta_Sans',sans-serif]">
+                Search and connect with the right candidates faster.
               </p>
             </div>
 
             <Link
               to="/jobs"
-              className="saas-btn-secondary h-9 text-xs"
+              className="inline-flex items-center gap-1.5 rounded-xl bg-white border border-[#E0E6F6] px-4 py-2 text-[14px] font-medium text-[#05264E] hover:text-[#3C65F5] hover:border-[#3C65F5]/40 hover:shadow-xs transition-all font-['Plus_Jakarta_Sans',sans-serif] shrink-0"
             >
               <span>Explore All Jobs</span>
-              <FiArrowRight />
+              <FiArrowRight className="text-base" />
             </Link>
           </div>
 
           {/* Category Filter Pills */}
-          <div className="flex flex-wrap items-center gap-2 mb-8">
+          <div className="flex flex-wrap items-center gap-2.5 mb-8">
             {categoryTabs.map((tab) => {
               const isActive = activeCategoryTab === tab;
               return (
                 <button
                   key={tab}
                   onClick={() => setActiveCategoryTab(tab)}
-                  className={`rounded-lg px-3.5 py-1.5 text-xs font-semibold transition cursor-pointer border ${
+                  className={`rounded-xl px-4 py-2 text-xs font-medium transition-all cursor-pointer border font-['Plus_Jakarta_Sans',sans-serif] ${
                     isActive
-                      ? "bg-indigo-50 text-indigo-600 border-indigo-200 shadow-2xs"
-                      : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50 hover:text-slate-900"
+                      ? "bg-[#3C65F5] text-white border-[#3C65F5] shadow-xs font-bold"
+                      : "bg-white text-[#05264E] border-[#E0E6F6] hover:border-[#3C65F5]/50 hover:text-[#3C65F5]"
                   }`}
                 >
                   {tab}
@@ -229,21 +227,21 @@ const Home = () => {
             })}
           </div>
 
-          {/* Jobs Grid */}
+          {/* Jobs Grid — 4 Columns on XL matching 311.5px Card Width */}
           {isLoading ? (
             <div className="flex h-64 items-center justify-center rounded-2xl bg-white border border-slate-200">
-              <div className="h-8 w-8 animate-spin rounded-full border-3 border-indigo-600 border-t-transparent" />
+              <div className="h-8 w-8 animate-spin rounded-full border-3 border-[#3C65F5] border-t-transparent" />
             </div>
           ) : jobsList.length > 0 ? (
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {jobsList.map((job) => (
                 <JobCard key={job._id} job={job} />
               ))}
             </div>
           ) : (
-            <div className="saas-card p-12 text-center">
-              <h3 className="text-base font-bold text-slate-900">No Jobs Posted Yet</h3>
-              <p className="text-xs text-slate-500 mt-1">
+            <div className="bg-white rounded-2xl border border-[#E0E6F6] p-12 text-center">
+              <h3 className="text-base font-bold text-[#05264E]">No Jobs Posted Yet</h3>
+              <p className="text-xs font-medium text-[#66789C] mt-1">
                 Check back soon for newly published career opportunities.
               </p>
             </div>
@@ -257,7 +255,13 @@ const Home = () => {
       {/* 5. Top Recruiters Section */}
       <TopRecruitersSection />
 
-      {/* 6. Newsletter Subscription Section */}
+      {/* 6. Jobs by Location Section */}
+      <JobsByLocationSection />
+
+      {/* 7. News and Blog Section */}
+      <NewsAndBlogSection />
+
+      {/* 8. Newsletter Subscription Section */}
       <NewsletterSection />
 
       <ScrollToTop />

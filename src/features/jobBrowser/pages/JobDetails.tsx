@@ -379,7 +379,7 @@ const JobDetails: React.FC = () => {
               ) : (
                 <button
                   onClick={handleApply}
-                  className="mt-6 flex w-full items-center justify-center rounded-2xl bg-[#3C65F5] py-3 text-sm font-bold text-white shadow-md transition hover:bg-[#254BD6] cursor-pointer"
+                  className="mt-6 flex w-full items-center justify-center rounded-2xl bg-[#EEF3FF] text-[#3C65F5] py-3 text-sm font-bold border border-[#D9E4FF] transition-all duration-200 hover:bg-[#3C65F5] hover:text-white hover:border-transparent cursor-pointer shadow-sm"
                 >
                   Apply Now
                 </button>

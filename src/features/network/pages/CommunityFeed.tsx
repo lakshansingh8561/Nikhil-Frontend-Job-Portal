@@ -128,7 +128,7 @@ const CommunityFeed: React.FC = () => {
               onClick={() => switchTab(item.key)}
               className={`rounded-full px-3 py-1 text-xs font-semibold transition cursor-pointer ${
                 tab === item.key
-                  ? "bg-[#0a66c2] text-white"
+                  ? "bg-[#3C65F5] text-white"
                   : "text-[rgba(0,0,0,0.6)] hover:bg-[rgba(0,0,0,0.08)]"
               }`}
             >
@@ -143,7 +143,7 @@ const CommunityFeed: React.FC = () => {
           <button
             type="button"
             onClick={showIncoming}
-            className="flex items-center gap-1.5 rounded-full bg-[#0a66c2] px-4 py-1.5 text-sm font-semibold text-white shadow-lg transition hover:bg-[#004182] cursor-pointer"
+            className="flex items-center gap-1.5 rounded-full bg-[#3C65F5] px-4 py-1.5 text-sm font-semibold text-white shadow-lg transition hover:bg-[#2C52E0] cursor-pointer"
           >
             <FiArrowUp />
             {incoming.length} new {incoming.length === 1 ? "post" : "posts"}
@@ -169,7 +169,7 @@ const CommunityFeed: React.FC = () => {
               setComposerPreset(null);
               setComposerOpen(true);
             }}
-            className="mt-4 rounded-full bg-[#0a66c2] px-5 py-1.5 text-sm font-semibold text-white transition hover:bg-[#004182] cursor-pointer"
+            className="mt-4 rounded-full bg-[#3C65F5] px-5 py-1.5 text-sm font-semibold text-white transition hover:bg-[#2C52E0] cursor-pointer"
           >
             Start a post
           </button>

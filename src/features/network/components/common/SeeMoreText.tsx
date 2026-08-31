@@ -49,7 +49,7 @@ export const SeeMoreText: React.FC<SeeMoreTextProps> = ({
               event.stopPropagation();
               setExpanded(true);
             }}
-            className="text-[rgba(0,0,0,0.6)] hover:text-[#0a66c2] hover:underline font-normal cursor-pointer"
+            className="text-[rgba(0,0,0,0.6)] hover:text-[#3C65F5] hover:underline font-normal cursor-pointer"
           >
             see more
           </button>
@@ -64,7 +64,7 @@ export const SeeMoreText: React.FC<SeeMoreTextProps> = ({
               event.stopPropagation();
               setExpanded(false);
             }}
-            className="text-[rgba(0,0,0,0.6)] hover:text-[#0a66c2] hover:underline cursor-pointer"
+            className="text-[rgba(0,0,0,0.6)] hover:text-[#3C65F5] hover:underline cursor-pointer"
           >
             see less
           </button>

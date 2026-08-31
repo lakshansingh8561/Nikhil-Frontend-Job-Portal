@@ -40,7 +40,7 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ invitation, dire
             <Link
               to={`${paths.messages}?recipientId=${person.userId}`}
               onClick={() => toast.dismiss(t.id)}
-              className="inline-flex items-center gap-1 rounded bg-[#0a66c2] px-2.5 py-1 text-xs font-bold text-white hover:bg-[#004182]"
+              className="inline-flex items-center gap-1 rounded bg-[#3C65F5] px-2.5 py-1 text-xs font-bold text-white hover:bg-[#2C52E0]"
             >
               <FiMessageSquare /> Message
             </Link>
@@ -77,7 +77,7 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ invitation, dire
         {isConnected && (
           <Link
             to={`${paths.messages}?recipientId=${person.userId}`}
-            className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-[#0a66c2] px-3.5 py-1 text-xs font-semibold text-white transition hover:bg-[#004182]"
+            className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-[#3C65F5] px-3.5 py-1 text-xs font-semibold text-white transition hover:bg-[#2C52E0]"
           >
             <FiMessageSquare /> Message
           </Link>
@@ -99,7 +99,7 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ invitation, dire
       <div className="min-w-0 flex-1">
         <Link
           to={paths.profile(person.userId)}
-          className="block truncate text-sm font-semibold text-[rgba(0,0,0,0.9)] hover:text-[#0a66c2] hover:underline"
+          className="block truncate text-sm font-semibold text-[rgba(0,0,0,0.9)] hover:text-[#3C65F5] hover:underline"
         >
           {person.fullName}
         </Link>
@@ -135,7 +135,7 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ invitation, dire
               type="button"
               disabled={busy}
               onClick={handleAccept}
-              className="rounded-full border border-[#0a66c2] px-4 py-1 text-sm font-semibold text-[#0a66c2] transition hover:bg-[#0a66c2]/10 disabled:opacity-60 enabled:cursor-pointer"
+              className="rounded-full border border-[#3C65F5] px-4 py-1 text-sm font-semibold text-[#3C65F5] transition hover:bg-[#3C65F5]/10 disabled:opacity-60 enabled:cursor-pointer"
             >
               Accept
             </button>

@@ -39,7 +39,7 @@ const PostDetail: React.FC = () => {
     >
       <Link
         to={paths.feed}
-        className="mb-1 inline-flex items-center gap-1.5 text-sm font-semibold text-[rgba(0,0,0,0.6)] transition hover:text-[#0a66c2]"
+        className="mb-1 inline-flex items-center gap-1.5 text-sm font-semibold text-[rgba(0,0,0,0.6)] transition hover:text-[#3C65F5]"
       >
         <FiArrowLeft /> Back to feed
       </Link>
@@ -54,7 +54,7 @@ const PostDetail: React.FC = () => {
           </p>
           <Link
             to={paths.feed}
-            className="mt-4 inline-block rounded-full bg-[#0a66c2] px-5 py-1.5 text-sm font-semibold text-white transition hover:bg-[#004182]"
+            className="mt-4 inline-block rounded-full bg-[#3C65F5] px-5 py-1.5 text-sm font-semibold text-white transition hover:bg-[#2C52E0]"
           >
             Go to feed
           </Link>

@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
-import { FiChevronLeft, FiChevronRight, FiMapPin, FiStar } from "react-icons/fi";
+import { FiChevronRight, FiMapPin, FiStar } from "react-icons/fi";
 import Container from "../common/Container";
 import { useGetAllRecruitersQuery } from "../../features/recruiter/api/recruiterApi";
 import type { RecruiterProfile } from "../../features/recruiter/types/recruiter.types";
@@ -35,87 +35,39 @@ const getCompanyLogoSrc = (pictureUrl?: string, index: number = 0) => {
 };
 
 export const TopRecruitersSection: React.FC = () => {
-  const { data, isLoading } = useGetAllRecruitersQuery({ page: 1, limit: 100 });
+  const { data, isLoading } = useGetAllRecruitersQuery({ page: 1, limit: 5 });
   const recruiters: RecruiterProfile[] = data?.recruiters || [];
-
-  const [startIndex, setStartIndex] = useState(0);
-  const [isHovered, setIsHovered] = useState(false);
-  const visibleCount = 20; // 4 rows of 5 columns max per slide page
-
-  // Automatic Sliding every 4 seconds (pauses on hover)
-  React.useEffect(() => {
-    if (recruiters.length <= visibleCount || isHovered) return;
-
-    const timer = setInterval(() => {
-      setStartIndex((prev) => {
-        if (prev + visibleCount >= recruiters.length) {
-          return 0;
-        }
-        return prev + visibleCount;
-      });
-    }, 4000);
-
-    return () => clearInterval(timer);
-  }, [recruiters.length, visibleCount, isHovered]);
-
-  const handlePrev = () => {
-    setStartIndex((prev) => Math.max(prev - visibleCount, 0));
-  };
-
-  const handleNext = () => {
-    setStartIndex((prev) =>
-      Math.min(prev + visibleCount, Math.max(0, recruiters.length - visibleCount))
-    );
-  };
-
-  const totalPages = Math.ceil(recruiters.length / visibleCount);
-  const currentPage = Math.floor(startIndex / visibleCount);
+  const topRecruiters = recruiters.slice(0, 5);
 
   return (
-    <section
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      className="py-16 bg-[#F5F7FC] border-b border-[#EAEFF7]"
-    >
+    <section className="py-14 bg-[#F5F7FC] border-b border-[#EAEFF7]">
       <Container>
-        {/* Section Header */}
-        <div className="relative flex flex-col md:flex-row items-center justify-between gap-4 mb-10 text-center md:text-left">
-          <div className="mx-auto md:mx-0">
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-[#05264E] tracking-tight">
+        {/* Section Header with All Recruiters button on top right */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
+          <div>
+            <h2 className="text-3xl sm:text-4xl font-bold text-[#05264E] font-['Plus_Jakarta_Sans',sans-serif] tracking-tight">
               Top Recruiters
             </h2>
-            <p className="mt-2 text-sm font-semibold text-[#66789C]">
+            <p className="mt-1.5 text-sm font-medium text-[#66789C] font-['Plus_Jakarta_Sans',sans-serif]">
               Discover your next career move, freelance gig, or internship
             </p>
           </div>
 
-          {/* Carousel Navigation Controls */}
-          {recruiters.length > visibleCount && (
-            <div className="flex items-center gap-3 shrink-0">
-              <button
-                onClick={handlePrev}
-                disabled={startIndex === 0}
-                aria-label="Previous Top Recruiters"
-                className="flex h-10 w-10 items-center justify-center rounded-full bg-[#EBF2FF] text-[#3C65F5] transition hover:bg-[#3C65F5] hover:text-white disabled:opacity-30 disabled:hover:bg-[#EBF2FF] disabled:hover:text-[#3C65F5] cursor-pointer shadow-xs"
-              >
-                <FiChevronLeft className="text-xl" />
-              </button>
-              <button
-                onClick={handleNext}
-                disabled={startIndex + visibleCount >= recruiters.length}
-                aria-label="Next Top Recruiters"
-                className="flex h-10 w-10 items-center justify-center rounded-full bg-[#EBF2FF] text-[#3C65F5] transition hover:bg-[#3C65F5] hover:text-white disabled:opacity-30 disabled:hover:bg-[#EBF2FF] disabled:hover:text-[#3C65F5] cursor-pointer shadow-xs"
-              >
-                <FiChevronRight className="text-xl" />
-              </button>
-            </div>
-          )}
+          {/* Top-Right 'All Recruiters' Action Button */}
+          <Link
+            to="/recruiters"
+            onClick={() => window.scrollTo({ top: 0, left: 0, behavior: "instant" })}
+            className="inline-flex items-center gap-1.5 rounded-xl bg-white border border-[#E0E6F6] px-4 py-2 text-[14px] font-medium text-[#05264E] hover:text-[#3C65F5] hover:border-[#3C65F5]/40 hover:shadow-xs transition-all font-['Plus_Jakarta_Sans',sans-serif] shrink-0"
+          >
+            <span>All Recruiters</span>
+            <FiChevronRight className="text-base" />
+          </Link>
         </div>
 
         {/* Loading State */}
         {isLoading ? (
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20].slice(0, 10).map((n) => (
+            {[1, 2, 3, 4, 5].map((n) => (
               <div
                 key={n}
                 className="h-40 rounded-2xl bg-white border border-[#EAEFF7] p-5 animate-pulse flex flex-col justify-between"
@@ -131,102 +83,102 @@ export const TopRecruitersSection: React.FC = () => {
               </div>
             ))}
           </div>
-        ) : recruiters.length === 0 ? (
-          <div className="rounded-3xl bg-white p-10 text-center border border-[#EAEFF7] shadow-2xs">
-            <h3 className="text-lg font-bold text-[#05264E]">No Recruiters Found</h3>
-            <p className="text-xs font-semibold text-[#66789C] mt-1">
+        ) : topRecruiters.length === 0 ? (
+          <div className="rounded-2xl bg-white p-10 text-center border border-[#EAEFF7] shadow-xs">
+            <h3 className="text-base font-bold text-[#05264E]">No Recruiters Found</h3>
+            <p className="text-xs font-medium text-[#66789C] mt-1">
               Registered hiring companies and recruiters will appear here!
             </p>
           </div>
         ) : (
-          <>
-            {/* Cards Grid: 4 lines/rows maximum per slide */}
-            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 transition-all duration-500">
-              {recruiters.slice(startIndex, startIndex + visibleCount).map((rec, index) => {
-                const compObj = typeof rec.companyId === "object" && rec.companyId !== null ? (rec.companyId as any) : null;
-                const companyName =
-                  compObj?.name ||
-                  compObj?.companyName ||
-                  rec.currentCompany ||
-                  rec.companyName ||
-                  (rec.firstName ? `${rec.firstName} ${rec.lastName}` : (rec.userId as any)?.email?.split("@")[0] || "Company");
-                const openCount = (rec as any).openJobsCount || 0;
-                const logoSrc = compObj?.logo || getCompanyLogoSrc(rec.profilePicture, index);
-                const fallbackLogo = companyLogos[index % companyLogos.length];
+          /* Cards Grid: 5 Top Recruiters in 1 Row */
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+            {topRecruiters.map((rec, index) => {
+              const compObj =
+                typeof rec.companyId === "object" && rec.companyId !== null
+                  ? (rec.companyId as any)
+                  : null;
 
-                return (
-                  <Link
-                    key={rec._id}
-                    to={`/recruiters`}
-                    className="group flex flex-col justify-between rounded-2xl border border-[#EAEFF7] bg-white p-5 transition-all duration-300 hover:-translate-y-1.5 hover:border-[#3C65F5]/30 hover:shadow-xl cursor-pointer min-h-[160px]"
-                  >
-                    {/* Top Content: Logo + Info */}
-                    <div>
-                      <div className="flex items-center gap-3.5 mb-3">
-                        {/* Logo / Badge */}
-                        <div className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#F8FAFC] border border-[#EAEFF7] p-2 overflow-hidden group-hover:scale-105 transition-transform shadow-2xs">
-                          <img
-                            src={logoSrc}
-                            alt={companyName}
-                            className="h-full w-full object-contain"
-                            onError={(e) => {
-                              (e.target as HTMLImageElement).src = fallbackLogo;
-                            }}
-                          />
-                        </div>
+              const companyName =
+                compObj?.name ||
+                compObj?.companyName ||
+                rec.currentCompany ||
+                rec.companyName ||
+                (rec.firstName
+                  ? `${rec.firstName} ${rec.lastName || ""}`.trim()
+                  : (rec.userId as any)?.email?.split("@")[0] || "Company");
 
-                        {/* Name & Stars */}
-                        <div className="min-w-0 flex-1">
-                          <h3 className="text-base font-extrabold text-[#05264E] group-hover:text-[#3C65F5] transition-colors truncate">
-                            {companyName}
-                          </h3>
-                          <div className="flex items-center gap-1 mt-0.5">
-                            <div className="flex items-center text-amber-400">
-                              {[...Array(5)].map((_, i) => (
-                                <FiStar key={i} className="text-[11px] fill-amber-400" />
-                              ))}
-                            </div>
-                            <span className="text-[11px] font-bold text-[#66789C]">
-                              (68)
-                            </span>
+              const openCount = (rec as any).openJobsCount ?? 0;
+              const logoSrc = compObj?.logo || getCompanyLogoSrc(rec.profilePicture, index);
+              const fallbackLogo = companyLogos[index % companyLogos.length];
+
+              // Real location from recruiter profile, company headquarters/location, or user profile
+              const location =
+                rec.currentLocation ||
+                (compObj?.location?.city
+                  ? `${compObj.location.city}${
+                      compObj.location.country ? `, ${compObj.location.country}` : ""
+                    }`
+                  : typeof compObj?.location === "string" && compObj.location.trim()
+                  ? compObj.location.trim()
+                  : compObj?.headquarters ||
+                    (rec as any).location ||
+                    "Global / Verified");
+
+              return (
+                <Link
+                  key={rec._id}
+                  to={`/recruiters`}
+                  className="group flex flex-col justify-between rounded-2xl border border-[#EAEFF7] bg-white p-5 transition-all duration-300 hover:-translate-y-1 hover:border-[#3C65F5]/30 hover:shadow-lg cursor-pointer min-h-[160px]"
+                >
+                  {/* Top Content: Logo + Info */}
+                  <div>
+                    <div className="flex items-center gap-3.5 mb-3">
+                      {/* Logo / Badge */}
+                      <div className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#F8FAFC] border border-[#EAEFF7] p-2 overflow-hidden group-hover:scale-105 transition-transform shadow-2xs">
+                        <img
+                          src={logoSrc}
+                          alt={companyName}
+                          className="h-full w-full object-contain"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = fallbackLogo;
+                          }}
+                        />
+                      </div>
+
+                      {/* Name & Stars */}
+                      <div className="min-w-0 flex-1">
+                        <h3 className="text-base font-bold text-[#05264E] group-hover:text-[#3C65F5] transition-colors truncate font-['Plus_Jakarta_Sans',sans-serif]">
+                          {companyName}
+                        </h3>
+                        <div className="flex items-center gap-1 mt-0.5">
+                          <div className="flex items-center text-amber-400">
+                            {[...Array(5)].map((_, i) => (
+                              <FiStar key={i} className="text-[11px] fill-amber-400" />
+                            ))}
                           </div>
+                          <span className="text-[11px] font-bold text-[#66789C]">
+                            (68)
+                          </span>
                         </div>
                       </div>
                     </div>
+                  </div>
 
-                    {/* Bottom Content: Location & Open Jobs */}
-                    <div className="flex items-center justify-between text-xs pt-3 border-t border-[#F0F4FC]">
-                      <div className="flex items-center gap-1 text-[#66789C] font-semibold truncate max-w-[55%]">
-                        <FiMapPin className="text-xs shrink-0 text-[#66789C]" />
-                        <span className="truncate">{rec.currentLocation || "New York, US"}</span>
-                      </div>
-                      <span className="font-extrabold text-[#66789C] group-hover:text-[#3C65F5] transition-colors">
-                        {openCount} Open Jobs
-                      </span>
+                  {/* Bottom Content: Real Location & Real Open Jobs Count */}
+                  <div className="flex items-center justify-between text-xs pt-3 border-t border-[#F0F4FC]">
+                    <div className="flex items-center gap-1 text-[#66789C] font-medium truncate max-w-[55%]">
+                      <FiMapPin className="text-xs shrink-0 text-[#66789C]" />
+                      <span className="truncate">{location}</span>
                     </div>
-                  </Link>
-                );
-              })}
-            </div>
-
-            {/* Auto Carousel Indicator Dots */}
-            {totalPages > 1 && (
-              <div className="mt-8 flex items-center justify-center gap-2">
-                {[...Array(totalPages)].map((_, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => setStartIndex(idx * visibleCount)}
-                    className={`h-2.5 rounded-full transition-all duration-300 cursor-pointer ${
-                      currentPage === idx
-                        ? "w-8 bg-[#3C65F5]"
-                        : "w-2.5 bg-gray-300 hover:bg-gray-400"
-                    }`}
-                    aria-label={`Go to slide page ${idx + 1}`}
-                  />
-                ))}
-              </div>
-            )}
-          </>
+                    <span className="font-bold text-[#66789C] group-hover:text-[#3C65F5] transition-colors shrink-0">
+                      {openCount} Open Jobs
+                    </span>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
         )}
       </Container>
     </section>

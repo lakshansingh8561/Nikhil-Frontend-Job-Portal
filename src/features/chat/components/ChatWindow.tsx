@@ -273,7 +273,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
                 className="h-9 w-9 rounded-full object-cover border border-gray-200 shadow-2xs"
               />
             ) : (
-              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#4F46E5] font-bold text-white text-sm shadow-2xs">
+              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#3C65F5] font-bold text-white text-sm shadow-2xs">
                 {conversation.recipient?.name?.charAt(0).toUpperCase() || "U"}
               </div>
             )}
@@ -302,7 +302,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
 
             {/* Role / Job Title */}
             <div className="flex items-center gap-1 text-xs text-gray-500 font-medium truncate">
-              <FiBriefcase className="shrink-0 text-[11px] text-[#4F46E5]" />
+              <FiBriefcase className="shrink-0 text-[11px] text-[#3C65F5]" />
               <span className="truncate">{conversation.jobId?.title || conversation.recipient?.role || "Recruiter"}</span>
             </div>
           </div>
@@ -318,7 +318,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Find in chat..."
                 aria-label="Find in chat"
-                className="w-36 sm:w-52 rounded-xl border border-[#E5E7EB] bg-[#F8FAFC] px-3.5 py-1.5 text-xs focus:border-[#4F46E5] focus:bg-white focus:outline-none transition-all duration-200"
+                className="w-36 sm:w-52 rounded-xl border border-[#E5E7EB] bg-[#F8FAFC] px-3.5 py-1.5 text-xs focus:border-[#3C65F5] focus:bg-white focus:outline-none transition-all duration-200"
               />
               <button
                 type="button"
@@ -350,7 +350,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
                     );
                   }
                 }}
-                className="p-2 text-gray-600 hover:text-[#4F46E5] hover:bg-blue-50 rounded-xl transition-all duration-200 cursor-pointer"
+                className="p-2 text-gray-600 hover:text-[#3C65F5] hover:bg-blue-50 rounded-xl transition-all duration-200 cursor-pointer"
                 title="Voice Call"
               >
                 <FiPhone className="text-lg" />
@@ -371,7 +371,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
                     );
                   }
                 }}
-                className="p-2 text-gray-600 hover:text-[#4F46E5] hover:bg-blue-50 rounded-xl transition-all duration-200 cursor-pointer"
+                className="p-2 text-gray-600 hover:text-[#3C65F5] hover:bg-blue-50 rounded-xl transition-all duration-200 cursor-pointer"
                 title="Video Call"
               >
                 <FiVideo className="text-lg" />
@@ -382,7 +382,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
                 type="button"
                 onClick={() => setIsSearchOpen(true)}
                 aria-label="Search messages in conversation"
-                className="p-2 text-gray-600 hover:text-[#4F46E5] hover:bg-[#F3F4F6] rounded-xl transition-all duration-200 cursor-pointer"
+                className="p-2 text-gray-600 hover:text-[#3C65F5] hover:bg-[#F3F4F6] rounded-xl transition-all duration-200 cursor-pointer"
                 title="Search conversation"
               >
                 <FiSearch className="text-lg" />
@@ -394,7 +394,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
                   type="button"
                   onClick={() => setIsMenuOpen(!isMenuOpen)}
                   aria-label="More options"
-                  className="p-2 text-gray-600 hover:text-[#4F46E5] hover:bg-[#F3F4F6] rounded-xl transition-all duration-200 cursor-pointer"
+                  className="p-2 text-gray-600 hover:text-[#3C65F5] hover:bg-[#F3F4F6] rounded-xl transition-all duration-200 cursor-pointer"
                   title="More options"
                 >
                   <FiMoreVertical className="text-lg" />
@@ -432,13 +432,13 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
           </div>
         ) : messagesToDisplay.length === 0 ? (
           <div className="flex h-full flex-col items-center justify-center text-center p-6">
-            <div className="h-16 w-16 rounded-2xl bg-indigo-50 text-[#4F46E5] flex items-center justify-center font-bold text-2xl mb-3 shadow-2xs border border-indigo-100">
+            <div className="h-16 w-16 rounded-2xl bg-[#3C65F5]/10 text-[#3C65F5] flex items-center justify-center font-bold text-2xl mb-3 shadow-2xs border border-[#3C65F5]/20">
               💬
             </div>
             <p className="text-base font-extrabold text-[#05264E]">Start the conversation!</p>
             <p className="text-xs sm:text-sm text-gray-500 mt-1 max-w-xs leading-relaxed">
               Say hello to <strong className="text-[#05264E]">{conversation.recipient?.name}</strong> regarding the{" "}
-              <strong className="text-[#4F46E5]">{conversation.jobId?.title}</strong> position.
+              <strong className="text-[#3C65F5]">{conversation.jobId?.title}</strong> position.
             </p>
           </div>
         ) : (

@@ -57,7 +57,7 @@ export const NetworkStatsRail: React.FC<NetworkStatsRailProps> = ({ stats }) => 
           {row.value !== undefined && (
             <span
               className={`shrink-0 rounded-full px-1.5 text-[11px] font-bold ${
-                row.highlight ? "bg-[#0a66c2] text-white" : "text-[#0a66c2]"
+                row.highlight ? "bg-[#3C65F5] text-white" : "text-[#3C65F5]"
               }`}
             >
               {formatCount(row.value)}

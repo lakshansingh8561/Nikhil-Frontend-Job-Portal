@@ -116,7 +116,7 @@ export const PostMediaGrid: React.FC<PostMediaGridProps> = ({ media, fallbackUrl
               target="_blank"
               rel="noopener noreferrer"
               onClick={(event) => event.stopPropagation()}
-              className="flex items-center gap-3 rounded-lg border border-[rgba(0,0,0,0.15)] bg-[#f4f2ee] px-3 py-3 transition hover:border-[#0a66c2] hover:bg-[#0a66c2]/5"
+              className="flex items-center gap-3 rounded-lg border border-[rgba(0,0,0,0.15)] bg-[#f4f2ee] px-3 py-3 transition hover:border-[#3C65F5] hover:bg-[#3C65F5]/5"
             >
               <span className="grid h-10 w-10 shrink-0 place-items-center rounded bg-white text-[#e06847]">
                 <FiFileText className="text-xl" />

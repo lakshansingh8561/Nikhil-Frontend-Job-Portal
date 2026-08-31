@@ -45,7 +45,7 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
           message.isDeleted
             ? "bg-[#F1F5F9] text-slate-500 border border-[#E2E8F0] px-3 py-1.5 rounded-xl"
             : isOwn
-            ? "bg-gradient-to-r from-[#4F46E5] to-[#4338CA] text-white px-3 py-1.5 rounded-xl rounded-br-xs"
+            ? "bg-[#3C65F5] text-white px-3 py-1.5 rounded-xl rounded-br-xs"
             : "bg-white text-[#05264E] border border-[#E5E7EB] px-3 py-1.5 rounded-xl rounded-bl-xs"
         }`}
       >
@@ -55,7 +55,7 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
             className={`mb-1 rounded-lg px-2 py-1 text-xs border-l-2 transition-colors ${
               isOwn
                 ? "bg-white/15 border-white/90 text-white"
-                : "bg-indigo-50/80 border-[#4F46E5] text-slate-700"
+                : "bg-[#3C65F5]/10 border-[#3C65F5] text-slate-700"
             }`}
           >
             <span className="font-bold block text-[10px] uppercase tracking-wider">
@@ -149,7 +149,7 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
                   target="_blank"
                   rel="noreferrer"
                   className={`block rounded-lg px-2.5 py-1.5 text-xs font-bold underline truncate transition-colors ${
-                    isOwn ? "bg-white/15 text-indigo-100 hover:text-white" : "bg-gray-100 text-[#4F46E5] hover:bg-gray-200"
+                    isOwn ? "bg-white/15 text-indigo-100 hover:text-white" : "bg-gray-100 text-[#3C65F5] hover:bg-gray-200"
                   }`}
                 >
                   📎 {att.fileName || "Download Attachment"}
@@ -171,7 +171,7 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
                 onClick={() => onReply(message)}
                 title="Reply"
                 aria-label="Reply to message"
-                className="p-1 hover:text-[#4F46E5] hover:scale-110 transition-all cursor-pointer rounded-full"
+                className="p-1 hover:text-[#3C65F5] hover:scale-110 transition-all cursor-pointer rounded-full"
               >
                 <FiCornerUpLeft className="text-xs" />
               </button>

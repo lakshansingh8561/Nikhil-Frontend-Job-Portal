@@ -16,7 +16,7 @@ export const FooterRail: React.FC = () => {
       </p>
       <Link
         to={paths.directory}
-        className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-[#0a66c2] hover:underline"
+        className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-[#3C65F5] hover:underline"
       >
         Find people <FiArrowRight />
       </Link>

@@ -106,7 +106,7 @@ export const ReactionsModal: React.FC<ReactionsModalProps> = ({ post, open, onCl
               <div className="min-w-0 flex-1">
                 <a
                   href={person.userId ? paths.profile(person.userId) : "#"}
-                  className="block truncate text-sm font-semibold text-[rgba(0,0,0,0.9)] hover:text-[#0a66c2] hover:underline"
+                  className="block truncate text-sm font-semibold text-[rgba(0,0,0,0.9)] hover:text-[#3C65F5] hover:underline"
                 >
                   {person.fullName || "Member"}
                 </a>
@@ -130,7 +130,7 @@ const TabButton: React.FC<{
     onClick={onClick}
     className={`shrink-0 border-b-2 px-3 py-3 text-sm font-semibold transition cursor-pointer ${
       active
-        ? "border-[#0a66c2] text-[#0a66c2]"
+        ? "border-[#3C65F5] text-[#3C65F5]"
         : "border-transparent text-[rgba(0,0,0,0.6)] hover:text-[rgba(0,0,0,0.9)]"
     }`}
   >

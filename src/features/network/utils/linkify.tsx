@@ -47,7 +47,7 @@ export const linkify = (
           target="_blank"
           rel="noopener noreferrer nofollow"
           onClick={(event) => event.stopPropagation()}
-          className="text-[#0a66c2] hover:underline break-all"
+          className="text-[#3C65F5] hover:underline break-all"
         >
           {clean}
         </a>
@@ -62,12 +62,12 @@ export const linkify = (
             key={`h${key}`}
             to={`${base}?tag=${encodeURIComponent(tag.toLowerCase())}`}
             onClick={(event) => event.stopPropagation()}
-            className="font-semibold text-[#0a66c2] hover:underline"
+            className="font-semibold text-[#3C65F5] hover:underline"
           >
             {hashtag}
           </Link>
         ) : (
-          <span key={`h${key}`} className="font-semibold text-[#0a66c2]">
+          <span key={`h${key}`} className="font-semibold text-[#3C65F5]">
             {hashtag}
           </span>
         )

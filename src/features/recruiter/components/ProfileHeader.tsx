@@ -60,7 +60,7 @@ const ProfileHeader = ({
   return (
     <div className="relative overflow-hidden rounded-3xl bg-white shadow-sm border border-[#EAEFF7]">
       {/* Premium Dark Navy Cover Banner */}
-      <div className="h-40 w-full bg-gradient-to-r from-[#0F172A] via-[#1E3A8A] to-[#1D4ED8] relative overflow-hidden">
+      <div className="h-40 w-full bg-gradient-to-r from-[#0F172A] via-[#1E3A8A] to-[#3C65F5] relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.15),transparent_60%)]" />
       </div>
 
@@ -69,7 +69,7 @@ const ProfileHeader = ({
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div className="flex flex-col sm:flex-row sm:items-end gap-5">
             {/* Avatar Container with Cloudinary Upload */}
-            <div className="relative group flex h-24 w-24 shrink-0 items-center justify-center rounded-2xl bg-[#1D4ED8] font-black text-white text-3xl shadow-xl ring-4 ring-white overflow-hidden -mt-12">
+            <div className="relative group flex h-24 w-24 shrink-0 items-center justify-center rounded-2xl bg-[#3C65F5] font-black text-white text-3xl shadow-xl ring-4 ring-white overflow-hidden -mt-12">
               {profilePicture ? (
                 <img
                   src={profilePicture}
@@ -111,9 +111,9 @@ const ProfileHeader = ({
                 <h2 className="text-2xl font-extrabold text-[#05264E]">
                   {firstName || lastName ? `${firstName} ${lastName}` : "Recruiter Profile"}
                 </h2>
-                <FiCheckCircle className="text-[#1D4ED8] text-xl" title="Verified Recruiter" />
+                <FiCheckCircle className="text-[#3C65F5] text-xl" title="Verified Recruiter" />
               </div>
-              <p className="text-xs sm:text-sm font-bold text-[#1D4ED8] mt-1">
+              <p className="text-xs sm:text-sm font-bold text-[#3C65F5] mt-1">
                 {designation || "Hiring Manager"}{" "}
                 {currentCompany ? `@ ${currentCompany}` : ""}
               </p>
