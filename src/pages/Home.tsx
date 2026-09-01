@@ -1,19 +1,7 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
-  FiArrowRight,
-  FiChevronLeft,
-  FiChevronRight,
   FiCheckCircle,
-  FiBriefcase,
-  FiHeadphones,
-  FiDollarSign,
-  FiCode,
-  FiUserCheck,
-  FiShoppingBag,
-  FiEdit3,
-  FiBarChart2,
-  FiTrendingUp,
 } from "react-icons/fi";
 import Hero from "../components/home/Hero";
 import Container from "../components/common/Container";
@@ -23,49 +11,35 @@ import { useGetJobsQuery } from "../features/jobBrowser/api/jobBrowserApi";
 
 import hiringImage1 from "../assets/images/hiring-image1.png";
 import hiringImage2 from "../assets/images/hiring-image2.png";
+import BrowseByCategorySection from "../components/home/BrowseByCategorySection";
 import FindRightJobSection from "../components/home/FindRightJobSection";
 import TopRecruitersSection from "../components/home/TopRecruitersSection";
 import JobsByLocationSection from "../components/home/JobsByLocationSection";
 import NewsAndBlogSection from "../components/home/NewsAndBlogSection";
 import NewsletterSection from "../components/home/NewsletterSection";
 
-const categories = [
-  { name: "Software Development", jobsCount: "1,856 Active Jobs", icon: FiCode },
-  { name: "Marketing & Sales", jobsCount: "1,526 Active Jobs", icon: FiBriefcase },
-  { name: "Finance & Accounting", jobsCount: "368 Active Jobs", icon: FiDollarSign },
-  { name: "Customer Experience", jobsCount: "285 Active Jobs", icon: FiHeadphones },
-  { name: "Human Resources", jobsCount: "265 Active Jobs", icon: FiUserCheck },
-  { name: "Product & E-Commerce", jobsCount: "540 Active Jobs", icon: FiShoppingBag },
-  { name: "Content & Design", jobsCount: "430 Active Jobs", icon: FiEdit3 },
-  { name: "Executive Leadership", jobsCount: "410 Active Jobs", icon: FiBarChart2 },
-];
+import managementSvg from "../assets/images/management.svg";
+import marketingSvg from "../assets/images/marketing.svg";
+import financeSvg from "../assets/images/finance.svg";
+import humanSvg from "../assets/images/human.svg";
+import retailSvg from "../assets/images/retail.svg";
+import contentSvg from "../assets/images/content.svg";
 
 const categoryTabs = [
-  "Management",
-  "Marketing & Sale",
-  "Finance",
-  "Human Resource",
-  "Retail & Products",
-  "Content Writer",
+  { name: "Management", icon: managementSvg },
+  { name: "Marketing & Sale", icon: marketingSvg },
+  { name: "Finance", icon: financeSvg },
+  { name: "Human Resource", icon: humanSvg },
+  { name: "Retail & Products", icon: retailSvg },
+  { name: "Content Writer", icon: contentSvg },
 ];
 
 const Home = () => {
   const navigate = useNavigate();
   const [activeCategoryTab, setActiveCategoryTab] = useState("Management");
-  const [categoryStartIndex, setCategoryStartIndex] = useState(0);
 
   const { data, isLoading } = useGetJobsQuery({ limit: 6 });
   const jobsList = data?.jobs || [];
-
-  const handlePrevCategory = () => {
-    setCategoryStartIndex((prev) => Math.max(prev - 1, 0));
-  };
-
-  const handleNextCategory = () => {
-    setCategoryStartIndex((prev) =>
-      Math.min(prev + 1, Math.max(0, categories.length - 4))
-    );
-  };
 
   return (
     <div className="min-h-screen bg-slate-50/50">
@@ -73,155 +47,166 @@ const Home = () => {
       <Hero />
 
       {/* 1. Browse by Category Section */}
-      <section className="py-16 bg-white border-b border-slate-200/80">
-        <Container>
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
-            <div>
-              <div className="inline-flex items-center gap-1.5 text-xs font-bold text-indigo-600 uppercase tracking-wider mb-1">
-                <FiTrendingUp /> Explore Opportunities
-              </div>
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-                Explore by Category
-              </h2>
-              <p className="mt-1 text-xs sm:text-sm font-medium text-slate-500">
-                Discover positions curated across core tech and business disciplines
-              </p>
-            </div>
-
-            {/* Slider Navigation Arrows */}
-            <div className="flex items-center gap-2">
-              <button
-                onClick={handlePrevCategory}
-                disabled={categoryStartIndex === 0}
-                className="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 disabled:opacity-40 transition cursor-pointer shadow-xs"
-              >
-                <FiChevronLeft className="text-base" />
-              </button>
-              <button
-                onClick={handleNextCategory}
-                disabled={categoryStartIndex >= categories.length - 4}
-                className="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 disabled:opacity-40 transition cursor-pointer shadow-xs"
-              >
-                <FiChevronRight className="text-base" />
-              </button>
-            </div>
-          </div>
-
-          {/* Category Cards Grid */}
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {categories
-              .slice(categoryStartIndex, categoryStartIndex + 4)
-              .map((cat) => {
-                const Icon = cat.icon;
-                return (
-                  <Link
-                    key={cat.name}
-                    to={`/jobs?category=${encodeURIComponent(cat.name)}`}
-                    className="saas-card-interactive group p-6 flex flex-col justify-between min-h-[160px]"
-                  >
-                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 transition duration-150 group-hover:bg-indigo-600 group-hover:text-white mb-4">
-                      <Icon className="text-lg" />
-                    </div>
-                    <div>
-                      <h3 className="text-sm font-bold text-slate-900 group-hover:text-indigo-600 transition-colors">
-                        {cat.name}
-                      </h3>
-                      <p className="mt-1 text-xs font-medium text-slate-500">
-                        {cat.jobsCount}
-                      </p>
-                    </div>
-                  </Link>
-                );
-              })}
-          </div>
-        </Container>
-      </section>
+      <BrowseByCategorySection />
 
       {/* 2. WE ARE HIRING Banner Section — Exact JobBox Template Structure */}
-      <section className="py-8 bg-slate-50/50">
-        <Container>
-          <div className="relative bg-white border border-[#E0E6F6] rounded-2xl shadow-xs py-8 sm:py-10 px-6 sm:px-10 lg:pl-[190px] lg:pr-[250px] flex flex-col lg:flex-row items-center justify-between gap-6 overflow-hidden">
-            {/* Left Illustration (hiringImage1: 150px x 120px) */}
+      <section className="py-10 bg-white font-['Plus_Jakarta_Sans',sans-serif]">
+        <div className="w-full px-4 sm:px-6">
+          <div
+            className="box-we-hiring relative bg-white border border-[#E0E6F7] rounded-[4px] py-[40px] px-6 sm:px-12 lg:pt-[40px] lg:pb-[40px] lg:pl-[190px] lg:pr-[250px] flex flex-col lg:flex-row items-center lg:items-start justify-between gap-4 overflow-hidden mx-auto"
+            style={{
+              maxWidth: "948px",
+              width: "100%",
+              boxShadow: "0 10px 20px -5px rgba(10, 42, 105, 0.06)",
+            }}
+          >
+            {/* Left Illustration (hiringImage1) */}
             <img
               src={hiringImage1}
               alt="We Are Hiring"
-              className="hidden lg:block absolute bottom-0 left-0 w-[150px] h-[120px] object-contain object-left-bottom pointer-events-none select-none"
+              className="hidden lg:block absolute bottom-0 left-0 w-[160px] h-[130px] object-contain object-left-bottom pointer-events-none select-none z-0"
             />
 
             {/* text-1: WE ARE HIRING */}
-            <div className="text-center lg:text-left shrink-0">
-              <span className="text-[#66789C] text-xs sm:text-[14px] font-bold tracking-[2px] uppercase block mb-1">
+            <div className="text-1 text-center lg:text-left shrink-0">
+              <span
+                className="text-we-are uppercase block"
+                style={{
+                  color: "#A0ABB8",
+                  fontSize: "16px",
+                  fontWeight: 700,
+                  letterSpacing: "1.5px",
+                  lineHeight: "20px",
+                  marginBottom: "4px",
+                }}
+              >
                 WE ARE
               </span>
-              <span className="text-[#05264E] text-3xl sm:text-[46px] lg:text-[49px] font-extrabold sm:leading-[51px] tracking-[1px] uppercase block">
+              <span
+                className="text-hiring uppercase block"
+                style={{
+                  fontSize: "49px",
+                  lineHeight: "51px",
+                  color: "#05264E",
+                  fontWeight: 800,
+                  letterSpacing: "1px",
+                }}
+              >
                 HIRING
               </span>
             </div>
 
-            {/* text-2: Description */}
-            <div className="text-center lg:text-left text-[#66789C] text-sm sm:text-[18px] font-medium leading-[23px]">
-              Let’s <span className="text-[#05264E] font-bold">Work</span> Together<br className="hidden sm:inline" />
-              {" "}&amp; <span className="text-[#05264E] font-bold">Explore</span> Opportunities
+            {/* text-2: Description starting from hiring level with padding 29px 20px 0 */}
+            <div
+              className="text-2 text-center lg:text-left shrink-0"
+              style={{
+                fontSize: "18px",
+                lineHeight: "23px",
+                color: "#66789C",
+                fontWeight: 500,
+                padding: "29px 20px 0",
+              }}
+            >
+              Let’s <span style={{ color: "#05264E", fontWeight: 700 }}>Work</span>
+              <br />
+              Together
+              <br />
+              &amp; <span style={{ color: "#05264E", fontWeight: 700 }}>Explore</span>
+              <br />
+              Opportunities
             </div>
 
-            {/* text-3: Apply now button */}
-            <div className="shrink-0">
+            {/* text-3: Apply now button with exact padding & styling */}
+            <div className="relative z-20 shrink-0 lg:pt-[29px]">
               <button
                 onClick={() => navigate("/jobs")}
-                className="rounded-xl bg-[#3C65F5] hover:bg-[#2C52E0] text-white font-extrabold text-sm px-7 py-3.5 shadow-md hover:shadow-lg transition-all duration-200 cursor-pointer inline-flex items-center gap-2"
+                className="btn btn-apply inline-flex items-center gap-2 transition-all duration-200 cursor-pointer hover:opacity-95"
+                style={{
+                  backgroundColor: "#3C65F5",
+                  color: "#FFFFFF",
+                  padding: "12px 20px",
+                  borderRadius: "4px",
+                  fontFamily: "'Plus Jakarta Sans', sans-serif",
+                  fontSize: "14px",
+                  fontWeight: 700,
+                  lineHeight: 1,
+                  boxShadow: "0 4px 10px rgba(60, 101, 245, 0.2)",
+                }}
               >
                 <FiCheckCircle className="text-base" />
                 <span>Apply now</span>
               </button>
             </div>
 
-            {/* Right Illustration (hiringImage2: 250px x 120px) */}
+            {/* Right Illustration (hiringImage2) */}
             <img
               src={hiringImage2}
               alt="Explore Opportunities"
-              className="hidden lg:block absolute bottom-0 right-0 w-[250px] h-[120px] object-contain object-right-bottom pointer-events-none select-none"
+              className="hidden lg:block absolute bottom-0 right-0 w-[250px] h-[130px] object-contain object-right-bottom pointer-events-none select-none z-0"
             />
           </div>
-        </Container>
+        </div>
       </section>
 
       {/* 3. Featured Open Positions Section — Jobs of the Day */}
-      <section className="py-16 bg-white border-t border-slate-200/80">
+      <section className="py-16 bg-white border-t border-slate-200/80 font-['Plus_Jakarta_Sans',sans-serif]">
         <Container>
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
-            <div>
-              <h2 className="text-3xl sm:text-4xl font-bold text-[#05264E] font-['Plus_Jakarta_Sans',sans-serif] tracking-tight">
-                Jobs of the day
-              </h2>
-              <p className="mt-1 text-sm font-medium text-[#66789C] font-['Plus_Jakarta_Sans',sans-serif]">
-                Search and connect with the right candidates faster.
-              </p>
-            </div>
-
-            <Link
-              to="/jobs"
-              className="inline-flex items-center gap-1.5 rounded-xl bg-white border border-[#E0E6F6] px-4 py-2 text-[14px] font-medium text-[#05264E] hover:text-[#3C65F5] hover:border-[#3C65F5]/40 hover:shadow-xs transition-all font-['Plus_Jakarta_Sans',sans-serif] shrink-0"
+          {/* Centered Heading with exact CSS */}
+          <div className="text-center max-w-[750px] mx-auto">
+            <h2
+              className="text-center"
+              style={{
+                fontFamily: "'Plus Jakarta Sans', sans-serif",
+                fontSize: "36px",
+                lineHeight: "45px",
+                fontWeight: 700,
+                color: "#05264E",
+                marginBottom: "10px",
+              }}
             >
-              <span>Explore All Jobs</span>
-              <FiArrowRight className="text-base" />
-            </Link>
+              Jobs of the day
+            </h2>
+            <p
+              className="text-center"
+              style={{
+                fontFamily: "'Plus Jakarta Sans', sans-serif",
+                fontSize: "18px",
+                lineHeight: "24px",
+                fontWeight: 400,
+                color: "#66789C",
+                marginBottom: "30px",
+              }}
+            >
+              Search and connect with the right candidates faster.
+            </p>
           </div>
 
-          {/* Category Filter Pills */}
-          <div className="flex flex-wrap items-center gap-2.5 mb-8">
+          {/* Centered Category Filter Buttons with SVGs matching exact span.active CSS */}
+          <div className="flex flex-wrap items-center justify-center mb-10">
             {categoryTabs.map((tab) => {
-              const isActive = activeCategoryTab === tab;
+              const isActive = activeCategoryTab === tab.name;
               return (
                 <button
-                  key={tab}
-                  onClick={() => setActiveCategoryTab(tab)}
-                  className={`rounded-xl px-4 py-2 text-xs font-medium transition-all cursor-pointer border font-['Plus_Jakarta_Sans',sans-serif] ${
-                    isActive
-                      ? "bg-[#3C65F5] text-white border-[#3C65F5] shadow-xs font-bold"
-                      : "bg-white text-[#05264E] border-[#E0E6F6] hover:border-[#3C65F5]/50 hover:text-[#3C65F5]"
+                  key={tab.name}
+                  onClick={() => setActiveCategoryTab(tab.name)}
+                  className={`inline-flex items-center gap-2 cursor-pointer transition-all duration-200 hover:border-[#3C65F5]/60 hover:text-[#3C65F5] ${
+                    isActive ? "active" : ""
                   }`}
+                  style={{
+                    fontFamily: "'Plus Jakarta Sans', sans-serif",
+                    fontSize: "12px",
+                    fontWeight: 700,
+                    padding: "13px 17px",
+                    margin: "0px 5px 10px",
+                    borderRadius: "8px",
+                    backgroundColor: "#FFFFFF",
+                    color: isActive ? "#3C65F5" : "#05264E",
+                    border: isActive ? "1px solid #3C65F5" : "1px solid #E0E6F6",
+                    boxShadow: isActive ? "0 4px 10px rgba(60, 101, 245, 0.08)" : "none",
+                  }}
                 >
-                  {tab}
+                  <img src={tab.icon} alt={tab.name} className="w-4 h-4 object-contain shrink-0" />
+                  <span>{tab.name}</span>
                 </button>
               );
             })}
