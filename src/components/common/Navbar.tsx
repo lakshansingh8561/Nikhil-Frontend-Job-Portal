@@ -20,11 +20,14 @@ import Avatar from "../../features/network/components/common/Avatar";
 import { UnreadBadge } from "../../features/chat/components/UnreadBadge";
 import NotificationDropdown from "./NotificationDropdown";
 
-const links = [
-  { name: "Home", path: "/" },
-  { name: "Find Jobs", path: "/jobs" },
-  { name: "Recruiters", path: "/recruiters" },
-  { name: "Candidates", path: "/candidates" },
+const navLinks = [
+  { name: "Home", path: "/", hasDropdown: true },
+  { name: "Find a Job", path: "/jobs", hasDropdown: true },
+  { name: "Recruiters", path: "/recruiters", hasDropdown: true },
+  { name: "Candidates", path: "/candidates", hasDropdown: true },
+  { name: "Pages", path: "/pages", hasDropdown: true },
+  { name: "Blog", path: "/blog", hasDropdown: true },
+  { name: "Contact", path: "/contact", hasDropdown: false },
 ];
 
 const Navbar = () => {
@@ -97,37 +100,46 @@ const Navbar = () => {
 
   return (
     <>
-      <header className="sticky top-0 z-50 w-full border-b border-slate-200/80 bg-white/80 backdrop-blur-md transition-all">
-        <div className="mx-auto w-full max-w-[1240px] px-4 sm:px-6">
-          <div className="flex h-16 sm:h-18 items-center justify-between gap-4">
-            {/* Logo */}
+      <header className="sticky top-0 z-50 w-full bg-[#F5F8FF] border-0 m-0 py-[30px] h-[108px] flex items-center transition-all">
+        <div className="mx-auto w-full max-w-[1180px] px-6 sm:px-8">
+          <div className="flex h-[48px] items-center justify-between gap-4">
+            {/* Left: Logo (139px x 36px) */}
             <div className="flex items-center shrink-0">
-              <Link to="/" className="flex items-center gap-2">
-                <img src={Logo} alt="JobBox" className="h-8 w-auto" />
+              <Link to="/" className="flex items-center">
+                <img
+                  src={Logo}
+                  alt="JobBox"
+                  className="w-[139px] h-[36px] object-contain block"
+                  width={139}
+                  height={36}
+                />
               </Link>
             </div>
 
-            {/* Desktop Navigation Links — Exact Plus Jakarta Sans Medium (500) */}
-            <nav className="hidden items-center justify-center gap-1.5 lg:flex flex-1 max-w-md mx-auto font-['Plus_Jakarta_Sans',sans-serif]">
-              {links.map((item) => (
+            {/* Center: Desktop Navigation Items */}
+            <nav className="hidden lg:flex items-center justify-center gap-6 xl:gap-7.5 font-['Plus_Jakarta_Sans',sans-serif]">
+              {navLinks.map((item) => (
                 <NavLink
                   key={item.name}
                   to={item.path}
                   className={({ isActive }) =>
-                    `px-3.5 py-2 text-[14px] leading-[18px] transition-all whitespace-nowrap font-medium font-['Plus_Jakarta_Sans',sans-serif] ${
-                      isActive
-                        ? "text-[#3C65F5]"
-                        : "text-[#05264E] hover:text-[#3C65F5]"
+                    `group inline-flex items-center text-[14px] leading-[18px] font-medium font-['Plus_Jakarta_Sans',sans-serif] text-[#05264E] hover:text-[#3C65F5] transition-all duration-300 ease-in-out whitespace-nowrap cursor-pointer ${
+                      isActive ? "active" : ""
                     }`
                   }
                 >
-                  {item.name}
+                  <span className="text-[14px] leading-[18px] font-medium font-['Plus_Jakarta_Sans',sans-serif] text-[#05264E] group-hover:text-[#3C65F5] transition-all duration-300">
+                    {item.name}
+                  </span>
+                  {item.hasDropdown && (
+                    <FiChevronDown className="ml-1 w-3.5 h-3.5 stroke-[2.2] text-[#05264E] group-hover:text-[#3C65F5] transition-all duration-300" />
+                  )}
                 </NavLink>
               ))}
             </nav>
 
-            {/* Desktop Right Action Bar */}
-            <div className="hidden lg:flex items-center gap-3 shrink-0 font-['Plus_Jakarta_Sans',sans-serif]">
+            {/* Right: Register & Sign In (or Authenticated User Bar) */}
+            <div className="hidden lg:flex items-center gap-6 shrink-0 font-['Plus_Jakarta_Sans',sans-serif]">
               {user ? (
                 <div className="flex items-center gap-2.5">
                   <NotificationDropdown />
@@ -136,7 +148,7 @@ const Navbar = () => {
                     <Link
                       to={chatPath}
                       title="Messages"
-                      className="relative flex h-9.5 w-9.5 items-center justify-center rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200/80 hover:text-[#3C65F5] transition"
+                      className="relative flex h-[42px] w-[42px] items-center justify-center rounded-xl bg-white text-slate-700 hover:text-[#3C65F5] border border-slate-200/80 transition shadow-xs"
                     >
                       <FiMessageSquare className="text-base" />
                       {unreadData && unreadData.unreadCount > 0 && (
@@ -150,7 +162,7 @@ const Navbar = () => {
                   <div className="relative" ref={dropdownRef}>
                     <button
                       onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
-                      className="flex items-center gap-2 rounded-xl bg-slate-100 p-1 pl-1.5 pr-3 text-[13px] font-medium text-[#05264E] hover:bg-slate-200/80 transition cursor-pointer font-['Plus_Jakarta_Sans',sans-serif]"
+                      className="flex items-center gap-2 rounded-xl bg-white p-1 pl-1.5 pr-3 text-[13px] font-medium text-[#05264E] border border-slate-200/80 hover:bg-slate-50 transition cursor-pointer font-['Plus_Jakarta_Sans',sans-serif] shadow-xs"
                     >
                       <Avatar
                         src={avatarUrl}
@@ -227,18 +239,18 @@ const Navbar = () => {
                   </div>
                 </div>
               ) : (
-                <div className="flex items-center gap-2.5 font-['Plus_Jakarta_Sans',sans-serif]">
-                  <Link
-                    to="/login"
-                    className="text-[14px] font-medium text-[#05264E] hover:text-[#3C65F5] px-3.5 py-2 transition font-['Plus_Jakarta_Sans',sans-serif]"
-                  >
-                    Sign in
-                  </Link>
+                <div className="block-signin flex items-center justify-end w-[215px] h-[48px] font-['Plus_Jakarta_Sans',sans-serif]">
                   <Link
                     to="/register"
-                    className="rounded-xl bg-[#3C65F5] hover:bg-[#2C52E0] text-white text-[14px] font-medium px-5 py-2.5 shadow-sm transition font-['Plus_Jakarta_Sans',sans-serif]"
+                    className="text-[14px] leading-[24px] font-medium text-[#05264E] hover:text-[#3C65F5] underline underline-offset-4 transition-colors font-['Plus_Jakarta_Sans',sans-serif]"
                   >
-                    Get Started
+                    Register
+                  </Link>
+                  <Link
+                    to="/login"
+                    className="btn btn-default btn-shadow ml-[40px] hover-up inline-flex items-center justify-center h-[48px] px-[25px] py-[10px] rounded-[8px] bg-[#3C65F5] hover:bg-[#2C52E0] text-white text-[14px] font-medium transition-all font-['Plus_Jakarta_Sans',sans-serif] whitespace-nowrap shadow-xs"
+                  >
+                    Sign In
                   </Link>
                 </div>
               )}
@@ -252,7 +264,7 @@ const Navbar = () => {
                   {!isAdmin && (
                     <Link
                       to={chatPath}
-                      className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 transition"
+                      className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 transition"
                     >
                       <FiMessageSquare className="text-base" />
                       {unreadData && unreadData.unreadCount > 0 && (
@@ -290,7 +302,7 @@ const Navbar = () => {
           }`}
       >
         <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
-          <img src={Logo} alt="JobBox" className="h-7 w-auto" />
+          <img src={Logo} alt="JobBox" className="w-[120px] h-auto object-contain" />
           <button
             onClick={() => setMobileMenuOpen(false)}
             className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 transition cursor-pointer"
@@ -300,19 +312,20 @@ const Navbar = () => {
         </div>
 
         <nav className="flex-1 overflow-y-auto px-4 py-4 space-y-1">
-          {links.map((item) => (
+          {navLinks.map((item) => (
             <NavLink
               key={item.name}
               to={item.path}
               onClick={() => setMobileMenuOpen(false)}
               className={({ isActive }) =>
-                `flex items-center px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all ${isActive
+                `flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all ${isActive
                   ? "bg-indigo-50 text-indigo-600 font-bold"
                   : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
                 }`
               }
             >
-              {item.name}
+              <span>{item.name}</span>
+              {item.hasDropdown && <FiChevronDown className="text-xs text-slate-400" />}
             </NavLink>
           ))}
 
@@ -350,18 +363,18 @@ const Navbar = () => {
           ) : (
             <div className="space-y-2 pt-2">
               <Link
-                to="/login"
-                onClick={() => setMobileMenuOpen(false)}
-                className="saas-btn-secondary w-full text-xs"
-              >
-                Sign in
-              </Link>
-              <Link
                 to="/register"
                 onClick={() => setMobileMenuOpen(false)}
-                className="saas-btn-primary w-full text-xs"
+                className="block text-center w-full py-2.5 rounded-xl text-xs font-semibold text-[#05264E] bg-slate-100 hover:bg-slate-200 transition"
               >
-                Get Started Free
+                Register
+              </Link>
+              <Link
+                to="/login"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block text-center w-full py-2.5 rounded-xl text-xs font-semibold text-white bg-[#3C65F5] hover:bg-[#2C52E0] transition"
+              >
+                Sign in
               </Link>
             </div>
           )}

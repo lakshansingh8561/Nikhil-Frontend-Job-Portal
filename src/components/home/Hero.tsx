@@ -38,11 +38,11 @@ const Hero = () => {
   const { data, isLoading } = useGetJobsQuery(
     hasSearch
       ? {
-          search: searchQuery,
-          location: locationQuery,
-          industry: industryQuery,
-          limit: 12,
-        }
+        search: searchQuery,
+        location: locationQuery,
+        industry: industryQuery,
+        limit: 12,
+      }
       : undefined,
     { skip: !hasSearch }
   );
@@ -69,8 +69,18 @@ const Hero = () => {
   };
 
   return (
-    <section className="relative overflow-hidden w-full bg-[#F5F8FF] pt-16 sm:pt-20 lg:pt-24 pb-16">
+    <section className="relative overflow-hidden w-full bg-[#F5F8FF] pt-8 sm:pt-10 lg:pt-[50px] pb-20 sm:pb-24 lg:pb-28">
       <style>{`
+        @keyframes heroThumb1 {
+          0% { transform: translateY(-16px) translateX(0px); }
+          50% { transform: translateY(2px) translateX(4px); }
+          100% { transform: translateY(-16px) translateX(0px); }
+        }
+        @keyframes heroThumb2 {
+          0% { transform: translateY(2px) translateX(0px); }
+          50% { transform: translateY(-16px) translateX(-4px); }
+          100% { transform: translateY(2px) translateX(0px); }
+        }
         @keyframes floatVertical {
           0%, 100% { transform: translateY(0px); }
           50% { transform: translateY(-12px); }
@@ -95,14 +105,18 @@ const Hero = () => {
         }}
       />
 
-      <div className="mx-auto w-full max-w-[1060px] px-6 sm:px-8 relative z-10">
-        <div className="grid items-start gap-6 lg:gap-8 lg:grid-cols-12">
+      <div className="mx-auto w-full max-w-[1020px] px-6 sm:px-8 relative z-10">
+        <div className="flex flex-col lg:flex-row items-start justify-center gap-8 lg:gap-12">
           {/* Left Column */}
-          <div className="lg:col-span-7 flex flex-col max-w-[490px]">
-            <h1 className="font-extrabold text-[#05264E] text-4xl sm:text-5xl lg:text-[52px] leading-[1.12] tracking-tight font-['Plus_Jakarta_Sans',sans-serif]">
+          <div className="w-full max-w-[490px] flex flex-col shrink-0">
+            <h1 className="font-extrabold text-[#05264E] text-4xl sm:text-5xl lg:text-[48px] leading-[1.25] tracking-tight font-['Plus_Jakarta_Sans',sans-serif] max-w-[436.66px]">
               The{" "}
-              <span className="inline-block font-extrabold text-[#3C65F5] bg-[#D5E4FF] px-3.5 py-1 rounded-2xl my-1 whitespace-nowrap">
-                Easiest Way
+              <span className="relative inline-block font-extrabold text-[#3C65F5] whitespace-nowrap">
+                <span className="relative z-10">Easiest Way</span>
+                <span
+                  className="absolute bottom-2 -left-1.5 -right-1.5 h-[45%] bg-[#D5E4FF] -z-0 rounded-[3px]"
+                  aria-hidden="true"
+                />
               </span>
               <br />
               to Get Your New
@@ -110,9 +124,15 @@ const Hero = () => {
               Job
             </h1>
 
-            <p className="font-medium text-[#66789C] text-sm leading-relaxed mt-4 mb-6 max-w-md font-['Plus_Jakarta_Sans',sans-serif]">
-              Each month, more than 3 million job seekers turn to website in their search for work, making over 140,000 applications every single day.
-            </p>
+            <div className="banner-description font-normal text-[#4F5E64] text-[18px] leading-[24px] mt-[20px] mb-[30px] max-w-[436.66px] font-['Plus_Jakarta_Sans',sans-serif]">
+              Each month, more than 3 million job seekers turn to
+              <br />
+              website in their search for work, making over
+              <br />
+              140,000
+              <br />
+              applications every single day
+            </div>
 
             {/* Search Bar Form */}
             <form
@@ -170,25 +190,29 @@ const Hero = () => {
               </button>
             </form>
 
-            {/* Popular Searches */}
-            <div className="mt-5 flex flex-wrap items-center gap-2 text-xs text-[#66789C] font-['Plus_Jakarta_Sans',sans-serif]">
-              <span className="font-bold text-[#05264E]">Popular Searches:</span>
-              {popularSearches.map((item, idx) => (
-                <button
-                  key={item}
-                  type="button"
-                  onClick={() => handlePopularSearch(item)}
-                  className="cursor-pointer font-medium text-[#66789C] hover:text-[#3C65F5] underline underline-offset-2 transition"
-                >
-                  {item}
-                  {idx < popularSearches.length - 1 ? "," : ""}
-                </button>
-              ))}
+            {/* Popular Searches (mt-60 = 60px margin-top) */}
+            <div className="list-tags-banner mt-[60px] font-['Plus_Jakarta_Sans',sans-serif]">
+              <div className="text-[14px] leading-[18px] font-bold text-[#4F5E64]">
+                Popular
+              </div>
+              <div className="flex flex-wrap items-center text-[14px] leading-[18px] text-[#4F5E64] mt-0.5">
+                <strong className="font-bold text-[#4F5E64] mr-1">Searches:</strong>
+                {popularSearches.map((item) => (
+                  <button
+                    key={item}
+                    type="button"
+                    onClick={() => handlePopularSearch(item)}
+                    className="inline-block cursor-pointer font-normal text-[14px] leading-[18px] text-[#4F5E64] hover:text-[#3C65F5] underline underline-offset-2 transition ml-[2px] mr-[5px]"
+                  >
+                    {item},
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 
           {/* Right Column: Hero Banner Images Stacked from Exact Same Top Height Line */}
-          <div className="hidden lg:flex lg:col-span-5 flex-col relative w-full max-w-[420px] ml-auto">
+          <div className="hidden lg:flex flex-col relative w-full max-w-[400px] shrink-0">
             {/* Top-Right Dotted Pattern Icon */}
             <div
               className="absolute -top-3 right-0 z-0 pointer-events-none select-none"
@@ -201,20 +225,22 @@ const Hero = () => {
               />
             </div>
 
-            {/* Top Banner Image Card (Banner1: Starts at the same top height line as headline) */}
+            {/* Top Banner Image Card (Banner1: 378px x 329px with rounded alternating float) */}
             <div
-              className="w-full max-w-[340px] rounded-[28px] overflow-hidden shadow-lg border-[4px] border-[#3C65F5] bg-[#3C65F5] relative z-10 self-start -ml-4"
-              style={{ animation: "floatVertical 4s ease-in-out infinite" }}
+              className="shape-1 w-[378px] max-w-[378px] self-start"
+              style={{ animation: "heroThumb1 3.5s ease-in-out infinite" }}
             >
               <img
                 src={Banner1}
                 alt="JobBox Candidate Banner 1"
-                className="w-full h-auto block object-cover"
+                className="w-full h-auto block"
+                width={378}
+                height={329}
               />
             </div>
 
             {/* Bottom Section Wrapper: Houses Dotted Pattern directly under Banner 1, and Banner 2 on the right */}
-            <div className="relative mt-6 w-full flex items-center justify-between">
+            <div className="relative mt-10 w-full flex items-center justify-between">
               {/* Dotted Pattern Icon directly under Banner 1 */}
               <div
                 className="pointer-events-none select-none pl-2"
@@ -227,15 +253,15 @@ const Hero = () => {
                 />
               </div>
 
-              {/* Bottom Banner Image Card (Banner2: Shifted right) */}
+              {/* Bottom Banner Image Card (Banner2: rounded alternating float counter to Banner 1) */}
               <div
-                className="w-full max-w-[295px] rounded-[28px] overflow-hidden shadow-xl border-[4px] border-[#3C65F5] bg-[#3C65F5] relative z-10 self-end ml-auto"
-                style={{ animation: "floatHorizontal 5s ease-in-out infinite" }}
+                className="shape-2 w-[295px] max-w-[295px] self-end ml-auto -mr-4"
+                style={{ animation: "heroThumb2 3.5s ease-in-out infinite" }}
               >
                 <img
                   src={Banner2}
                   alt="JobBox Candidate Banner 2"
-                  className="w-full h-auto block object-cover"
+                  className="img-responsive w-full h-auto block max-w-full transition-all duration-300 ease-out"
                 />
               </div>
             </div>
@@ -285,6 +311,17 @@ const Hero = () => {
             )}
           </div>
         )}
+      </div>
+
+      {/* Bottom Diagonal Angle Divider matching JobBox template */}
+      <div className="absolute bottom-0 left-0 right-0 pointer-events-none overflow-hidden leading-none z-0">
+        <svg
+          className="relative block w-full h-[60px] sm:h-[80px] lg:h-[105px]"
+          viewBox="0 0 1920 105"
+          preserveAspectRatio="none"
+        >
+          <polygon points="0,105 1920,0 1920,105" fill="#FFFFFF" />
+        </svg>
       </div>
     </section>
   );
