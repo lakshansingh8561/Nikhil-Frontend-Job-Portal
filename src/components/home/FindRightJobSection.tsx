@@ -15,7 +15,7 @@ const FindRightJobSection: React.FC = () => {
       <Container>
         <div className="grid grid-cols-1 lg:grid-cols-12 items-center gap-10 lg:gap-16">
           {/* Left Column: Overlapping Card Illustration - Exact JobBox Template Structure */}
-          <div className="hidden lg:flex lg:col-span-6 relative justify-center items-center py-6">
+          <div className="hidden lg:flex lg:col-span-6 relative justify-center items-center py-6 pb-20">
             <div className="relative w-full max-w-[580px] text-center">
               {/* Top Left Floating Chart Card — Exact JobBox specs */}
               <img
@@ -47,8 +47,8 @@ const FindRightJobSection: React.FC = () => {
                 style={{
                   width: '351px',
                   height: '384px',
-                  right: '-95px',
-                  bottom: '-165px',
+                  right: '-80px',
+                  bottom: '-185px',
                 }}
               />
             </div>

@@ -14,6 +14,7 @@ import {
   FiChevronRight,
   FiGlobe,
   FiUsers,
+  FiEdit3,
 } from "react-icons/fi";
 import { useAppDispatch } from "../../../hooks/useAppDispatch";
 import { logout } from "../../auth/authSlice";
@@ -40,6 +41,7 @@ const navItems = [
   },
   { name: "My Profile", path: "/job-seeker/profile", icon: FiUser },
   { name: "My Applications", path: "/job-seeker/applications", icon: FiFileText },
+  { name: "My Blogs", path: "/job-seeker/blogs", icon: FiEdit3 },
   { name: "Messages", path: "/job-seeker/messages", icon: FiMessageSquare, hasBadge: true },
   { name: "Find Jobs", path: "/job-seeker/jobs", icon: FiSearch },
   { name: "Settings", path: "/job-seeker/settings", icon: FiSettings },
