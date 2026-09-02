@@ -11,6 +11,7 @@ import {
   FiX,
   FiGlobe,
   FiMenu,
+  FiEdit3,
 } from "react-icons/fi";
 import logo from "../../../assets/logo.svg";
 
@@ -27,6 +28,7 @@ const navItems = [
   { label: "Recruiters", path: "/admin/recruiters", icon: FiUserCheck },
   { label: "Jobs", path: "/admin/jobs", icon: FiBriefcase },
   { label: "Applications", path: "/admin/applications", icon: FiFileText },
+  { label: "Blog Management", path: "/admin/blogs", icon: FiEdit3 },
   { label: "Membership Plans", path: "/admin/memberships", icon: FiZap },
   { label: "Settings", path: "/admin/settings", icon: FiSettings },
 ];

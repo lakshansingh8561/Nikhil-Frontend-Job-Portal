@@ -66,6 +66,16 @@ import PostDetail from "./features/network/pages/PostDetail";
 import MyNetwork from "./features/network/pages/MyNetwork";
 import SavedPosts from "./features/network/pages/SavedPosts";
 
+// Blog Feature Pages
+import {
+  PublicBlogPage,
+  BlogDetailsPage,
+  MyBlogsPage,
+  CreateBlogPage,
+  EditBlogPage,
+  AdminBlogsPage,
+} from "./features/blogs";
+
 import { LocationDeniedBanner } from "./components/common/LocationDeniedBanner";
 import ScrollToTopOnRoute from "./components/common/ScrollToTopOnRoute";
 
@@ -92,6 +102,11 @@ function App() {
           <Route path="/recruiters" element={<RecruitersDirectory />} />
           <Route path="/membership" element={<Pricing />} />
           <Route path="/pricing" element={<Pricing />} />
+
+          {/* Public Blog Routes */}
+          <Route path="/blog" element={<PublicBlogPage />} />
+          <Route path="/blog/grid" element={<PublicBlogPage />} />
+          <Route path="/blog/:slug" element={<BlogDetailsPage />} />
         </Route>
 
         {/* Standalone Payment Result Routes (accessible when logged in) */}
@@ -117,6 +132,9 @@ function App() {
             <Route path="messages" element={<ChatPage />} />
             <Route path="jobs" element={<BrowseJobs />} />
             <Route path="jobs/:id" element={<JobSeekerJobDetails />} />
+            <Route path="blogs" element={<MyBlogsPage />} />
+            <Route path="blogs/create" element={<CreateBlogPage />} />
+            <Route path="blogs/edit/:id" element={<EditBlogPage />} />
             <Route path="settings" element={<JobSeekerSettings />} />
           </Route>
         </Route>
@@ -145,6 +163,9 @@ function App() {
             <Route path="jobs/:id" element={<RecruiterJobDetails />} />
             <Route path="applications" element={<RecruiterApplications />} />
             <Route path="messages" element={<ChatPage />} />
+            <Route path="blogs" element={<MyBlogsPage />} />
+            <Route path="blogs/create" element={<CreateBlogPage />} />
+            <Route path="blogs/edit/:id" element={<EditBlogPage />} />
             <Route path="settings" element={<Settings />} />
             <Route path="profile" element={<RecruiterProfile />} />
           </Route>
@@ -159,6 +180,9 @@ function App() {
             <Route path="recruiters" element={<AdminRecruiters />} />
             <Route path="jobs" element={<AdminJobs />} />
             <Route path="applications" element={<AdminApplications />} />
+            <Route path="blogs" element={<AdminBlogsPage />} />
+            <Route path="blogs/create" element={<CreateBlogPage />} />
+            <Route path="blogs/edit/:id" element={<EditBlogPage />} />
             <Route path="memberships" element={<AdminMembershipsPage />} />
             <Route path="payments" element={<PaymentHistoryPage />} />
             <Route path="settings" element={<AdminSettings />} />
