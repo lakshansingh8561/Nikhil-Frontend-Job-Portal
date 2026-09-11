@@ -5,7 +5,6 @@ import Container from "../common/Container";
 import { useGetPublicBlogsQuery } from "../../features/blogs/api/blogsApi";
 import { BlogCard } from "../../features/blogs/components/BlogCard";
 import { BlogCardSkeleton } from "../../features/blogs/components/BlogSkeleton";
-import { BlogNewsletterSection } from "../../features/blogs/components/BlogNewsletterSection";
 
 export const NewsAndBlogSection: React.FC = () => {
   const { data, isLoading } = useGetPublicBlogsQuery({ page: 1, limit: 3 });
@@ -13,7 +12,7 @@ export const NewsAndBlogSection: React.FC = () => {
 
   return (
     <section className="py-16 bg-white border-b border-[#EAEFF7]">
-      <Container className="space-y-16">
+      <Container>
         {/* Section Header */}
         <div>
           <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-12">
@@ -71,9 +70,6 @@ export const NewsAndBlogSection: React.FC = () => {
             </Link>
           </div>
         </div>
-
-        {/* Home Page Newsletter Component (Exact match to Screenshot 2) */}
-        <BlogNewsletterSection />
       </Container>
     </section>
   );
