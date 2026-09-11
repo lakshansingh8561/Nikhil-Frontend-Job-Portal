@@ -7,6 +7,7 @@ import { PageHeader } from "../../recruiter/components/PageHeader";
 import { JobForm } from "../components/JobForm";
 import { jobSchema, type JobFormData } from "../validation/job.schema";
 import { useCreateJobMutation } from "../api/jobsApi";
+import type { CreateJobInput } from "../types/job.types";
 import { useGetMyCompanyQuery } from "../../company/api/companyApi";
 import { useGetCurrentRecruiterPlanQuery } from "../../membership/api/membershipApi";
 import { FiZap, FiAlertTriangle, FiArrowRight, FiBriefcase } from "react-icons/fi";
@@ -62,10 +63,11 @@ export const CreateJob = () => {
     }
 
     try {
-      await createJob({
+      const payload: CreateJobInput = {
         ...data,
         deadline: new Date(data.deadline).toISOString(),
-      }).unwrap();
+      };
+      await createJob(payload).unwrap();
 
       toast.success("Job posted successfully!");
       navigate("/recruiter/my-jobs");
