@@ -1,6 +1,5 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import Container from "../common/Container";
 
 import location1 from "../../assets/images/location1.png";
 import location2 from "../../assets/images/location2.png";
@@ -18,6 +17,7 @@ interface LocationItem {
   vacancy: string;
   companies: string;
   query: string;
+  colClass: string;
 }
 
 const locationsData: LocationItem[] = [
@@ -30,6 +30,7 @@ const locationsData: LocationItem[] = [
     vacancy: "5 Vacancy",
     companies: "120 companies",
     query: "Paris",
+    colClass: "w-full sm:w-full md:w-5/12 lg:w-3/12 px-[12px] mb-[24px]",
   },
   {
     id: 2,
@@ -40,6 +41,7 @@ const locationsData: LocationItem[] = [
     vacancy: "7 Vacancy",
     companies: "68 companies",
     query: "London",
+    colClass: "w-full sm:w-full md:w-7/12 lg:w-4/12 px-[12px] mb-[24px]",
   },
   {
     id: 3,
@@ -50,6 +52,7 @@ const locationsData: LocationItem[] = [
     vacancy: "9 Vacancy",
     companies: "80 companies",
     query: "New York",
+    colClass: "w-full sm:w-full md:w-full lg:w-5/12 px-[12px] mb-[24px]",
   },
   {
     id: 4,
@@ -59,6 +62,7 @@ const locationsData: LocationItem[] = [
     vacancy: "16 Vacancy",
     companies: "86 companies",
     query: "Amsterdam",
+    colClass: "w-full sm:w-full md:w-5/12 lg:w-4/12 px-[12px] mb-[24px]",
   },
   {
     id: 5,
@@ -68,6 +72,7 @@ const locationsData: LocationItem[] = [
     vacancy: "39 Vacancy",
     companies: "186 companies",
     query: "Copenhagen",
+    colClass: "w-full sm:w-full md:w-7/12 lg:w-5/12 px-[12px] mb-[24px]",
   },
   {
     id: 6,
@@ -77,69 +82,74 @@ const locationsData: LocationItem[] = [
     vacancy: "15 Vacancy",
     companies: "632 companies",
     query: "Berlin",
+    colClass: "w-full sm:w-full md:w-full lg:w-3/12 px-[12px] mb-[24px]",
   },
 ];
 
 export const JobsByLocationSection: React.FC = () => {
   return (
     <section className="py-16 bg-white border-b border-[#EAEFF7]">
-      <Container>
+      {/* 1140px Bootstrap Container */}
+      <div className="w-full max-w-[1140px] mx-auto px-[12px]">
         {/* Section Header */}
-        <div className="text-center max-w-2xl mx-auto mb-12">
-          <h2 className="text-3xl sm:text-4xl font-bold text-[#05264E] font-['Plus_Jakarta_Sans',sans-serif] tracking-tight">
+        <div className="text-center max-w-2xl mx-auto mb-[45px]">
+          <h2 className="text-[32px] sm:text-[36px] font-bold text-[#05264E] font-['Plus_Jakarta_Sans',sans-serif] tracking-tight leading-[42px]">
             Jobs by Location
           </h2>
-          <p className="mt-2 text-sm sm:text-base font-normal text-[#66789C] font-['Plus_Jakarta_Sans',sans-serif]">
+          <p className="mt-[10px] text-[15px] font-normal text-[#66789C] font-['Plus_Jakarta_Sans',sans-serif]">
             Find your favourite jobs and get the benefits of yourself
           </p>
         </div>
 
-        {/* Location Cards Grid: 6 cards in 2 rows */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7">
+        {/* Location Cards Grid: 12-column staggered grid (3 cols, 4 cols, 5 cols in row 1; 4 cols, 5 cols, 3 cols in row 2) */}
+        <div className="flex flex-wrap -mx-[12px]">
           {locationsData.map((item) => (
-            <Link
-              key={item.id}
-              to={`/jobs?location=${encodeURIComponent(item.query)}`}
-              onClick={() => window.scrollTo({ top: 0, left: 0, behavior: "instant" })}
-              className="group bg-white rounded-2xl border border-[#E0E6F6] p-4 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:border-[#3C65F5]/30 flex flex-col cursor-pointer overflow-hidden font-['Plus_Jakarta_Sans',sans-serif]"
-            >
-              {/* Image Box */}
-              <div className="relative w-full h-[220px] sm:h-[240px] rounded-xl overflow-hidden mb-[15px] bg-[#B4C0E0]/30">
-                <img
-                  src={item.image}
-                  alt={`${item.city}, ${item.country}`}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-
-                {/* Hot / Trending Badge */}
-                {item.badge && (
-                  <span
-                    className={`absolute top-3.5 left-3.5 px-3 py-1 rounded-lg text-xs font-bold tracking-wide backdrop-blur-md shadow-xs ${
-                      item.badge === "Hot"
-                        ? "bg-[#EBF2FF]/90 text-[#3C65F5]"
-                        : "bg-[#EBF2FF]/90 text-[#3C65F5]"
-                    }`}
+            <div key={item.id} className={item.colClass}>
+              <div className="card-image-top hover-up bg-white rounded-[16px] border border-[#E0E6F6] p-[12px] h-full flex flex-col transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_16px_32px_0_rgba(0,0,0,0.08)] hover:border-[#3C65F5]/30 cursor-pointer overflow-hidden font-['Plus_Jakarta_Sans',sans-serif]">
+                <Link
+                  to={`/jobs?location=${encodeURIComponent(item.query)}`}
+                  onClick={() => window.scrollTo({ top: 0, left: 0, behavior: "instant" })}
+                  className="block group"
+                >
+                  {/* Image Box matching DevTools computed specs: 261px height, #B4C0E0 bg, 15px mb, cover */}
+                  <div
+                    className="image relative w-full rounded-[16px] overflow-hidden"
+                    style={{
+                      backgroundImage: `url(${item.image})`,
+                      backgroundColor: "#B4C0E0",
+                      backgroundPosition: "0px 0px",
+                      backgroundRepeat: "no-repeat",
+                      backgroundSize: "cover",
+                      height: "261px",
+                      margin: "0px 0px 15px",
+                      borderRadius: "16px",
+                    }}
                   >
-                    {item.badge}
-                  </span>
-                )}
-              </div>
+                    {/* Hot / Trending Badge */}
+                    {item.badge && (
+                      <span className="absolute top-[14px] left-[14px] px-[10px] py-[3px] rounded-[6px] text-[12px] font-semibold tracking-wide bg-[#EBF2FF] text-[#3C65F5]">
+                        {item.badge}
+                      </span>
+                    )}
+                  </div>
 
-              {/* Info Block */}
-              <div className="px-1 pb-1">
-                <h5 className="text-[20px] leading-[26px] font-bold text-[#05264E] group-hover:text-[#3C65F5] transition-colors mb-[5px]">
-                  {item.city}, {item.country}
-                </h5>
+                  {/* Info Block */}
+                  <div className="informations px-[2px] pb-[4px]">
+                    <h5 className="text-[18px] sm:text-[20px] font-bold text-[#05264E] group-hover:text-[#3C65F5] transition-colors leading-[26px] mb-[6px]">
+                      {item.city}, {item.country}
+                    </h5>
 
-                <div className="flex items-center justify-between text-[14px] text-[#66789C] font-normal mt-1">
-                  <span>{item.vacancy}</span>
-                  <span>{item.companies}</span>
-                </div>
+                    <div className="flex items-center justify-between text-[14px] text-[#66789C] font-normal">
+                      <span>{item.vacancy}</span>
+                      <span>{item.companies}</span>
+                    </div>
+                  </div>
+                </Link>
               </div>
-            </Link>
+            </div>
           ))}
         </div>
-      </Container>
+      </div>
     </section>
   );
 };
